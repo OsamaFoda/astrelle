@@ -30,7 +30,7 @@ const broken = { // a worker whose script isn't there, which fails as it loads
   crypto: window.crypto,
 };
 
-const stuck = await within(thumbnail(pictures[0], silent), 25000);
+const stuck = await within(thumbnail(pictures[0], silent, { patience: 2000 }), 10000);
 const failed = await within(thumbnail(pictures[1], broken), 10000);
 const fine = await within(thumbnail(pictures[2], window), 10000);
 const ok = stuck === null && made[0]?.terminated === true && failed === null &&

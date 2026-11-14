@@ -25,12 +25,12 @@ let worker = null;
 let asked = 0;
 let queue = Promise.resolve(); // one at a time, so making them doesn't hog the computer
 
-// A copy takes a second or two at most. A worker that hasn't answered by then, or failed to load,
-// is given up on and the next copy starts a new one: otherwise every copy after it would wait
-// for it for the rest of the session.
-const PATIENCE = 15000;
+// A copy takes a second or two, a huge picture on a slow computer longer. A worker that hasn't
+// answered within a minute, or failed to load, is given up on and the next copy starts a new
+// one: otherwise every copy after it would wait for it for the rest of the session.
+const PATIENCE = 60000;
 
-function makeCopy(win, path, copy, frosted) {
+function makeCopy(win, path, copy, frosted, patience) {
   const current = worker ??= new win.ChromeWorker("chrome://aether/content/settings/thumbnail-worker.js");
   const id = ++asked;
   return new Promise(resolve => {
@@ -47,7 +47,7 @@ function makeCopy(win, path, copy, frosted) {
     };
     const answer = ({ data }) => data.id === id && finish(data);
     const fail = event => giveUp(`the worker failed: ${event.message || "it didn't load"}`);
-    const timer = setTimeout(() => giveUp("the worker didn't answer"), PATIENCE);
+    const timer = setTimeout(() => giveUp("the worker didn't answer"), patience);
     current.addEventListener("message", answer);
     current.addEventListener("error", fail);
     current.postMessage({ id, path, copy, frosted });
@@ -55,7 +55,7 @@ function makeCopy(win, path, copy, frosted) {
 }
 
 // The copy's file: URL (making it first if needed), or null if the picture can't be read.
-export function thumbnail(url, win, { frosted = false } = {}) {
+export function thumbnail(url, win, { frosted = false, patience = PATIENCE } = {}) {
   const job = queue.then(async () => {
     if (!url?.startsWith("file:")) return url;
     try {
@@ -64,7 +64,7 @@ export function thumbnail(url, win, { frosted = false } = {}) {
       const key = new Uint8Array(await win.crypto.subtle.digest("SHA-1", new TextEncoder().encode(`${path}|${lastModified}${frosted ? "|frosted" : ""}`)));
       const copy = PathUtils.join(THUMBNAILS, `${[...key].map(b => b.toString(16).padStart(2, "0")).join("")}.jpg`);
       if (!(await IOUtils.exists(copy))) {
-        const { ok, error } = await makeCopy(win, path, copy, frosted);
+        const { ok, error } = await makeCopy(win, path, copy, frosted, patience);
         if (!ok) throw new Error(error);
       }
       return PathUtils.toFileURI(copy);
