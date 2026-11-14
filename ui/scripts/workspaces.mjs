@@ -132,11 +132,13 @@ export function init(win) {
   }
 
   function rename(id) {
-    const list = workspaces();
-    const ws = list.find(w => w.id === id);
-    const name = { value: ws.name };
+    const name = { value: workspaces().find(w => w.id === id).name };
     if (!Services.prompt.prompt(win, "Rename workspace", "New name:", name, null, { value: false })) return;
     if (!name.value.trim()) return;
+    // Read the list again: another window may have changed it while the name was being typed.
+    const list = workspaces();
+    const ws = list.find(w => w.id === id);
+    if (!ws) return;
     ws.name = name.value.trim();
     saveWorkspaces(list);
   }
@@ -250,6 +252,6 @@ export function init(win) {
   Services.prefs.addObserver(LIST, onListChange);
   win.addEventListener("unload", () => Services.prefs.removeObserver(LIST, onListChange), { once: true });
 
-  win.aetherWorkspaces = { render, apply, switchTo, moveTabs, active, workspaceOf, create, remove, deleteWorkspace };
+  win.aetherWorkspaces = { render, apply, switchTo, moveTabs, active, workspaceOf, create, rename, remove, deleteWorkspace };
   apply();
 }
