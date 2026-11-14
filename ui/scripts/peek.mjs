@@ -17,6 +17,7 @@ if (!ClickHandlerParent.prototype.aetherPeek) {
       win.aetherPeek.open(data.href, {
         triggeringPrincipal: data.triggeringPrincipal,
         policyContainer: data.policyContainer ? E10SUtils.deserializePolicyContainer(data.policyContainer) : null,
+        userContextId: data.originAttributes?.userContextId,
       });
       return;
     }
@@ -71,6 +72,8 @@ export function init(win) {
     })) {
       browser.setAttribute(name, value);
     }
+    // A link from a container tab peeks in that container, with its cookies and logins.
+    if (data.userContextId) browser.setAttribute("usercontextid", data.userContextId);
     card.append(bar, browser);
     overlay.append(card);
     doc.getElementById("browser").append(overlay);
@@ -96,7 +99,7 @@ export function init(win) {
     keep.addEventListener("click", () => {
       const spec = browser.currentURI?.spec || url;
       close();
-      win.openTrustedLinkIn(spec, "tab");
+      win.openTrustedLinkIn(spec, "tab", { userContextId: data.userContextId });
     });
     shut.addEventListener("click", close);
     overlay.addEventListener("click", event => { if (event.target === overlay) close(); });
