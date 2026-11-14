@@ -1022,6 +1022,13 @@ notification-message::before {
   }
 }
 
+/* Firefox's own sidebar button: Compact Mode does its job (scripts/compact-mode.mjs). Firefox
+ * puts it back on the toolbar whenever its sidebar setting comes back on, and taking it off the
+ * toolbar switches the tabs to the top, so it stays there unseen. */
+#sidebar-button {
+  display: none !important;
+}
+
 /* ---- Split View and Compact Mode toolbar buttons ---- */
 
 #aether-split-view {
