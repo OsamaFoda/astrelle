@@ -9,6 +9,10 @@ const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/compon
 const { SessionStore } = ChromeUtils.importESModule("resource:///modules/sessionstore/SessionStore.sys.mjs");
 
 const LIST = "aether.workspaces"; // [{ id, name }], shared by all windows
+// Where each deleted workspace's tabs went, { deletedId: heirId }, so every window sends them to
+// the same place, and so do tabs that come back later (a reopened window, the last session).
+// Not "aether.workspaces.…", which the list's observer would also see.
+const HEIRS = "aether.workspaceHeirs";
 const KEY = "aetherWorkspace"; // session value: a tab's workspace, and a window's active one
 const WIDGET = "aether-workspaces";
 
@@ -22,6 +26,27 @@ function workspaces() {
 
 function saveWorkspaces(list) {
   Services.prefs.setStringPref(LIST, JSON.stringify(list));
+}
+
+function heirs() {
+  try {
+    return JSON.parse(Services.prefs.getStringPref(HEIRS, "{}"));
+  } catch {
+    return {};
+  }
+}
+
+// The workspace a saved id stands for now: itself, or the one its tabs moved to when it was
+// deleted (following later deletions too), or null if there's none.
+function resolve(id) {
+  const known = new Set(workspaces().map(w => w.id));
+  const moved = heirs();
+  const seen = new Set();
+  while (id && !known.has(id) && !seen.has(id)) {
+    seen.add(id);
+    id = moved[id];
+  }
+  return known.has(id) ? id : null;
 }
 
 // One widget for all windows. Windows opened later build its node before their scripts run,
@@ -52,22 +77,19 @@ export function init(win) {
   const { gBrowser } = win;
   const doc = win.document;
 
-  const active = () => {
-    const id = SessionStore.getCustomWindowValue(win, KEY);
-    return workspaces().some(w => w.id === id) ? id : workspaces()[0].id;
-  };
+  const active = () => resolve(SessionStore.getCustomWindowValue(win, KEY)) || workspaces()[0].id;
   const workspaceOf = tab => SessionStore.getCustomTabValue(tab, KEY) || null;
   const assign = (tab, id) => SessionStore.setCustomTabValue(tab, KEY, id);
   const tabsIn = id => gBrowser.tabs.filter(t => !t.pinned && workspaceOf(t) === id);
 
-  // Show the active workspace's tabs and hide the rest. Tabs with no (or a deleted)
-  // workspace join the active one.
+  // Show the active workspace's tabs and hide the rest. Tabs of a deleted workspace join its heir,
+  // and tabs with no workspace join the active one.
   function apply() {
     const current = active();
     const known = new Set(workspaces().map(w => w.id));
     for (const tab of gBrowser.tabs) {
       if (tab.pinned) continue;
-      if (!known.has(workspaceOf(tab))) assign(tab, current);
+      if (!known.has(workspaceOf(tab))) assign(tab, resolve(workspaceOf(tab)) || current);
       if (workspaceOf(tab) === current) gBrowser.showTab(tab);
       else if (!tab.selected) gBrowser.hideTab(tab);
     }
@@ -133,8 +155,7 @@ export function init(win) {
   function deleteWorkspace(id) {
     const rest = workspaces().filter(w => w.id !== id);
     if (!rest.length) return;
-    if (active() === id) SessionStore.setCustomWindowValue(win, KEY, rest[0].id);
-    tabsIn(id).forEach(t => assign(t, rest[0].id));
+    Services.prefs.setStringPref(HEIRS, JSON.stringify({ ...heirs(), [id]: rest[0].id }));
     saveWorkspaces(rest); // every window re-applies through the pref observer
   }
 
