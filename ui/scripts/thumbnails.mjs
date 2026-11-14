@@ -4,6 +4,8 @@
 // them in the background a little after it starts (scripts/wallpaper.mjs), so the settings page
 // finds them ready; it makes any that are missing itself.
 
+const { setTimeout, clearTimeout } = ChromeUtils.importESModule("resource://gre/modules/Timer.sys.mjs");
+
 const THUMBNAILS = PathUtils.join(PathUtils.profileDir, "aether-thumbnails");
 const FOLDER = PathUtils.join(Services.dirsvc.get("Home", Ci.nsIFile).path, "Pictures", "Wallpapers");
 const PICTURE = /\.(jpe?g|png|webp|avif|gif)$/i;
@@ -23,17 +25,32 @@ let worker = null;
 let asked = 0;
 let queue = Promise.resolve(); // one at a time, so making them doesn't hog the computer
 
+// A copy takes a second or two at most. A worker that hasn't answered by then, or failed to load,
+// is given up on and the next copy starts a new one: otherwise every copy after it would wait
+// for it for the rest of the session.
+const PATIENCE = 15000;
+
 function makeCopy(win, path, copy, frosted) {
-  worker ??= new win.ChromeWorker("chrome://aether/content/settings/thumbnail-worker.js");
+  const current = worker ??= new win.ChromeWorker("chrome://aether/content/settings/thumbnail-worker.js");
   const id = ++asked;
   return new Promise(resolve => {
-    const answer = ({ data }) => {
-      if (data.id !== id) return;
-      worker.removeEventListener("message", answer);
+    const finish = data => {
+      clearTimeout(timer);
+      current.removeEventListener("message", answer);
+      current.removeEventListener("error", fail);
       resolve(data);
     };
-    worker.addEventListener("message", answer);
-    worker.postMessage({ id, path, copy, frosted });
+    const giveUp = error => {
+      if (worker === current) worker = null;
+      current.terminate();
+      finish({ ok: false, error });
+    };
+    const answer = ({ data }) => data.id === id && finish(data);
+    const fail = event => giveUp(`the worker failed: ${event.message || "it didn't load"}`);
+    const timer = setTimeout(() => giveUp("the worker didn't answer"), PATIENCE);
+    current.addEventListener("message", answer);
+    current.addEventListener("error", fail);
+    current.postMessage({ id, path, copy, frosted });
   });
 }
 
