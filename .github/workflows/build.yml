@@ -35,7 +35,9 @@ jobs:
           test -n "$VERSION" || { echo "Mozilla lists no $ESR_MAJOR ESR release" >&2; exit 1; }
           # A hand-started build of our own changes is a new revision of the same Firefox version.
           REV=1
-          while gh release view "v$VERSION-$REV" >/dev/null 2>&1; do REV=$((REV + 1)); done
+          # (Listed rather than looked up by tag: releases start as drafts, which have no tag yet.)
+          TAGS=$(gh release list --limit 200 --json tagName -q '.[].tagName')
+          while grep -qx "v$VERSION-$REV" <<< "$TAGS"; do REV=$((REV + 1)); done
           BUILD=false
           if [ "$REV" = 1 ] || [ "${{ github.event_name }}" = workflow_dispatch ]; then BUILD=true; fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -95,7 +97,8 @@ jobs:
           tar -xf "$FILE" -C pkg
           scripts/install_ui.sh "pkg/$APP_NAME"
           XZ_OPT=-T0 tar -cJf "$APP_NAME-${{ needs.check.outputs.version }}-linux-x86_64.tar.xz" -C pkg "$APP_NAME"
-          gh release create "${{ needs.check.outputs.tag }}" "$APP_NAME"-*-linux-x86_64.tar.xz \
+          # A draft: only the repo's owner sees it until it's published by hand.
+          gh release create "${{ needs.check.outputs.tag }}" "$APP_NAME"-*-linux-x86_64.tar.xz --draft \
             --title "${{ needs.check.outputs.tag }}" \
             --notes "Built on Firefox ${{ needs.check.outputs.version }}."
 
