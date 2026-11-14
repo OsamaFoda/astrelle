@@ -148,9 +148,9 @@ export function init(win) {
     const list = workspaces();
     if (list.length < 2) return;
     const heir = list.find(w => w.id !== id);
-    // Its tabs move in every window, so count them all.
+    // Its tabs move in every window, so count them all (a window still opening has none yet).
     const windows = [...Services.wm.getEnumerator("navigator:browser")];
-    const count = windows.flatMap(w => w.gBrowser.tabs).filter(t => !t.pinned && workspaceOf(t) === id).length;
+    const count = windows.flatMap(w => w.gBrowser?.tabs ?? []).filter(t => !t.pinned && workspaceOf(t) === id).length;
     const ok = Services.prompt.confirm(win, "Delete workspace",
       `Delete "${list.find(w => w.id === id).name}"? Its ${count} tab${count === 1 ? "" : "s"} will move to "${heir.name}".`);
     if (ok) deleteWorkspace(id);
