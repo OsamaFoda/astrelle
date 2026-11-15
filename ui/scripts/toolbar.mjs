@@ -6,9 +6,10 @@
 // Runs after the other scripts so their buttons exist.
 
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
+import { showSipButton } from "./choices.mjs";
 
 const PREF = "aether.toolbarLayout";
-const LAYOUT = 2; // 2: the home button
+const LAYOUT = 3; // 2: the home button; 3: Sip's button out of the add-ons menu
 const ORDER = ["back-button", "forward-button", "stop-reload-button", "home-button", "vertical-spacer", "urlbar-container",
   "aether-workspaces", "unified-extensions-button", "aether-split-view", "aether-compact-mode"];
 const REMOVE = ["sidebar-button", "firefox-view-button", "alltabs-button"];
@@ -20,6 +21,7 @@ const CHANGES = {
     const spacer = CustomizableUI.getPlacementOfWidget("vertical-spacer");
     CustomizableUI.addWidgetToArea("home-button", CustomizableUI.AREA_NAVBAR, spacer?.area === CustomizableUI.AREA_NAVBAR ? spacer.position : undefined);
   },
+  3: () => showSipButton(),
 };
 // What Firefox's own toolbar has that a new Astrelle profile's doesn't (its vertical-tabs toolbar
 // starts without them), for Restore Defaults to take out again.

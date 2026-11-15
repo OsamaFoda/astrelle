@@ -6,6 +6,7 @@
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
 const { ExtensionPermissions } = ChromeUtils.importESModule("resource://gre/modules/ExtensionPermissions.sys.mjs");
 const { ExtensionStorageIDB } = ChromeUtils.importESModule("resource://gre/modules/ExtensionStorageIDB.sys.mjs");
+const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
 import { chosen as chosenIcon } from "./app-icon.mjs";
 
 const DARK = "ui.systemUsesDarkTheme";
@@ -90,6 +91,16 @@ export async function setSip(on) {
   if (!addon) return;
   if (on && !addon.isActive) await addon.enable();
   if (!on && addon.isActive) await addon.disable();
+  if (on) showSipButton();
+}
+
+// Sip's button, whose badge shows how much of the budget is used, sits on the toolbar beside the
+// add-ons button rather than inside its menu, where the badge can't be seen.
+export function showSipButton() {
+  const id = `${SIP.toLowerCase().replace(/[^a-z0-9_-]/g, "_")}-browser-action`;
+  if (CustomizableUI.getPlacementOfWidget(id)?.area === CustomizableUI.AREA_NAVBAR) return;
+  const addons = CustomizableUI.getPlacementOfWidget("unified-extensions-button");
+  CustomizableUI.addWidgetToArea(id, CustomizableUI.AREA_NAVBAR, addons?.area === CustomizableUI.AREA_NAVBAR ? addons.position + 1 : undefined);
 }
 
 async function sipStorage() {

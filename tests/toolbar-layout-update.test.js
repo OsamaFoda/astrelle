@@ -22,6 +22,6 @@ const seen = {
 other.close();
 return {
   ok: seen.compactMode?.position === 0 && seen.splitView === CustomizableUI.AREA_FIXED_OVERFLOW_PANEL &&
-    seen.home?.area === CustomizableUI.AREA_NAVBAR && seen.layout === 2,
+    seen.home?.area === CustomizableUI.AREA_NAVBAR && seen.layout >= 2,
   seen, navbar: CustomizableUI.getWidgetIdsInArea(CustomizableUI.AREA_NAVBAR),
 };
