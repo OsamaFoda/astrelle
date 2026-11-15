@@ -208,7 +208,10 @@ async function renderData() {
     $("bar-fill").style.width = `${ratio * 100}%`;
     $("bar-fill").className = ratio >= 0.9 ? "danger" : ratio >= 0.75 ? "warn" : "";
     $("period").textContent = `${formatBytes(left)} left of ${settings.budgetGB} GB · ${period.daysLeft} day${period.daysLeft === 1 ? "" : "s"}`;
-    $("safe").textContent = `Safe today: ${formatBytes(Math.round(Math.max(0, (left + today) / period.daysLeft - today)))}`;
+    // Past today's share, say by how much rather than a bare 0 B.
+    const pace = (left + today) / period.daysLeft - today;
+    $("safe").textContent = pace >= 0 ? `Safe today: ${formatBytes(Math.round(pace))}` : `Over today's share by ${formatBytes(Math.round(-pace))}`;
+    $("safe").classList.toggle("over", pace < 0);
   } else {
     $("period-only").textContent = `This period: ${formatBytes(used)}`;
   }
