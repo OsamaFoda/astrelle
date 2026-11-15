@@ -217,3 +217,8 @@ document.querySelectorAll(".step h1").forEach(splitWords);
 decorate();
 refresh();
 show(flow[0]);
+
+// The disk cache's size (in KB, as Firefox stores it), the same choice as in Settings.
+const CACHE = "browser.cache.disk.capacity";
+$("cache-size").value = String(Services.prefs.getIntPref(CACHE, 1048576));
+$("cache-size").addEventListener("change", event => Services.prefs.setIntPref(CACHE, Number(event.target.value)));
