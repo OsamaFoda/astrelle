@@ -195,6 +195,15 @@ const addonListener = { onEnabled: refreshAddons, onDisabled: refreshAddons, onI
 AddonManager.addAddonListener(addonListener);
 const stopFollowingSip = followSipSettings(refreshAddons);
 
+// ---- The disk cache (sizes in KB, as Firefox stores them) ----
+
+const CACHE = "browser.cache.disk.capacity";
+const showCache = () => ($("cache-size").value = String(Services.prefs.getIntPref(CACHE, 1048576)));
+$("cache-size").addEventListener("change", event => Services.prefs.setIntPref(CACHE, Number(event.target.value)));
+Services.prefs.addObserver(CACHE, showCache);
+window.addEventListener("unload", () => Services.prefs.removeObserver(CACHE, showCache), { once: true });
+showCache();
+
 // ---- More ----
 
 for (const button of document.querySelectorAll("[data-open]")) {

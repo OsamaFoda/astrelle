@@ -157,6 +157,15 @@
         <label>Budget <input id="budget-gb" type="number" min="0" step="0.5" placeholder="e.g. 140"> GB</label>
         <label>Renews on day <input id="reset-day" type="number" min="1" max="31" value="1"></label>
       </fieldset>
+      <label class="hint">Disk space for saved pages, so sites you revisit load from your computer, not your data
+        <select id="cache-size">
+          <option value="262144">250 MB</option>
+          <option value="524288">500 MB</option>
+          <option value="1048576">1 GB</option>
+          <option value="2097152">2 GB</option>
+          <option value="4194304">4 GB</option>
+        </select>
+      </label>
     </section>
 
     <section class="card" id="shortcuts">
