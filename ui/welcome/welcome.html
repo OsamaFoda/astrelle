@@ -171,6 +171,16 @@
           <label>Budget <input id="budget-gb" type="number" min="0" step="0.5" placeholder="e.g. 140"> GB</label>
           <label>Renews on day <input id="reset-day" type="number" min="1" max="31" value="1"></label>
         </fieldset>
+        <label class="hint">Highest YouTube quality (an hour of 1080p uses about 2 GB; 480p about 0.6 GB)
+          <select id="youtube-quality">
+            <option value="240">240p</option>
+            <option value="360">360p</option>
+            <option value="480" selected>480p</option>
+            <option value="720">720p</option>
+            <option value="1080">1080p</option>
+            <option value="0">No limit</option>
+          </select>
+        </label>
         <label class="hint">Disk space for saved pages, so sites you revisit load from your computer, not your data
           <select id="cache-size">
             <option value="262144">250 MB</option>

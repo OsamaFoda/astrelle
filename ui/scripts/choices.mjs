@@ -139,6 +139,15 @@ export async function saveSipBudget(budgetGB, resetDay) {
   return { budgetGB, resetDay };
 }
 
+// Sip's highest YouTube quality, in lines (0 = no limit).
+export async function saveSipYoutube(lines) {
+  const db = await sipStorage();
+  if (!db) return;
+  const settings = await sipSettings(db);
+  const changes = await db.set({ settings: { ...settings, youtube: Number(lines) } });
+  if (changes) ExtensionStorageIDB.notifyListeners(SIP, changes);
+}
+
 // Calls back whenever Sip's settings change, from here or from Sip's own options; returns what
 // stops it.
 export function followSipSettings(callback) {

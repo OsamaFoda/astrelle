@@ -7,7 +7,7 @@
 
 import { follow } from "../scripts/palette.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
-import { CHOICES, setProtection, setSip, saveSipBudget } from "../scripts/choices.mjs";
+import { CHOICES, setProtection, setSip, saveSipBudget, saveSipYoutube } from "../scripts/choices.mjs";
 
 const NEW_TAB = "chrome://aether/content/newtab/newtab.html";
 
@@ -151,6 +151,7 @@ for (const [id, on] of [["sip-on", true], ["sip-off", false]]) {
       await setSip(on);
       // An empty budget leaves the one Sip already has.
       if (on && Number($("budget-gb").value) > 0) await saveSipBudget(Number($("budget-gb").value), $("reset-day").value);
+      if (on) await saveSipYoutube($("youtube-quality").value);
       chosen.sip = on;
     } catch (e) {
       console.error("Astrelle welcome: Sip", e);
