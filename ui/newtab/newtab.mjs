@@ -157,6 +157,9 @@ function dayKey(date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+// Counted in calendar days, so the 23- or 25-hour day of a clock change doesn't make it one off.
+const calendarDay = date => Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000;
+
 function clampedDate(year, month, day) {
   return new Date(year, month, Math.min(day, new Date(year, month + 1, 0).getDate()));
 }
@@ -166,7 +169,7 @@ function billingPeriod(now, resetDay) {
   let start = clampedDate(now.getFullYear(), now.getMonth(), day);
   if (now < start) start = clampedDate(now.getFullYear(), now.getMonth() - 1, day);
   const end = clampedDate(start.getFullYear(), start.getMonth() + 1, day);
-  return { start, end, daysLeft: Math.max(1, Math.ceil((end - now) / 86400000)) };
+  return { start, end, daysLeft: Math.max(1, calendarDay(end) - calendarDay(now)) };
 }
 
 function formatBytes(n) {
