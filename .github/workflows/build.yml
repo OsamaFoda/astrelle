@@ -80,7 +80,13 @@ jobs:
         env:
           MOZBUILD_STATE_PATH: ${{ github.workspace }}/.mozbuild
           MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE: pip
+          GOOGLE_SAFEBROWSING_KEY: ${{ secrets.GOOGLE_SAFEBROWSING_KEY }}
         run: |
+          # Google's Safe Browsing key, so the phishing and malware lists download (without it they never do).
+          if [ -n "$GOOGLE_SAFEBROWSING_KEY" ]; then
+            printf '%s' "$GOOGLE_SAFEBROWSING_KEY" | tr -d '[:space:]' > ../safebrowsing.key
+            echo "ac_add_options --with-google-safebrowsing-api-keyfile=$PWD/../safebrowsing.key" >> mozconfig
+          fi
           # Memory use once a minute, shown if the build fails.
           ( while true; do echo "$(date -u +%T) $(free -m | awk '/Mem/ {print "mem used " $3 " MB"} /Swap/ {print "swap used " $3 " MB"}' | paste -sd' ')"; sleep 60; done ) > ../memory.log 2>&1 &
           ./mach --no-interactive build
