@@ -492,8 +492,9 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
         transition: var(--aether-reveal);
       }
 
-      /* 8px beside it in Frosted Glass; in Standard the 4px of the sidebar's splitter, as docked. */
-      #tabbrowser-tabbox {
+      /* 8px beside it in Frosted Glass; in Standard the 4px of the sidebar's splitter, as docked.
+       * Not when it's set to float over the page (aether.compactReveal "over"). */
+      &:not([aether-over]) #tabbrowser-tabbox {
         transform: translateX(calc(var(--aether-dir) * (var(--aether-sidebar-width, 250px) + max(2 * var(--aether-compact-inset), 4px) - 8px)));
         transition: var(--aether-reveal);
       }
@@ -587,7 +588,7 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
         transition: var(--aether-reveal);
       }
 
-      :is(#tabbrowser-tabbox, #sidebar-box) {
+      &:not([aether-over]) :is(#tabbrowser-tabbox, #sidebar-box) {
         transform: translateY(calc(var(--aether-toolbox-height, 80px) - 8px));
         transition: var(--aether-reveal);
       }
@@ -1398,6 +1399,30 @@ notification-message::before {
 /* Split view: the address strip under a pane is left off Astrelle's own pages (scripts/split-view.mjs). */
 split-view-footer[aether-own-page] {
   display: none !important;
+}
+
+/* ---- Compact mode floating over the page (aether.compactReveal "over") ----
+ * The sidebar, and the toolbar riding on it, come in above the page instead of pushing it aside.
+ * Nothing can blur a web page behind them, so they're solid there, or in Frosted Glass over a
+ * wallpaper frosted with its frosted copy (as the address bar's list is), with a shadow to lift
+ * them off the page. */
+:root[aether-compact][aether-over][aether-vertical]:not([inFullscreen], [inDOMFullscreen]) {
+  #sidebar-container {
+    z-index: 3;
+    background: var(--aether-sheen), var(--aether-panel) !important;
+    box-shadow: var(--aether-shadow);
+  }
+
+  &[aether-urlbar-in-sidebar] #navigator-toolbox {
+    z-index: 4;
+  }
+
+  &[aether-liquid][aether-wallpaper] #sidebar-container {
+    background: linear-gradient(var(--aether-frost), var(--aether-frost)),
+                var(--aether-wallpaper-frosted, none) center / cover no-repeat fixed,
+                var(--aether-panel) !important;
+    backdrop-filter: none;
+  }
 }
 
 /* ---- Media controls in the sidebar (scripts/media-controls.mjs) ---- */

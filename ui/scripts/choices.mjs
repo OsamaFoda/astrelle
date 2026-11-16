@@ -48,6 +48,10 @@ export const CHOICES = {
     get: () => Services.prefs.getBoolPref("browser.tabs.closeWindowWithLastTab", true) ? "close" : "keep",
     set: value => Services.prefs.setBoolPref("browser.tabs.closeWindowWithLastTab", value === "close"),
   },
+  reveal: {
+    get: () => Services.prefs.getStringPref("aether.compactReveal", "push") === "over" ? "over" : "push",
+    set: value => Services.prefs.setStringPref("aether.compactReveal", value),
+  },
   startup: {
     get: () => Services.prefs.getIntPref("browser.startup.page", 3) === 3 ? "continue" : "fresh",
     set: value => Services.prefs.setIntPref("browser.startup.page", value === "continue" ? 3 : 1),

@@ -13,6 +13,8 @@ const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/compon
 import { tr } from "./l10n.mjs";
 
 const PREF = "aether.compactMode";
+// How the bars come out: "push" the page aside (or down), or float "over" it (Astrelle Settings).
+const REVEAL = "aether.compactReveal";
 const VERTICAL_TABS = "sidebar.verticalTabs";
 const VISIBILITY = "sidebar.visibility";
 const MENUS = ["toolbar-context-menu", "sidebar-context-menu"];
@@ -68,6 +70,7 @@ export function init(win) {
     }
     if (!compact) root.removeAttribute("aether-dismissed");
     root.toggleAttribute("aether-compact", compact);
+    root.toggleAttribute("aether-over", Services.prefs.getStringPref(REVEAL, "push") === "over");
     root.toggleAttribute("aether-vertical", Services.prefs.getBoolPref(VERTICAL_TABS, false));
     doc.getElementById(WIDGET)?.toggleAttribute("checked", Services.prefs.getBoolPref(PREF, false));
     keepSidebar();
@@ -268,9 +271,11 @@ export function init(win) {
   new win.MutationObserver(update).observe(root, { attributes: true, attributeFilter: ["customizing"] });
   Services.prefs.addObserver(PREF, update);
   Services.prefs.addObserver(VERTICAL_TABS, update);
+  Services.prefs.addObserver(REVEAL, update);
   win.addEventListener("unload", () => {
     Services.prefs.removeObserver(PREF, update);
     Services.prefs.removeObserver(VERTICAL_TABS, update);
+    Services.prefs.removeObserver(REVEAL, update);
   }, { once: true });
   update();
 }
