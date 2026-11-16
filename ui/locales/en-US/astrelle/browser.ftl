@@ -83,3 +83,5 @@ astrelle-media-mute = Mute
 astrelle-media-unmute = Unmute
 astrelle-media-close = Hide until it plays again
 astrelle-media-go-to-tab = Go to the tab playing { $title }
+astrelle-media-restart = Back to the start
+astrelle-media-skip-to-end = Skip to the end (on to the next, where the site plays one)

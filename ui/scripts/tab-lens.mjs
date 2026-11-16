@@ -9,7 +9,7 @@
 
 const PREF = "aether.tabLens";
 // A soft spring: glides in, overshoots by about 1% and settles (damping 0.82).
-const SPRING = `linear(${Array.from({ length: 41 }, (_, i) => {
+export const SPRING = `linear(${Array.from({ length: 41 }, (_, i) => {
   const t = i / 40, damping = 0.82, stiffness = 6.1, wobble = stiffness * Math.sqrt(1 - damping ** 2);
   const x = 1 - Math.exp(-damping * stiffness * t) * (Math.cos(wobble * t) + (damping * stiffness / wobble) * Math.sin(wobble * t));
   return i === 40 ? 1 : x.toFixed(4);

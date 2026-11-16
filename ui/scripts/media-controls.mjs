@@ -8,6 +8,7 @@
 // it's playing, where it is, and which buttons the site supports. Tabs down the side only.
 
 import { tr } from "./l10n.mjs";
+import { SPRING } from "./tab-lens.mjs";
 
 const VERTICAL_TABS = "sidebar.verticalTabs";
 const CONTROLLER_EVENTS = ["activated", "deactivated", "metadatachange", "playbackstatechange", "positionstatechange", "supportedkeyschange"];
@@ -108,9 +109,38 @@ export function init(win) {
       for (const type of CONTROLLER_EVENTS) controller?.addEventListener(type, onController);
     }
     shown = tab;
-    card.hidden = !tab;
-    if (!tab) return;
-    show(tab);
+    if (tab) show(tab); // filled in first, so it grows to its real height
+    appear(Boolean(tab));
+  }
+
+  // Coming and going, the card grows from nothing (or shrinks to it) on Astrelle's spring, rising
+  // and fading as it does, so the tabs above make room for it smoothly rather than jump.
+  let moving = null;
+  function appear(on) {
+    if (on === !card.hidden && !moving?.leaving) return;
+    moving?.cancel();
+    // The tab highlight's soft spring (scripts/tab-lens.mjs): a glide in with a slight settle.
+    const duration = win.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 560;
+    card.hidden = false;
+    const resting = win.getComputedStyle(card);
+    const full = { height: `${card.getBoundingClientRect().height}px`, marginTop: resting.marginTop, marginBottom: resting.marginBottom,
+                   paddingTop: resting.paddingTop, paddingBottom: resting.paddingBottom, opacity: 1, translate: "0 0", scale: "1" };
+    const none = { height: "0px", marginTop: "0px", marginBottom: "0px", paddingTop: "0px", paddingBottom: "0px",
+                   opacity: 0, translate: "0 12px", scale: "0.94" };
+    // Out with a plain glide, quicker: a spring's overshoot would show the card again as it goes.
+    moving = on
+      ? card.animate([none, full], { duration, easing: SPRING })
+      : card.animate([full, none], { duration: duration * 0.5, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" });
+    moving.leaving = !on;
+    const done = moving;
+    done.finished.then(() => {
+      if (moving !== done) return;
+      moving = null;
+      if (!on) {
+        card.hidden = true;
+        done.cancel();
+      }
+    }, () => {});
   }
 
   function show(tab) {
@@ -139,9 +169,17 @@ export function init(win) {
     playPause.toggleAttribute("playing", playing);
     playPause.title = tr(playing ? "astrelle-media-pause" : "astrelle-media-play");
     playPause.setAttribute("aria-label", playPause.title);
+    // Previous and next are always there: the site's own, or else back to the start and on to
+    // the end (where a video site plays the next video, as YouTube does, and a player its next
+    // track). On to the end needs to know how long it is.
     const keys = controller.supportedKeys ?? [];
-    previous.hidden = !keys.includes("previoustrack");
-    next.hidden = !keys.includes("nexttrack");
+    const label = (button, id) => {
+      button.title = tr(id);
+      button.setAttribute("aria-label", button.title);
+    };
+    label(previous, keys.includes("previoustrack") ? "astrelle-media-previous" : "astrelle-media-restart");
+    label(next, keys.includes("nexttrack") ? "astrelle-media-next" : "astrelle-media-skip-to-end");
+    next.disabled = !keys.includes("nexttrack") && !positions.get(controller)?.duration;
     mute.toggleAttribute("muted", tab.muted);
     mute.title = tr(tab.muted ? "astrelle-media-unmute" : "astrelle-media-mute");
     mute.setAttribute("aria-label", mute.title);
@@ -172,8 +210,17 @@ export function init(win) {
   const onController = () => update();
 
   playPause.addEventListener("click", () => (controller?.isPlaying ? controller.pause() : controller?.play()));
-  previous.addEventListener("click", () => controller?.prevTrack());
-  next.addEventListener("click", () => controller?.nextTrack());
+  previous.addEventListener("click", () => {
+    if (controller?.supportedKeys.includes("previoustrack")) controller.prevTrack();
+    else controller?.seekTo(0);
+  });
+  next.addEventListener("click", () => {
+    if (controller?.supportedKeys.includes("nexttrack")) return controller.nextTrack();
+    const duration = positions.get(controller)?.duration;
+    // Just short of the end (a seek to the very end is ignored): it ends by itself a moment later,
+    // which is what a site waits for to play the next one.
+    if (duration && Number.isFinite(duration)) controller.seekTo(Math.max(0, duration - 0.25));
+  });
   mute.addEventListener("click", () => {
     shown?.toggleMuteAudio();
     update();

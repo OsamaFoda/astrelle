@@ -1394,6 +1394,7 @@ split-view-footer[aether-own-page] {
 
 .aether-media {
   position: relative;
+  box-sizing: border-box;
   flex: none;
   display: flex;
   flex-direction: column;
@@ -1489,8 +1490,13 @@ split-view-footer[aether-own-page] {
   display: none;
 }
 
-.aether-media-button:hover {
+.aether-media-button:hover:not(:disabled) {
   background: var(--aether-glass-hover);
+}
+
+.aether-media-button:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .aether-media-button::before {

@@ -84,3 +84,5 @@ astrelle-media-mute = كتم الصوت
 astrelle-media-unmute = إلغاء الكتم
 astrelle-media-close = إخفاء حتى يُشغَّل من جديد
 astrelle-media-go-to-tab = انتقل إلى اللسان الذي يعرض { $title }
+astrelle-media-restart = العودة إلى البداية
+astrelle-media-skip-to-end = تخطَّ إلى النهاية (إلى التالي حيث يشغّله الموقع)

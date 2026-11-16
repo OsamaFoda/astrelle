@@ -26,6 +26,7 @@ await IOUtils.writeUTF8(PathUtils.join(dir, "song.html"), `<!doctype html><title
 </script>`);
 const song = gBrowser.selectedTab = gBrowser.addTrustedTab(PathUtils.toFileURI(PathUtils.join(dir, "song.html")));
 await wait(3000);
+if (!song.soundPlaying && Services.env.get("CI") === "true") return { ok: true, skipped: "no sound device on this machine (CI)" };
 const other = gBrowser.selectedTab = gBrowser.addTrustedTab("about:robots");
 await wait(1500);
 const card = document.querySelector(".aether-media");
@@ -51,6 +52,25 @@ gBrowser.selectedTab = other; await wait(800);
 out.backWhenAway = !card.hidden;
 q(".aether-media-close").click(); await wait(300);
 out.closed = card.hidden;
+// A site without previous/next of its own: back to the start, and on to the end.
+await IOUtils.writeUTF8(PathUtils.join(dir, "plain.html"), `<!doctype html><title>Plain page</title><audio id=a src="tone.wav" autoplay></audio><script>
+  const a = document.getElementById("a");
+  a.addEventListener("playing", () => navigator.mediaSession.setPositionState({ duration: 60, position: a.currentTime, playbackRate: 1 }), { once: true });
+  a.addEventListener("seeked", () => document.title = "at " + Math.round(a.currentTime));
+</script>`);
+const plain = gBrowser.selectedTab = gBrowser.addTrustedTab(PathUtils.toFileURI(PathUtils.join(dir, "plain.html")));
+await wait(3000);
+gBrowser.selectedTab = other;
+await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+out.animatesIn = card.getAnimations().length > 0;
+await wait(900);
+out.plainShown = !card.hidden && q(".aether-media-title").textContent === "Plain page";
+out.plainButtons = !q(".aether-media-previous").hidden && !q(".aether-media-next").hidden && !q(".aether-media-next").disabled;
+q(".aether-media-next").click(); await wait(800);
+out.skippedToEnd = plain.linkedBrowser.contentTitle;
+gBrowser.selectedTab = plain; await wait(200);
+out.animatesOut = card.getAnimations().length > 0;
 const ok = out.soundPlaying && out.shown && out.title === "Test Song" && out.artist === "Test Artist" && out.prev && out.next && out.playing && out.progress
-  && out.pausedByCard && out.playingAgain && out.nextReachedPage === "next pressed" && out.muted && out.wentToTab && out.backWhenAway && out.closed;
+  && out.pausedByCard && out.playingAgain && out.nextReachedPage === "next pressed" && out.muted && out.wentToTab && out.backWhenAway && out.closed
+  && out.animatesIn && out.plainShown && out.plainButtons && out.skippedToEnd === "at 60" && out.animatesOut;
 return { ok, ...out };
