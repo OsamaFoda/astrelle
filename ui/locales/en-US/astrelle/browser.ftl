@@ -33,6 +33,7 @@ astrelle-workspace-delete-prompt =
     }
 astrelle-workspace-button-title = { $name } (right-click to rename or delete)
 astrelle-workspace-add-title = New workspace: a separate set of tabs to switch to, like Study or Work
+astrelle-workspace-add = New workspace
 astrelle-workspace-rename = Rename…
 astrelle-workspace-delete = Delete…
 astrelle-move-to-workspace = Move to Workspace

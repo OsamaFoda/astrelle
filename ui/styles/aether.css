@@ -1366,3 +1366,25 @@ notification-message::before {
 split-view-footer[aether-own-page] {
   display: none !important;
 }
+
+/* ---- Reduce motion (the system's "reduce animation" setting) ----
+ * Nothing springs, swells, slides or shrinks: the springs take no time, compact mode's bars
+ * and the page arrive and leave in place, fading, and a peek appears and goes without its scale.
+ * Colours still fade. (1 ms rather than none, so anything waiting for a transition still hears
+ * it end.) Tab Lens and panel glides check the setting themselves. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --aether-spring-time: 1ms;
+    --aether-reveal: transform 1ms, translate 1ms, margin 1ms, opacity 200ms ease;
+    --aether-conceal: transform 1ms linear 600ms, translate 1ms linear 600ms, margin 1ms linear 600ms,
+                      opacity 200ms ease 400ms;
+  }
+
+  :root[aether-compact][aether-leaving]:not([inFullscreen], [inDOMFullscreen]) :is(#sidebar-container, #navigator-toolbox, #urlbar, #tabbrowser-tabbox) {
+    transition: transform 1ms, translate 1ms, margin 1ms, opacity 200ms ease !important;
+  }
+
+  #aether-peek[closing] .aether-peek-card {
+    transform: none;
+  }
+}

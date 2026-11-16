@@ -106,7 +106,7 @@ html {
 
 .card h3 {
   margin: 10px 0 0;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -223,7 +223,7 @@ html {
 }
 
 #language-list li[aria-selected="true"] {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-weight: 600;
 }
 

@@ -8,6 +8,7 @@
   --sky-2: var(--p-sky-2);
   --sky-3: var(--p-sky-3);
   --accent: var(--p-accent);
+  --accent-ink: color-mix(in srgb, var(--accent) 72%, black); /* the accent as text, readable (welcome.css) */
   --glass: color-mix(in srgb, var(--p-sky-2) 55%, transparent);
   --glass-strong: color-mix(in srgb, var(--p-sky-2) 85%, transparent);
   --edge: rgba(255, 255, 255, 0.85);
@@ -24,6 +25,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --accent-ink: var(--accent);
     --edge: rgba(255, 255, 255, 0.1);
     --line: rgba(255, 255, 255, 0.08);
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -131,7 +133,7 @@ main {
 .letter {
   font-size: 24px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .title {
@@ -196,7 +198,7 @@ main {
 .bar.warn #bar-fill { background: var(--warn); }
 .bar.warn #bar-proj { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--warn) 50%, transparent) 0 3px, transparent 3px 6px); }
 .bar.danger #bar-fill { background: var(--danger); }
-.pill { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); white-space: nowrap; }
+.pill { font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 14%, transparent); white-space: nowrap; }
 .pill.warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
 .pill.danger { color: var(--danger); background: color-mix(in srgb, var(--danger) 16%, transparent); }
 #data-over { color: var(--warn); }
@@ -281,4 +283,13 @@ main {
   border: none;
   background: transparent;
   box-shadow: none;
+}
+
+/* Reduce motion (the system's "reduce animation" setting): nothing springs, scales or grows;
+ * colours and fades stay. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-property: opacity, color, background-color, border-color, box-shadow !important;
+    animation: none !important;
+  }
 }

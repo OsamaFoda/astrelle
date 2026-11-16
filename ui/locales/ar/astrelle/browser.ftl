@@ -35,6 +35,7 @@ astrelle-workspace-delete-prompt =
     }
 astrelle-workspace-button-title = { $name } (نقرة يمنى لإعادة التسمية أو الحذف)
 astrelle-workspace-add-title = مساحة عمل جديدة: مجموعة منفصلة من الألسنة تنتقل إليها، مثل الدراسة أو العمل
+astrelle-workspace-add = مساحة عمل جديدة
 astrelle-workspace-rename = إعادة تسمية…
 astrelle-workspace-delete = حذف…
 astrelle-move-to-workspace = انقل إلى مساحة عمل

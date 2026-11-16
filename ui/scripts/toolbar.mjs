@@ -28,6 +28,8 @@ const CHANGES = {
 const FIREFOX_ONLY = ["downloads-button", "fxa-toolbar-menu-button"];
 
 export function init(win) {
+  keyboardThroughContents(win);
+
   // Customize Toolbar's Restore Defaults puts back Firefox's toolbar (and its top tabs), so on
   // leaving Customize, a reset that's still there (not undone, nothing changed since) becomes
   // Astrelle's own.
@@ -49,6 +51,27 @@ export function init(win) {
     return;
   }
   for (let next = layout + 1; next <= LAYOUT; next++) CHANGES[next]?.();
+}
+
+// The keyboard's way along a toolbar (Tab between groups, arrows between buttons) skips anything
+// in an element that isn't visible, and the sidebar's layout makes the toolbar's button box
+// display: contents (styles/aether.css), which counts as not visible: in the sidebar, back,
+// reload, the address bar's icons, workspaces, add-ons, Split View and Compact Mode couldn't be
+// reached. Firefox's walk (browser-toolbarKeyNav.js) now looks inside such a box instead.
+function keyboardThroughContents(win) {
+  const navigator = win.ToolbarKeyboardNavigator;
+  if (!navigator?._getWalker || navigator.aetherContents) return;
+  navigator.aetherContents = true;
+  const firefoxWalker = navigator._getWalker;
+  navigator._getWalker = function (root) {
+    if (root.aetherWalker) return root.aetherWalker;
+    const firefox = firefoxWalker.call(this, root);
+    const accept = typeof firefox.filter === "function" ? firefox.filter : node => firefox.filter.acceptNode(node);
+    root.aetherWalker = root._toolbarKeyNavWalker = win.document.createTreeWalker(root, win.NodeFilter.SHOW_ELEMENT, node =>
+      node.checkVisibility({ checkVisibilityCSS: true, flush: false }) || win.getComputedStyle(node).display !== "contents"
+        ? accept(node) : win.NodeFilter.FILTER_SKIP);
+    return root.aetherWalker;
+  };
 }
 
 function applyLayout() {

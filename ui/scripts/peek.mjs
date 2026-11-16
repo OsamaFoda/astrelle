@@ -72,6 +72,7 @@ export function init(win) {
     shut.className = "aether-peek-button";
     shut.textContent = "✕";
     shut.title = tr("astrelle-peek-close");
+    shut.setAttribute("aria-label", tr("astrelle-peek-close")); // not the symbol
     bar.append(title, keep, shut);
 
     const browser = doc.createXULElement("browser");

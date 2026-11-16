@@ -186,11 +186,17 @@ export function init(win) {
       button.textContent = ws.name;
       button.title = tr("astrelle-workspace-button-title", { name: ws.name });
       button.toggleAttribute("active", ws.id === current);
+      button.setAttribute("aria-pressed", String(ws.id === current)); // read out as the one you're in
       button.addEventListener("click", () => switchTo(ws.id));
       button.addEventListener("contextmenu", event => {
         event.preventDefault();
         event.stopPropagation();
-        workspaceMenu(ws.id).openPopupAtScreen(event.screenX, event.screenY, true);
+        // From the keyboard (the menu key, Shift+F10) under the button; from the mouse, at it.
+        if (event.inputSource === MouseEvent.MOZ_SOURCE_KEYBOARD || (!event.screenX && !event.screenY)) {
+          workspaceMenu(ws.id).openPopup(button, "after_start");
+        } else {
+          workspaceMenu(ws.id).openPopupAtScreen(event.screenX, event.screenY, true);
+        }
       });
       return button;
     });
@@ -198,7 +204,10 @@ export function init(win) {
     add.className = "aether-ws aether-ws-add";
     add.textContent = "+";
     add.title = tr("astrelle-workspace-add-title");
+    add.setAttribute("aria-label", tr("astrelle-workspace-add")); // not "plus"
     add.addEventListener("click", create);
+    // Buttons for the toolbar's arrow keys (browser-toolbarKeyNav.js only takes role="button").
+    for (const button of [...buttons, add]) button.setAttribute("role", "button");
     item.replaceChildren(...buttons, add);
     item.toggleAttribute("several", buttons.length > 0);
     // Keep the workspace you're in scrolled into view (on a narrow top toolbar).
