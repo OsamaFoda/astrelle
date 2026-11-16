@@ -188,9 +188,18 @@
 
     <section class="card" id="language">
       <h2 data-l10n-id="settings-language-title">Language</h2>
-      <label class="hint"><span data-l10n-id="settings-language-hint">Astrelle's menus, pages and dialogs</span>
-        <select id="language"></select>
-      </label>
+      <p class="hint" data-l10n-id="settings-language-hint">Astrelle's menus, pages and dialogs</p>
+      <div class="languages">
+        <button class="language-current" id="language-current" aria-expanded="false" aria-controls="language-panel">
+          <span id="language-name"></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>
+        </button>
+        <div class="language-panel" id="language-panel" hidden>
+          <input type="search" id="language-search" role="combobox" aria-expanded="true" aria-controls="language-list"
+                 aria-autocomplete="list" autocomplete="off" data-l10n-id="settings-language-search">
+          <ul id="language-list" role="listbox" data-l10n-id="settings-language-list"></ul>
+          <p class="language-none" id="language-none" data-l10n-id="settings-language-none" hidden>No language matches</p>
+        </div>
+      </div>
       <p class="status" id="language-status" hidden></p>
       <div class="actions"><button class="secondary" id="language-restart" data-l10n-id="settings-language-restart" hidden>Restart Astrelle</button></div>
     </section>

@@ -555,7 +555,7 @@ kbd {
   cursor: pointer;
 }
 
-.swatch span {
+.swatch span:first-child {
   position: relative;
   width: 52px;
   height: 52px;
@@ -565,7 +565,7 @@ kbd {
   transition: transform 420ms var(--spring);
 }
 
-.swatch span::after {
+.swatch span:first-child::after {
   content: "";
   position: absolute;
   inset: 17px;
@@ -573,10 +573,10 @@ kbd {
   background: var(--p-accent);
 }
 
-.swatch:hover span { transform: scale(1.08); }
-.swatch.pop span { animation: pop 520ms var(--spring); }
+.swatch:hover span:first-child { transform: scale(1.08); }
+.swatch.pop span:first-child { animation: pop 520ms var(--spring); }
 
-.swatch[aria-pressed="true"] span {
+.swatch[aria-pressed="true"] span:first-child {
   outline: 3px solid var(--p-accent);
   outline-offset: 3px;
 }

@@ -7,6 +7,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hidden means hidden, whatever display a class gives (rows, buttons, panels). */
+[hidden] {
+  display: none !important;
+}
+
 /* The sky stays still here: drifting, it has to be drawn again on every frame of a scroll. */
 .sky b {
   animation: none;
@@ -114,6 +119,123 @@ html {
   color: var(--muted);
 }
 
+/* Language: the chosen one on a button; it folds open into a search box and the list. */
+.languages {
+  display: grid;
+  gap: 8px;
+}
+
+.language-current {
+  appearance: none;
+  justify-self: start;
+  min-width: min(320px, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  background-color: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--line);
+  cursor: pointer;
+  transition: var(--fade);
+}
+
+.language-current:hover {
+  background-color: var(--glass-strong);
+}
+
+.language-current svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 420ms var(--spring);
+}
+
+.language-current[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.language-panel {
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 14px;
+  background-color: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transform-origin: top;
+  animation: unfold 380ms var(--spring);
+}
+
+@keyframes unfold {
+  from { opacity: 0; transform: scaleY(0.92); }
+}
+
+#language-search {
+  padding: 9px 12px;
+  border: none;
+  border-radius: 9px;
+  color: var(--text);
+  font: inherit;
+  background-color: var(--glass-strong);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+#language-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+#language-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+
+#language-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+#language-list li small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+#language-list li[active] {
+  background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+#language-list li[aria-selected="true"] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+#language-list li[aria-selected="true"] > span::after {
+  content: "  ✓";
+}
+
+.language-none {
+  margin: 4px 12px 8px;
+  color: var(--muted);
+}
+
 .card .switch {
   margin-top: 0;
 }
@@ -217,7 +339,7 @@ html {
   gap: 12px;
 }
 
-.keys li > span {
+.keys li > span:first-child {
   color: var(--muted);
 }
 

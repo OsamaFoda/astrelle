@@ -251,21 +251,73 @@ refresh();
 refreshAddons();
 buildWallpapers();
 
-// ---- Language: the system's, or any Firefox comes in (each in its own name) ----
+// ---- Language: the system's, or any Firefox comes in (each in its own name), in a list that
+// folds open with a search box ----
+
+const systemLocale = () => Cc["@mozilla.org/intl/ospreferences;1"].getService(Ci.mozIOSPreferences).systemLocales[0] ?? "en-US";
+// Lower case without accents or punctuation, so "francais" finds "français" and "pt br" finds pt-BR.
+const plain = text => text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+let active = -1; // the highlighted language, an index into the visible ones
 
 function buildLanguages() {
-  const os = Cc["@mozilla.org/intl/ospreferences;1"].getService(Ci.mozIOSPreferences).systemLocales[0] ?? "en-US";
-  const choices = LOCALES.map(locale => [locale, nameOf(locale)]).sort((a, b) => a[1].localeCompare(b[1]));
-  $("language").replaceChildren(
-    new Option(tr("astrelle-language-system", { language: nameOf(firefoxLocaleFor(os) ?? os) }), ""),
-    ...choices.map(([locale, name]) => Object.assign(new Option(name, locale), { lang: locale })));
-  $("language").value = Services.prefs.getStringPref("intl.locale.requested", "").split(",")[0];
+  const here = new Intl.DisplayNames([Services.locale.appLocaleAsBCP47], { type: "language" });
+  const english = new Intl.DisplayNames(["en"], { type: "language" });
+  const chosen = Services.prefs.getStringPref("intl.locale.requested", "").split(",")[0];
+  const choices = LOCALES.map(locale => ({ locale, name: nameOf(locale), local: here.of(locale) }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const system = { locale: "", name: tr("astrelle-language-system", { language: nameOf(firefoxLocaleFor(systemLocale()) ?? systemLocale()) }) };
+  $("language-list").replaceChildren(...[system, ...choices].map(({ locale, name, local }, i) => {
+    const item = document.createElement("li");
+    item.id = `language-${i}`;
+    item.role = "option";
+    item.dataset.value = locale;
+    item.dataset.search = " " + plain([name, local, locale && english.of(locale), locale].filter(Boolean).join(" "));
+    item.ariaSelected = String(locale === chosen);
+    const label = Object.assign(document.createElement("span"), { textContent: name });
+    if (locale) label.lang = locale;
+    item.append(label);
+    if (local && local !== name) item.append(Object.assign(document.createElement("small"), { textContent: local }));
+    return item;
+  }));
+  $("language-name").textContent = $("language-list").querySelector('[aria-selected="true"]')?.firstChild.textContent ?? system.name;
 }
 
-$("language").addEventListener("change", async () => {
+const visibleLanguages = () => [...$("language-list").children].filter(item => !item.hidden);
+
+function highlight(index) {
+  const items = visibleLanguages();
+  for (const item of items) item.toggleAttribute("active", false);
+  active = items.length ? Math.max(0, Math.min(index, items.length - 1)) : -1;
+  const item = items[active];
+  item?.toggleAttribute("active", true);
+  item?.scrollIntoView({ block: "nearest" });
+  $("language-search").setAttribute("aria-activedescendant", item?.id ?? "");
+}
+
+function foldLanguages(open) {
+  $("language-panel").hidden = !open;
+  $("language-current").ariaExpanded = String(open);
+  if (!open) return;
+  $("language-search").value = "";
+  filterLanguages();
+  const items = visibleLanguages();
+  highlight(Math.max(0, items.findIndex(item => item.ariaSelected === "true")));
+  $("language-search").focus();
+}
+
+function filterLanguages() {
+  // Each word typed starts a word of the language's names: "en" finds English, not French.
+  const words = plain($("language-search").value).split(" ").filter(Boolean);
+  for (const item of $("language-list").children) item.hidden = !words.every(word => item.dataset.search.includes(" " + word));
+  $("language-none").hidden = visibleLanguages().length > 0;
+  highlight(0);
+}
+
+async function chooseLanguage(chosen) {
+  foldLanguages(false);
+  $("language-current").focus();
   const status = $("language-status");
-  const chosen = $("language").value;
-  const locale = firefoxLocaleFor(chosen || (Cc["@mozilla.org/intl/ospreferences;1"].getService(Ci.mozIOSPreferences).systemLocales[0] ?? "en-US"));
+  const locale = firefoxLocaleFor(chosen || systemLocale());
   status.hidden = false;
   status.className = "status";
   try {
@@ -274,6 +326,7 @@ $("language").addEventListener("change", async () => {
       await installLanguage(locale);
     }
     setLanguage(chosen);
+    buildLanguages();
     status.textContent = tr("astrelle-language-restart-needed");
     $("language-restart").hidden = false;
   } catch (e) {
@@ -281,6 +334,29 @@ $("language").addEventListener("change", async () => {
     status.className = "status error";
     status.textContent = tr("astrelle-language-failed");
   }
+}
+
+$("language-current").addEventListener("click", () => foldLanguages($("language-panel").hidden));
+$("language-search").addEventListener("input", filterLanguages);
+$("language-search").addEventListener("keydown", event => {
+  const step = { ArrowDown: 1, ArrowUp: -1, PageDown: 8, PageUp: -8 }[event.key];
+  if (step) highlight(active + step);
+  else if (event.key === "Enter" && active >= 0) chooseLanguage(visibleLanguages()[active].dataset.value);
+  else if (event.key === "Escape") { foldLanguages(false); $("language-current").focus(); }
+  else return;
+  event.preventDefault();
+});
+$("language-list").addEventListener("click", event => {
+  const item = event.target.closest("li");
+  if (item) chooseLanguage(item.dataset.value);
+});
+$("language-list").addEventListener("pointermove", event => {
+  const item = event.target.closest("li");
+  if (item && !item.hasAttribute("active")) highlight(visibleLanguages().indexOf(item));
+});
+// Clicking anywhere else folds the list away.
+document.addEventListener("pointerdown", event => {
+  if (!$("language-panel").hidden && !event.target.closest(".languages")) foldLanguages(false);
 });
 $("language-restart").addEventListener("click", restart);
 buildLanguages();
