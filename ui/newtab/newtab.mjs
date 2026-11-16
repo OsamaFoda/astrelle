@@ -1,20 +1,20 @@
 // Astrelle's new tab page: a search box, shortcuts (most visited, with pins and removals that
-// stick) and today's data use from Sip. This page is part of the browser (chrome://), so it can
+// stick) and the data use Sip reports. This page is part of the browser (chrome://), so it can
 // read history and Sip's storage directly; everything it shows from sites is set as text.
 
 const { NewTabUtils } = ChromeUtils.importESModule("resource://gre/modules/NewTabUtils.sys.mjs");
-const { ExtensionStorageIDB } = ChromeUtils.importESModule("resource://gre/modules/ExtensionStorageIDB.sys.mjs");
 const { PlacesUtils } = ChromeUtils.importESModule("resource://gre/modules/PlacesUtils.sys.mjs");
 const { PrivateBrowsingUtils } = ChromeUtils.importESModule("resource://gre/modules/PrivateBrowsingUtils.sys.mjs");
 const { BrowserUtils } = ChromeUtils.importESModule("resource://gre/modules/BrowserUtils.sys.mjs");
 import { follow } from "../scripts/palette.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
 import { wallpaperURL } from "../scripts/wallpaper.mjs";
+import { followSipSettings, openSip, readSipSummary } from "../scripts/choices.mjs";
+import { SIP_ID } from "../scripts/sip.mjs";
 
 const PINNED = "aether.newtab.pinned"; // [{ url, title }]
 const HIDDEN = "aether.newtab.hidden"; // [site] (siteOf; older entries are whole URLs)
 const SHORTCUTS = 8;
-const SIP = "sip@osama.local";
 
 const $ = id => document.getElementById(id);
 
@@ -146,77 +146,65 @@ async function renderShortcuts() {
   $("no-shortcuts").hidden = sites.length > 0;
 }
 
-// ---- Data use, from Sip ----
-// These few helpers follow Sip's lib.js (same dates and units), which can't be imported here.
+// ---- Data use, from Sip's summary ----
+// Sip publishes a summary after every change (its lib/summary.js), with every text already in
+// its language; the card shows those texts and draws the bar from its figures.
 
-const MB = 1024 * 1024;
-const GB = 1024 * MB;
-
-function dayKey(date) {
+const today = () => {
+  const now = new Date();
   const pad = n => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
-// Counted in calendar days, so the 23- or 25-hour day of a clock change doesn't make it one off.
-const calendarDay = date => Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000;
-
-function clampedDate(year, month, day) {
-  return new Date(year, month, Math.min(day, new Date(year, month + 1, 0).getDate()));
-}
-
-function billingPeriod(now, resetDay) {
-  const day = Math.min(Math.max(Math.round(resetDay) || 1, 1), 31);
-  let start = clampedDate(now.getFullYear(), now.getMonth(), day);
-  if (now < start) start = clampedDate(now.getFullYear(), now.getMonth() - 1, day);
-  const end = clampedDate(start.getFullYear(), start.getMonth() + 1, day);
-  return { start, end, daysLeft: Math.max(1, calendarDay(end) - calendarDay(now)) };
-}
-
-function formatBytes(n) {
-  if (n < 1000) return `${n} B`;
-  if (n < 1000 * 1024) return `${(n / 1024).toFixed(0)} KB`;
-  if (n < 1000 * MB) return `${(n / MB).toFixed(n < 10 * MB ? 1 : 0)} MB`;
-  return `${(n / GB).toFixed(n < 100 * GB ? 2 : 1)} GB`;
-}
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+};
 
 async function renderData() {
-  const policy = WebExtensionPolicy.getByID(SIP);
-  if (!policy) return;
-  let stored;
+  let summary = null;
   try {
-    const db = await ExtensionStorageIDB.open(ExtensionStorageIDB.getStoragePrincipal(policy.extension));
-    stored = await db.get(["days", "settings"]);
+    if (WebExtensionPolicy.getByID(SIP_ID)) summary = await readSipSummary();
   } catch (e) {
     console.error("Astrelle new tab: Sip data", e);
+  }
+  const card = $("data");
+  if (!summary) {
+    card.hidden = true;
     return;
   }
-  const days = stored.days || {};
-  const settings = { budgetGB: 0, resetDay: 1, ...stored.settings };
-  const now = new Date();
-  const today = days[dayKey(now)]?.total || 0;
-  const period = billingPeriod(now, settings.resetDay);
-  const [from, to] = [dayKey(period.start), dayKey(period.end)];
-  const used = Object.entries(days).reduce((sum, [key, day]) => key >= from && key < to ? sum + day.total : sum, 0);
-  const budget = settings.budgetGB * GB;
-
-  $("today").textContent = formatBytes(today);
-  $("budget").hidden = !budget;
-  $("no-budget").hidden = Boolean(budget);
-  if (budget) {
-    const left = Math.max(0, budget - used);
-    const ratio = Math.min(1, used / budget);
-    $("bar-fill").style.width = `${ratio * 100}%`;
-    $("bar-fill").className = ratio >= 0.9 ? "danger" : ratio >= 0.75 ? "warn" : "";
-    $("period").textContent = `${formatBytes(left)} left of ${settings.budgetGB} GB · ${period.daysLeft} day${period.daysLeft === 1 ? "" : "s"}`;
-    // Past today's share, say by how much rather than a bare 0 B.
-    const pace = (left + today) / period.daysLeft - today;
-    $("safe").textContent = pace >= 0 ? `Safe today: ${formatBytes(Math.round(pace))}` : `Over today's share by ${formatBytes(Math.round(-pace))}`;
-    $("safe").classList.toggle("over", pace < 0);
-  } else {
-    $("period-only").textContent = `This period: ${formatBytes(used)}`;
+  card.lang = summary.lang;
+  card.dir = summary.dir;
+  $("data-hero").textContent = summary.text.hero;
+  $("budget").hidden = !summary.hasBudget;
+  if (summary.hasBudget) {
+    const used = Math.min(1, Math.max(0, summary.ratio));
+    const ends = summary.projRatio === null ? used : Math.min(1, Math.max(used, summary.projRatio));
+    $("bar-fill").style.width = `${used * 100}%`;
+    $("bar-proj").style.insetInlineStart = `${used * 100}%`;
+    $("bar-proj").style.width = `${(ends - used) * 100}%`;
+    $("bar").className = `bar ${{ warn: "warn", danger: "danger", over: "danger" }[summary.level] ?? ""}`;
+    $("bar").setAttribute("aria-valuenow", String(Math.round(used * 100)));
+    $("bar").setAttribute("aria-valuetext", summary.text.left);
+    $("data-renews").textContent = `${summary.text.renews} · ${summary.text.days}`;
+    const pill = $("pace-pill");
+    pill.textContent = summary.text.paceShort;
+    pill.hidden = !summary.text.paceShort;
+    pill.className = `pill ${{ fast: "warn", over: "danger" }[summary.pace] ?? ""}`;
   }
-  $("data").hidden = false;
+  // Today's lines belong to the day the summary was made.
+  const fresh = summary.day === today();
+  $("today-lines").hidden = !fresh;
+  $("data-today").textContent = fresh ? summary.text.today : "";
+  $("data-over").textContent = fresh ? summary.text.over : "";
+  $("data-over").hidden = !fresh || !summary.text.over;
+  card.hidden = false;
 }
+
+$("data").addEventListener("click", () => openSip(chromeWindow()));
+$("data").addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openSip(chromeWindow());
+  }
+});
+const stopFollowingSip = followSipSettings(renderData);
+window.addEventListener("unload", stopFollowingSip, { once: true });
 
 follow(document, window);
 // In a private window, purple like the window (styles/palettes.css).

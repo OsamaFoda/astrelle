@@ -227,3 +227,8 @@ html {
     gap: 2px;
   }
 }
+
+/* Sip: its own status line, and ways into it. */
+.sip-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#sip-status { margin: 0; }
+#day-note { color: var(--muted); }

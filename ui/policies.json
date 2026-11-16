@@ -1,8 +1,17 @@
 {
   "policies": {
-    "SearchEngines": { "Default": "DuckDuckGo" },
+    "SearchEngines": {
+      "Default": "DuckDuckGo"
+    },
     "DisableTelemetry": true,
     "DisableFirefoxStudies": true,
-    "DontCheckDefaultBrowser": true
+    "DontCheckDefaultBrowser": true,
+    "3rdparty": {
+      "Extensions": {
+        "sip@osamafoda.github.io": {
+          "astrelle": true
+        }
+      }
+    }
   }
 }

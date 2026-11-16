@@ -95,7 +95,9 @@ class Marionette:
         """Runs async privileged JS in the browser window; `return` its result.
         Use window.Services: Marionette's own sandbox has only a partial Services."""
         wrapped = f"const done = arguments[arguments.length - 1]; (async () => {{ {script} }})().then(done, e => done('ERROR: ' + e + '\\n' + e.stack));"
-        return self.call("WebDriver:ExecuteAsyncScript", {"script": wrapped, "args": [], "scriptTimeout": int(timeout * 1000)})["value"]
+        # Marionette goes by the session's script timeout, not one given with the script.
+        self.call("WebDriver:SetTimeouts", {"script": int(timeout * 1000)})
+        return self.call("WebDriver:ExecuteAsyncScript", {"script": wrapped, "args": []})["value"]
 
 
 def free_port():

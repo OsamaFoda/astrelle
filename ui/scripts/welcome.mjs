@@ -4,16 +4,16 @@
 // is in Astrelle Settings (scripts/about-aether.mjs).
 
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
+import { SIP_ID } from "./sip.mjs";
 
 const PREF = "aether.welcome.shown";
 const WELCOME = "chrome://aether/content/welcome/welcome.html";
-const SIP = "sip@osama.local";
 
 export async function init(win) {
   if (Services.prefs.getBoolPref(PREF, false)) return;
   Services.prefs.setBoolPref(PREF, true); // before anything async, so a second window doesn't open it too
 
-  const sip = await AddonManager.getAddonByID(SIP);
+  const sip = await AddonManager.getAddonByID(SIP_ID);
   if (sip?.isActive) await sip.disable();
 
   win.gBrowser.selectedTab = win.gBrowser.addTrustedTab(WELCOME);

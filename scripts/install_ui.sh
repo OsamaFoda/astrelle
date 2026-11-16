@@ -18,6 +18,8 @@ put "$UI/aether.cfg" "$INSTALL/aether.cfg"
 put "$UI/policies.json" "$INSTALL/distribution/policies.json"
 put "$UI" "$INSTALL/aether-ui"
 
-# Built-in add-ons (Sip). Firefox installs these into each profile on first run.
+# Built-in add-ons (Sip). Firefox installs these into each profile on first run. Sip 0.1's old id
+# goes: Astrelle moves its history to the new one (scripts/sip.mjs).
 mkdir -p "$INSTALL/distribution/extensions"
+rm -f "$INSTALL/distribution/extensions/sip@osama.local.xpi"
 cp "$UI"/extensions/*.xpi "$INSTALL/distribution/extensions/"

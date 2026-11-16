@@ -16,20 +16,21 @@
     <section id="shortcuts" aria-label="Shortcuts"></section>
     <p id="no-shortcuts" hidden>Sites you visit often will show up here.</p>
 
-    <section id="data" class="glass" aria-label="Data use" hidden>
+    <section id="data" class="glass" aria-label="Data use" tabindex="0" role="button" hidden>
       <div class="row">
-        <span class="label">Today</span>
-        <span id="today" class="big"></span>
+        <span id="data-hero" class="big"></span>
+        <span class="sip-label">Sip</span>
       </div>
       <div id="budget" hidden>
-        <div class="bar"><div id="bar-fill"></div></div>
+        <div id="bar" class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Data used this period"><div id="bar-fill"></div><div id="bar-proj"></div></div>
         <div class="row small">
-          <span id="period"></span>
-          <span id="safe"></span>
+          <span id="data-renews"></span>
+          <span id="pace-pill" class="pill" hidden></span>
         </div>
       </div>
-      <div id="no-budget" class="row small" hidden>
-        <span id="period-only"></span>
+      <div id="today-lines" class="row small">
+        <span id="data-today"></span>
+        <span id="data-over" class="over"></span>
       </div>
     </section>
   </main>

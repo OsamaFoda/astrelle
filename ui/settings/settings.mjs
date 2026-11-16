@@ -8,7 +8,7 @@ import { follow } from "../scripts/palette.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
 import { desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
-import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings } from "../scripts/choices.mjs";
+import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings, readSipSummary, readSipYoutube, saveSipYoutube, saveSipUsedSoFar, openSip, showSipButton } from "../scripts/choices.mjs";
 
 const $ = id => document.getElementById(id);
 const BOOKMARKS_BAR = "browser.toolbars.bookmarks.visibility"; // "always", "never", or "newtab" (on new tabs only)
@@ -143,10 +143,20 @@ async function refreshAddons() {
   $("sip-on").checked = sip === "on";
   $("sip-on").disabled = sip === "missing";
   $("sip-budget").disabled = sip !== "on";
+  $("youtube-quality").disabled = sip !== "on";
+  for (const id of ["sip-open", "sip-show"]) $(id).disabled = sip !== "on";
+  const summary = sip === "on" ? await readSipSummary() : null;
+  $("sip-status").hidden = !summary;
+  if (summary) $("sip-status").textContent = `${summary.text.hero} · ${summary.text.renews}`;
   if (sip === "on") {
-    const { budgetGB, resetDay } = await readSipBudget();
+    const { budgetGB, period } = await readSipBudget();
     if (document.activeElement !== $("budget-gb")) $("budget-gb").value = budgetGB || "";
-    if (resetDay && document.activeElement !== $("reset-day")) $("reset-day").value = resetDay;
+    // A period of every N days is set in Sip's own settings.
+    const monthly = period.kind !== "days";
+    $("reset-day").disabled = !monthly;
+    $("day-note").hidden = monthly;
+    if (monthly && document.activeElement !== $("reset-day")) $("reset-day").value = period.day;
+    if (document.activeElement !== $("youtube-quality")) $("youtube-quality").value = String(await readSipYoutube());
   }
 }
 
@@ -176,7 +186,7 @@ $("sip-on").addEventListener("change", async event => {
   try {
     await setSip(event.target.checked);
     // An empty budget leaves the one Sip already has.
-    if (event.target.checked && Number($("budget-gb").value) > 0) await saveSipBudget(Number($("budget-gb").value), $("reset-day").value);
+    if (event.target.checked && Number($("budget-gb").value) > 0) await saveSipBudget($("budget-gb").value, $("reset-day").disabled ? undefined : $("reset-day").value);
   } catch (e) {
     console.error("Astrelle settings: Sip", e);
   }
@@ -185,11 +195,26 @@ $("sip-on").addEventListener("change", async event => {
 
 for (const id of ["budget-gb", "reset-day"]) {
   $(id).addEventListener("change", async () => {
-    const saved = await saveSipBudget(Number($("budget-gb").value), $("reset-day").value);
+    const saved = await saveSipBudget($("budget-gb").value, $("reset-day").disabled ? undefined : $("reset-day").value);
     // What was saved (a day past the 31st is the 31st), even while still in the field.
-    if (saved) $(id).value = id === "budget-gb" ? saved.budgetGB || "" : saved.resetDay;
+    if (id === "budget-gb") $(id).value = saved.budgetGB || "";
+    else if (saved.day) $(id).value = saved.day;
   });
 }
+
+$("youtube-quality").addEventListener("change", () => saveSipYoutube($("youtube-quality").value));
+$("sip-open").addEventListener("click", () => openSip(window.browsingContext.topChromeWindow));
+$("sip-show").addEventListener("click", () => showSipButton());
+$("used-set").addEventListener("click", async event => {
+  event.preventDefault();
+  const status = $("used-status");
+  status.hidden = false;
+  status.className = "status";
+  const ok = await saveSipUsedSoFar($("used-so-far").value);
+  status.textContent = ok ? "Sip counts on from there ✓" : "Enter what your carrier says you've used, in GB.";
+  if (!ok) status.className = "status error";
+  if (ok) $("used-so-far").value = "";
+});
 
 const addonListener = { onEnabled: refreshAddons, onDisabled: refreshAddons, onInstalled: refreshAddons, onUninstalled: refreshAddons };
 AddonManager.addAddonListener(addonListener);

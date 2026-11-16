@@ -2,12 +2,10 @@
 // Sip's budget can be removed in Settings (an empty or 0 budget is no budget, as in Sip's own
 // options), and the renewal day is saved with no budget too.
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const { ExtensionStorageIDB } = ChromeUtils.importESModule("resource://gre/modules/ExtensionStorageIDB.sys.mjs");
+const { sipGet } = ChromeUtils.importESModule("chrome://aether/content/scripts/sip.mjs");
 const stored = async () => {
-  const policy = WebExtensionPolicy.getByID("sip@osama.local");
-  const db = await ExtensionStorageIDB.open(ExtensionStorageIDB.getStoragePrincipal(policy.extension));
-  const { settings } = await db.get(["settings"]);
-  return { budgetGB: settings?.budgetGB, resetDay: settings?.resetDay };
+  const got = await sipGet(["opt.budgetGB", "opt.period"]);
+  return { budgetGB: got["opt.budgetGB"] ?? 0, resetDay: got["opt.period"]?.day ?? 1 };
 };
 const tab = gBrowser.addTrustedTab("about:astrelle");
 gBrowser.selectedTab = tab;

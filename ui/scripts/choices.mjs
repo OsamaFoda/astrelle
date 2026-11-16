@@ -1,17 +1,19 @@
 // Astrelle's settings as the welcome and the Settings page (about:astrelle) change them. Each choice
 // is a preference, applied the moment it's picked. Also the two add-ons they can turn on:
 // protection (uBlock Origin, downloaded from Mozilla's add-on site) and Sip (built in), whose
-// budget is written into Sip's own storage, as its options page would.
+// settings are written into Sip's own storage (scripts/sip.mjs), one key per setting.
 
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
 const { ExtensionPermissions } = ChromeUtils.importESModule("resource://gre/modules/ExtensionPermissions.sys.mjs");
-const { ExtensionStorageIDB } = ChromeUtils.importESModule("resource://gre/modules/ExtensionStorageIDB.sys.mjs");
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
+const { setTimeout, clearTimeout } = ChromeUtils.importESModule("resource://gre/modules/Timer.sys.mjs");
 import { chosen as chosenIcon } from "./app-icon.mjs";
+import { allowPrivate, followSip, followSipMedia, migrateSip, showSipButton, SIP_DEFAULTS, SIP_ID, SIP_WIDGET, sipGet, sipSet, sipStarted, YOUTUBE_CHOICES } from "./sip.mjs";
+
+export { showSipButton };
 
 const DARK = "ui.systemUsesDarkTheme";
 const UBLOCK = "uBlock0@raymondhill.net";
-const SIP = "sip@osama.local";
 // Where protection comes from; a pref so tests can point it at a local file.
 const UBLOCK_URL = Services.prefs.getStringPref("aether.welcome.protectionURL",
   "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi");
@@ -59,7 +61,7 @@ async function state(id) {
 }
 
 export const protectionState = () => state(UBLOCK);
-export const sipState = () => state(SIP);
+export const sipState = () => state(SIP_ID);
 
 export async function setProtection(on) {
   const existing = await AddonManager.getAddonByID(UBLOCK);
@@ -86,72 +88,108 @@ export async function setProtection(on) {
   await ExtensionPermissions.add(addon.id, { permissions: ["internal:privateBrowsingAllowed"], origins: [] });
 }
 
+// Turning Sip on also lets it count private windows (as one total, with no site names), marks it
+// set up (Astrelle asked the questions), puts its button on the toolbar, and moves an old Sip's
+// history over if one is waiting for Sip to be on.
 export async function setSip(on) {
-  const addon = await AddonManager.getAddonByID(SIP);
+  const addon = await AddonManager.getAddonByID(SIP_ID);
   if (!addon) return;
-  if (on && !addon.isActive) await addon.enable();
-  if (!on && addon.isActive) await addon.disable();
-  if (on) showSipButton();
+  if (!on) {
+    if (addon.isActive) await addon.disable();
+    return;
+  }
+  if (!addon.isActive) {
+    const started = sipStarted();
+    await addon.enable();
+    await started;
+  }
+  await allowPrivate(addon);
+  await sipSet({ "opt.firstRunDone": true, host: "astrelle" });
+  showSipButton();
+  followSipMedia();
+  migrateSip();
 }
 
-// Sip's button, whose badge shows how much of the budget is used, sits on the toolbar beside the
-// add-ons button rather than inside its menu, where the badge can't be seen.
-export function showSipButton() {
-  const id = `${SIP.toLowerCase().replace(/[^a-z0-9_-]/g, "_")}-browser-action`;
-  if (CustomizableUI.getPlacementOfWidget(id)?.area === CustomizableUI.AREA_NAVBAR) return;
-  const addons = CustomizableUI.getPlacementOfWidget("unified-extensions-button");
-  CustomizableUI.addWidgetToArea(id, CustomizableUI.AREA_NAVBAR, addons?.area === CustomizableUI.AREA_NAVBAR ? addons.position + 1 : undefined);
+// Checked as Sip checks them (lib/settings.js): a budget in GB rounded to 0.01, 0 or less for none;
+// a day of the month from 1 to 31.
+const toBudget = value => {
+  const n = Number(String(value ?? "").trim().replace(",", "."));
+  return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : 0;
+};
+const toDay = value => Math.min(Math.max(Math.round(Number(value)) || 1, 1), 31);
+
+// { budgetGB, period } from Sip's storage; a missing key is Sip's default.
+export async function readSipBudget() {
+  const stored = await sipGet(["opt.budgetGB", "opt.period"]);
+  return { budgetGB: stored["opt.budgetGB"] ?? SIP_DEFAULTS.budgetGB, period: stored["opt.period"] ?? { ...SIP_DEFAULTS.period } };
 }
 
-async function sipStorage() {
-  const policy = WebExtensionPolicy.getByID(SIP);
-  return policy && ExtensionStorageIDB.open(ExtensionStorageIDB.getStoragePrincipal(policy.extension));
+// The budget and the monthly renewal day. A value back at Sip's default is removed rather than
+// written, as Sip does; a period of every N days (only Sip's settings offer it) is left alone.
+export async function saveSipBudget(budgetGB, day) {
+  budgetGB = toBudget(budgetGB);
+  const { period } = await readSipBudget();
+  const items = {};
+  const remove = [];
+  if (budgetGB) items["opt.budgetGB"] = budgetGB;
+  else remove.push("opt.budgetGB");
+  const monthly = period.kind !== "days";
+  if (monthly && day !== undefined) {
+    day = toDay(day);
+    if (day === SIP_DEFAULTS.period.day) remove.push("opt.period");
+    else items["opt.period"] = { kind: "monthly", day };
+  }
+  await sipSet(items, remove);
+  return { budgetGB, day: monthly ? toDay(day ?? period.day) : null };
 }
 
-// Sip writes its default settings the first time it starts. Wait for them (up to 3 seconds), so
-// they can't land on top of a budget written just before.
-async function sipSettings(db) {
-  for (let tries = 0; tries < 30; tries++) {
-    const { settings } = await db.get(["settings"]);
-    if (settings) return settings;
+// Sip's highest YouTube quality, in lines (0 = no limit): only ever the person's own choice.
+export async function saveSipYoutube(lines) {
+  const n = Number(lines);
+  if (!YOUTUBE_CHOICES.includes(n)) return;
+  if (n === SIP_DEFAULTS.youtube) await sipSet({}, ["opt.youtube"]);
+  else await sipSet({ "opt.youtube": n });
+}
+
+export async function readSipYoutube() {
+  return (await sipGet(["opt.youtube"]))["opt.youtube"] ?? SIP_DEFAULTS.youtube;
+}
+
+// What the carrier says was used this period, in GB. Sip works out the rest (what it didn't see)
+// and acknowledges; true once it has, within 5 seconds.
+export async function saveSipUsedSoFar(gb) {
+  const usedSoFar = Math.round(toBudget(gb) * 1e9);
+  if (!usedSoFar) return false;
+  const id = Services.uuid.generateUUID().toString().slice(1, -1);
+  await sipSet({ "cmd.carrier": { id, usedSoFar } });
+  for (let tries = 0; tries < 50; tries++) {
+    if ((await sipGet(["ack"])).ack?.carrier === id) return true;
     await new Promise(resolve => setTimeout(resolve, 100));
   }
-  return {};
+  return false;
 }
 
-// { budgetGB, resetDay } from Sip's settings, while Sip is on.
-export async function readSipBudget() {
-  const db = await sipStorage();
-  if (!db) return {};
-  const settings = await sipSettings(db);
-  return { budgetGB: settings.budgetGB, resetDay: settings.resetDay };
+// The summary Sip publishes after every change (see Sip's lib/summary.js), or null.
+export async function readSipSummary() {
+  const { summary } = await sipGet(["summary"]);
+  return summary?.v ? summary : null;
 }
 
-// A budget of 0 (or none) is no budget, as in Sip's own options.
-export async function saveSipBudget(budgetGB, resetDay) {
-  budgetGB = budgetGB > 0 ? budgetGB : 0;
-  resetDay = Math.min(Math.max(Math.round(Number(resetDay)) || 1, 1), 31);
-  const db = await sipStorage();
-  if (!db) return;
-  const settings = await sipSettings(db);
-  const changes = await db.set({ settings: { ...settings, budgetGB, resetDay } });
-  if (changes) ExtensionStorageIDB.notifyListeners(SIP, changes);
-  return { budgetGB, resetDay };
+// Sip's popup if its button is in this window, else its settings in a new tab.
+export function openSip(win) {
+  const node = CustomizableUI.getWidget(SIP_WIDGET)?.forWindow(win)?.node;
+  if (node && node.checkVisibility?.() !== false && win.document.contains(node)) {
+    node.click();
+    return;
+  }
+  const url = WebExtensionPolicy.getByID(SIP_ID)?.getURL("options.html");
+  if (url) win.openTrustedLinkIn(url, "tab");
 }
 
-// Sip's highest YouTube quality, in lines (0 = no limit).
-export async function saveSipYoutube(lines) {
-  const db = await sipStorage();
-  if (!db) return;
-  const settings = await sipSettings(db);
-  const changes = await db.set({ settings: { ...settings, youtube: Number(lines) } });
-  if (changes) ExtensionStorageIDB.notifyListeners(SIP, changes);
-}
-
-// Calls back whenever Sip's settings change, from here or from Sip's own options; returns what
-// stops it.
+// Calls back whenever Sip's settings, summary or acknowledgements change, from here or from Sip
+// itself; returns what stops it.
 export function followSipSettings(callback) {
-  const listener = changes => "settings" in changes && callback();
-  ExtensionStorageIDB.addOnChangedListener(SIP, listener);
-  return () => ExtensionStorageIDB.removeOnChangedListener(SIP, listener);
+  return followSip(changes => {
+    if (Object.keys(changes).some(key => key.startsWith("opt.") || key === "summary" || key === "ack")) callback();
+  });
 }

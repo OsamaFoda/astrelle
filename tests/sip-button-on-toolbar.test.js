@@ -5,12 +5,12 @@ const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/compon
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
 const { FileUtils } = ChromeUtils.importESModule("resource://gre/modules/FileUtils.sys.mjs");
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const ID = "sip_osama_local-browser-action";
+const ID = "sip_osamafoda_github_io-browser-action";
 Services.prefs.setIntPref("aether.toolbarLayout", 2);
 const win = OpenBrowserWindow();
 await new Promise(r => win.addEventListener("load", r, { once: true }));
 await wait(1500);
-const xpi = PathUtils.join(Services.env.get("ASTRELLE_UI"), "extensions", "sip@osama.local.xpi"); // the ui/ being checked
+const xpi = PathUtils.join(Services.env.get("ASTRELLE_UI"), "extensions", "sip@osamafoda.github.io.xpi"); // the ui/ being checked
 await AddonManager.installTemporaryAddon(new FileUtils.File(xpi));
 await wait(2000);
 const placement = CustomizableUI.getPlacementOfWidget(ID);
