@@ -9,8 +9,14 @@ const SCRIPTS = ["scripts/palette.mjs", "scripts/app-icon.mjs", "scripts/sidebar
 
 // The brand name in Firefox's Fluent strings (branding/brand.ftl), from ui/branding/ (see
 // chrome.manifest). It's the only file there, so Firefox doesn't look in ui/ for the others.
+// Astrelle's own strings (ui/locales/<locale>/astrelle/*.ftl), in the languages they've been
+// translated into; for anything else Firefox falls back to English.
+const LOCALES = ["en-US"];
+const STRINGS = ["browser", "newtab", "settings", "welcome"];
 L10nRegistry.getInstance().registerSources([
   new L10nFileSource("astrelle-brand", "app", Services.locale.packagedLocales, BASE, {}, [BASE + "branding/brand.ftl"]),
+  new L10nFileSource("astrelle", "app", LOCALES, BASE + "locales/{locale}/", {},
+    LOCALES.flatMap(locale => STRINGS.map(file => `${BASE}locales/${locale}/astrelle/${file}.ftl`))),
 ]);
 
 function addStyles(win) {

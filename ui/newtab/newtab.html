@@ -2,27 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>New Tab</title>
+  <title data-l10n-id="newtab-page-title">New Tab</title>
   <link rel="icon" href="../icons/aurora.svg">
   <link rel="stylesheet" href="newtab.css">
   <script type="module" src="newtab.mjs"></script>
+  <link rel="localization" href="astrelle/newtab.ftl">
 </head>
 <body>
   <main>
     <form id="search" role="search">
-      <input id="query" type="search" placeholder="Search or enter address" autocomplete="off" aria-label="Search or enter address">
+      <input id="query" type="search" placeholder="Search or enter address" autocomplete="off" aria-label="Search or enter address" data-l10n-id="newtab-search-or-enter-address-search">
     </form>
 
-    <section id="shortcuts" aria-label="Shortcuts"></section>
-    <p id="no-shortcuts" hidden>Sites you visit often will show up here.</p>
+    <section id="shortcuts" aria-label="Shortcuts" data-l10n-id="newtab-shortcuts"></section>
+    <p id="no-shortcuts" hidden data-l10n-id="newtab-sites-you-visit-often-will">Sites you visit often will show up here.</p>
 
-    <section id="data" class="glass" aria-label="Data use" tabindex="0" role="button" hidden>
+    <section id="data" class="glass" aria-label="Data use" tabindex="0" role="button" hidden data-l10n-id="newtab-data-use">
       <div class="row">
         <span id="data-hero" class="big"></span>
-        <span class="sip-label">Sip</span>
+        <span class="sip-label" data-l10n-id="newtab-sip">Sip</span>
       </div>
       <div id="budget" hidden>
-        <div id="bar" class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Data used this period"><div id="bar-fill"></div><div id="bar-proj"></div></div>
+        <div id="bar" class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Data used this period" data-l10n-id="newtab-data-used-this-period"><div id="bar-fill"></div><div id="bar-proj"></div></div>
         <div class="row small">
           <span id="data-renews"></span>
           <span id="pace-pill" class="pill" hidden></span>
@@ -43,7 +44,7 @@
       </a>
       <span class="title"></span>
       <button class="pin" type="button"></button>
-      <button class="remove" type="button" title="Remove">×</button>
+      <button class="remove" type="button" title="Remove" data-l10n-id="newtab-remove">×</button>
     </div>
   </template>
 </body>

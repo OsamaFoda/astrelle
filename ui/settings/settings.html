@@ -2,10 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Astrelle Settings</title>
+  <title data-l10n-id="settings-page-title">Astrelle Settings</title>
   <link rel="icon" href="chrome://aether/content/icons/aurora.svg">
   <link rel="stylesheet" href="chrome://aether/content/settings/settings.css">
   <script type="module" src="chrome://aether/content/settings/settings.mjs"></script>
+  <link rel="localization" href="astrelle/settings.ftl">
 </head>
 <body>
   <div class="sky" aria-hidden="true"><b></b><b></b><b></b></div>
@@ -14,110 +15,110 @@
     <header class="masthead">
       <img class="logo" id="logo" src="chrome://aether/content/icons/aurora.svg" alt="">
       <div>
-        <h1>Astrelle Settings</h1>
-        <p class="lead">Everything that makes Astrelle yours, in one place. Changes apply right away.</p>
+        <h1 data-l10n-id="settings-astrelle-settings">Astrelle Settings</h1>
+        <p class="lead" data-l10n-id="settings-everything-that-makes-astrelle-yours">Everything that makes Astrelle yours, in one place. Changes apply right away.</p>
       </div>
     </header>
 
     <nav class="jump">
-      <a href="#layout">Layout</a><a href="#look">Look</a><a href="#icon">Icon</a>
-      <a href="#protection">Protection</a><a href="#sip">Data saver</a><a href="#shortcuts">Shortcuts</a>
+      <a href="#layout" data-l10n-id="settings-layout">Layout</a><a href="#look" data-l10n-id="settings-look">Look</a><a href="#icon" data-l10n-id="settings-icon">Icon</a>
+      <a href="#protection" data-l10n-id="settings-protection">Protection</a><a href="#sip" data-l10n-id="settings-data-saver">Data saver</a><a href="#shortcuts" data-l10n-id="settings-shortcuts">Shortcuts</a>
     </nav>
 
     <section class="card" id="layout">
-      <h2>Layout</h2>
-      <p class="hint">Where your tabs and the address bar live.</p>
+      <h2 data-l10n-id="settings-layout-2">Layout</h2>
+      <p class="hint" data-l10n-id="settings-where-your-tabs-and-the">Where your tabs and the address bar live.</p>
       <div class="choices" data-pref="layout">
         <button class="choice" data-value="sidebar">
           <span class="mock sidebar"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-          <b>Sidebar</b><small>Tabs down the side</small>
+          <b data-l10n-id="settings-sidebar">Sidebar</b><small data-l10n-id="settings-tabs-down-the-side">Tabs down the side</small>
         </button>
         <button class="choice" data-value="top">
           <span class="mock top"><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="url"></i><i class="page"></i></span>
-          <b>Top bar</b><small>Classic tabs on top</small>
+          <b data-l10n-id="settings-top-bar">Top bar</b><small data-l10n-id="settings-classic-tabs-on-top">Classic tabs on top</small>
         </button>
       </div>
-      <h3>When the last tab closes</h3>
+      <h3 data-l10n-id="settings-when-the-last-tab-closes">When the last tab closes</h3>
       <div class="choices" data-pref="lastTab">
         <button class="choice slim" data-value="close">
-          <b>Close Astrelle</b><small>Like most browsers: closing the last tab closes the window.</small>
+          <b data-l10n-id="settings-close-astrelle">Close Astrelle</b><small data-l10n-id="settings-like-most-browsers-closing-the">Like most browsers: closing the last tab closes the window.</small>
         </button>
         <button class="choice slim" data-value="keep">
-          <b>Keep it open</b><small>Astrelle stays open, on a fresh new tab.</small>
+          <b data-l10n-id="settings-keep-it-open">Keep it open</b><small data-l10n-id="settings-astrelle-stays-open-on-a">Astrelle stays open, on a fresh new tab.</small>
         </button>
       </div>
-      <h3>New tabs in the sidebar</h3>
+      <h3 data-l10n-id="settings-new-tabs-in-the-sidebar">New tabs in the sidebar</h3>
       <div class="choices" data-pref="newTabs">
         <button class="choice slim" data-value="top">
-          <b>At the top</b><small>New tabs and the + button sit at the top, under pinned tabs, like Zen.</small>
+          <b data-l10n-id="settings-at-the-top">At the top</b><small data-l10n-id="settings-new-tabs-and-the-button">New tabs and the + button sit at the top, under pinned tabs, like Zen.</small>
         </button>
         <button class="choice slim" data-value="bottom">
-          <b>At the bottom</b><small>New tabs and the + button sit at the end of the list.</small>
+          <b data-l10n-id="settings-at-the-bottom">At the bottom</b><small data-l10n-id="settings-new-tabs-and-the-button-2">New tabs and the + button sit at the end of the list.</small>
         </button>
       </div>
       <label class="switch">
         <input type="checkbox" data-bool-pref="aether.compactMode">
-        <span class="switch-text"><b>Compact mode</b><small>Hide the bars so pages fill the window. They slide back when your mouse reaches the edge. <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>C</kbd></small></span>
+        <span class="switch-text"><b data-l10n-id="settings-compact-mode">Compact mode</b><small data-l10n-id="settings-hide-the-bars-so-pages">Hide the bars so pages fill the window. They slide back when your mouse reaches the edge. <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>C</kbd></small></span>
         <span class="toggle" aria-hidden="true"></span>
       </label>
       <label class="switch">
         <input type="checkbox" id="bookmarks-bar">
-        <span class="switch-text"><b>Bookmarks bar</b><small>A row of your bookmarks under the address bar. <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>B</kbd></small></span>
+        <span class="switch-text"><b data-l10n-id="settings-bookmarks-bar">Bookmarks bar</b><small data-l10n-id="settings-a-row-of-your-bookmarks">A row of your bookmarks under the address bar. <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>B</kbd></small></span>
         <span class="toggle" aria-hidden="true"></span>
       </label>
       <label class="switch">
         <input type="checkbox" data-bool-pref="aether.tabLens" data-default="true">
-        <span class="switch-text"><b>Sliding tab highlight</b><small>When you switch tabs, the glass highlight slides over to the new one.</small></span>
+        <span class="switch-text"><b data-l10n-id="settings-sliding-tab-highlight">Sliding tab highlight</b><small data-l10n-id="settings-when-you-switch-tabs-the">When you switch tabs, the glass highlight slides over to the new one.</small></span>
         <span class="toggle" aria-hidden="true"></span>
       </label>
     </section>
 
     <section class="card" id="look">
-      <h2>Look</h2>
-      <h3>Light or dark</h3>
+      <h2 data-l10n-id="settings-look-2">Look</h2>
+      <h3 data-l10n-id="settings-light-or-dark">Light or dark</h3>
       <div class="choices" data-pref="theme">
         <button class="choice" data-value="system">
           <span class="mock sidebar system"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-          <b>System</b><small>Matches your computer</small>
+          <b data-l10n-id="settings-system">System</b><small data-l10n-id="settings-matches-your-computer">Matches your computer</small>
         </button>
         <button class="choice" data-value="light">
           <span class="mock sidebar light"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-          <b>Light</b><small>Always light</small>
+          <b data-l10n-id="settings-light">Light</b><small data-l10n-id="settings-always-light">Always light</small>
         </button>
         <button class="choice" data-value="dark">
           <span class="mock sidebar dark"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-          <b>Dark</b><small>Always dark</small>
+          <b data-l10n-id="settings-dark">Dark</b><small data-l10n-id="settings-always-dark">Always dark</small>
         </button>
       </div>
 
-      <h3>Colours</h3>
+      <h3 data-l10n-id="settings-colours">Colours</h3>
       <div class="swatches" data-pref="palette">
-        <button class="swatch" data-value="nebula" aether-palette="nebula"><span></span>Nebula</button>
-        <button class="swatch" data-value="ocean" aether-palette="ocean"><span></span>Ocean</button>
-        <button class="swatch" data-value="aurora" aether-palette="aurora"><span></span>Aurora</button>
-        <button class="swatch" data-value="sunset" aether-palette="sunset"><span></span>Sunset</button>
-        <button class="swatch" data-value="rose" aether-palette="rose"><span></span>Rose</button>
-        <button class="swatch" data-value="graphite" aether-palette="graphite"><span></span>Graphite</button>
+        <button class="swatch" data-value="nebula" aether-palette="nebula"><span></span><span data-l10n-id="settings-nebula">Nebula</span></button>
+        <button class="swatch" data-value="ocean" aether-palette="ocean"><span></span><span data-l10n-id="settings-ocean">Ocean</span></button>
+        <button class="swatch" data-value="aurora" aether-palette="aurora"><span></span><span data-l10n-id="settings-aurora-2">Aurora</span></button>
+        <button class="swatch" data-value="sunset" aether-palette="sunset"><span></span><span data-l10n-id="settings-sunset">Sunset</span></button>
+        <button class="swatch" data-value="rose" aether-palette="rose"><span></span><span data-l10n-id="settings-rose">Rose</span></button>
+        <button class="swatch" data-value="graphite" aether-palette="graphite"><span></span><span data-l10n-id="settings-graphite">Graphite</span></button>
       </div>
 
-      <h3>Style</h3>
+      <h3 data-l10n-id="settings-style">Style</h3>
       <div class="choices" data-pref="glass">
         <button class="choice slim" data-value="glass">
-          <b>Standard</b><small>Astrelle's own colours behind the sidebar. Calm, and easy on older computers.</small>
+          <b data-l10n-id="settings-standard">Standard</b><small data-l10n-id="settings-astrelle-s-own-colours-behind">Astrelle's own colours behind the sidebar. Calm, and easy on older computers.</small>
         </button>
         <button class="choice slim" data-value="liquid">
-          <b>Frosted Glass</b><small>Glass over your wallpaper (or your desktop, see-through), with clear pills and edges that catch the light.</small>
+          <b data-l10n-id="settings-frosted-glass">Frosted Glass</b><small data-l10n-id="settings-glass-over-your-wallpaper-or">Glass over your wallpaper (or your desktop, see-through), with clear pills and edges that catch the light.</small>
         </button>
       </div>
 
       <div id="liquid-background">
-        <h3>Frosted Glass background</h3>
+        <h3 data-l10n-id="settings-frosted-glass-background">Frosted Glass background</h3>
         <div class="choices" data-pref="background">
           <button class="choice slim" data-value="wallpaper">
-            <b>Wallpaper</b><small>A picture inside Astrelle, with the sidebar as real frosted glass over it. Works on any computer.</small>
+            <b data-l10n-id="settings-wallpaper">Wallpaper</b><small data-l10n-id="settings-a-picture-inside-astrelle-with">A picture inside Astrelle, with the sidebar as real frosted glass over it. Works on any computer.</small>
           </button>
           <button class="choice slim" data-value="desktop">
-            <b>See-through</b><small>Your desktop shows through the window. Frosted only with a blur extension, like Blur my Shell.</small>
+            <b data-l10n-id="settings-see-through">See-through</b><small data-l10n-id="settings-your-desktop-shows-through-the">Your desktop shows through the window. Frosted only with a blur extension, like Blur my Shell.</small>
           </button>
         </div>
         <div class="wallpapers" id="wallpapers"></div>
@@ -125,84 +126,84 @@
     </section>
 
     <section class="card" id="icon">
-      <h2>App icon</h2>
-      <p class="hint">How Astrelle shows up in your dock and app list.</p>
+      <h2 data-l10n-id="settings-app-icon">App icon</h2>
+      <p class="hint" data-l10n-id="settings-how-astrelle-shows-up-in">How Astrelle shows up in your dock and app list.</p>
       <div class="app-icons" data-pref="icon">
-        <button class="app-icon" data-value="aurora"><img src="chrome://aether/content/icons/aurora.svg" alt="">Aurora</button>
-        <button class="app-icon" data-value="eclipse"><img src="chrome://aether/content/icons/eclipse.svg" alt="">Eclipse</button>
-        <button class="app-icon" data-value="comet"><img src="chrome://aether/content/icons/comet.svg" alt="">Comet</button>
-        <button class="app-icon" data-value="galaxy"><img src="chrome://aether/content/icons/galaxy.svg" alt="">Galaxy</button>
+        <button class="app-icon" data-value="aurora"><img src="chrome://aether/content/icons/aurora.svg" alt=""><span data-l10n-id="settings-aurora">Aurora</span></button>
+        <button class="app-icon" data-value="eclipse"><img src="chrome://aether/content/icons/eclipse.svg" alt=""><span data-l10n-id="settings-eclipse">Eclipse</span></button>
+        <button class="app-icon" data-value="comet"><img src="chrome://aether/content/icons/comet.svg" alt=""><span data-l10n-id="settings-comet">Comet</span></button>
+        <button class="app-icon" data-value="galaxy"><img src="chrome://aether/content/icons/galaxy.svg" alt=""><span data-l10n-id="settings-galaxy">Galaxy</span></button>
       </div>
     </section>
 
     <section class="card" id="protection">
-      <h2>Protection</h2>
+      <h2 data-l10n-id="settings-protection-2">Protection</h2>
       <label class="switch">
         <input type="checkbox" id="protection-on">
-        <span class="switch-text"><b>Block ads and trackers</b><small>With uBlock Origin, the add-on most people trust for this. Turning it on the first time downloads it (about 4 MB).</small></span>
+        <span class="switch-text"><b data-l10n-id="settings-block-ads-and-trackers">Block ads and trackers</b><small data-l10n-id="settings-with-ublock-origin-the-add">With uBlock Origin, the add-on most people trust for this. Turning it on the first time downloads it (about 4 MB).</small></span>
         <span class="toggle" aria-hidden="true"></span>
       </label>
       <p class="status" id="protection-status" hidden></p>
     </section>
 
     <section class="card" id="sip">
-      <h2>Data saver</h2>
+      <h2 data-l10n-id="settings-data-saver-2">Data saver</h2>
       <label class="switch">
         <input type="checkbox" id="sip-on">
-        <span class="switch-text"><b>Sip</b><small>Shows how much data you use, warns you before you run out, and stops videos from playing by themselves.</small></span>
+        <span class="switch-text"><b data-l10n-id="settings-sip">Sip</b><small data-l10n-id="settings-shows-how-much-data-you">Shows how much data you use, warns you before you run out, and stops videos from playing by themselves.</small></span>
         <span class="toggle" aria-hidden="true"></span>
       </label>
       <p class="status" id="sip-status" hidden></p>
       <div class="sip-actions" id="sip-actions">
-        <button class="secondary" id="sip-open">Open Sip settings</button>
-        <button class="secondary" id="sip-show">Show Sip in the toolbar</button>
+        <button class="secondary" id="sip-open" data-l10n-id="settings-open-sip-settings">Open Sip settings</button>
+        <button class="secondary" id="sip-show" data-l10n-id="settings-show-sip-in-the-toolbar">Show Sip in the toolbar</button>
       </div>
       <fieldset class="budget" id="sip-budget">
-        <legend>Your monthly data</legend>
-        <label>Budget <input id="budget-gb" type="number" min="0" step="0.5" placeholder="e.g. 140"> GB</label>
-        <label>Renews on day <input id="reset-day" type="number" min="1" max="31" value="1"> <small id="day-note" hidden>Set in Sip's settings</small></label>
-        <label>Used so far <input id="used-so-far" type="number" min="0" step="0.1" placeholder="what your carrier says"> GB <button class="secondary" id="used-set">Set</button></label>
+        <legend data-l10n-id="settings-your-monthly-data">Your monthly data</legend>
+        <label><span data-l10n-id="settings-budget">Budget</span> <input id="budget-gb" type="number" min="0" step="0.5" placeholder="e.g. 140" data-l10n-id="settings-e-g-140"> <span data-l10n-id="settings-gb-2">GB</span></label>
+        <label><span data-l10n-id="settings-renews-on-day">Renews on day</span> <input id="reset-day" type="number" min="1" max="31" value="1"> <small id="day-note" hidden data-l10n-id="settings-set-in-sip-s-settings">Set in Sip's settings</small></label>
+        <label><span data-l10n-id="settings-used-so-far">Used so far</span> <input id="used-so-far" type="number" min="0" step="0.1" placeholder="what your carrier says" data-l10n-id="settings-what-your-carrier-says"> <span data-l10n-id="settings-gb">GB</span> <button class="secondary" id="used-set" data-l10n-id="settings-set">Set</button></label>
         <p class="status" id="used-status" hidden></p>
       </fieldset>
-      <label class="hint">Highest YouTube quality: your choice, which Sip's saving levels never change
+      <label class="hint"><span data-l10n-id="settings-highest-youtube-quality-your-choice">Highest YouTube quality: your choice, which Sip's saving levels never change</span>
         <select id="youtube-quality">
-            <option value="240">240p</option>
-            <option value="360">360p</option>
-            <option value="480">480p</option>
-            <option value="720">720p (HD)</option>
-            <option value="1080">1080p (Full HD)</option>
-            <option value="0">No limit</option>
+            <option value="240" data-l10n-id="settings-240p">240p</option>
+            <option value="360" data-l10n-id="settings-360p">360p</option>
+            <option value="480" data-l10n-id="settings-480p">480p</option>
+            <option value="720" data-l10n-id="settings-720p-hd">720p (HD)</option>
+            <option value="1080" data-l10n-id="settings-1080p-full-hd">1080p (Full HD)</option>
+            <option value="0" data-l10n-id="settings-no-limit">No limit</option>
         </select>
       </label>
-      <label class="hint">Disk space for saved pages, so sites you revisit load from your computer, not your data
+      <label class="hint"><span data-l10n-id="settings-disk-space-for-saved-pages">Disk space for saved pages, so sites you revisit load from your computer, not your data</span>
         <select id="cache-size">
-          <option value="262144">250 MB</option>
-          <option value="524288">500 MB</option>
-          <option value="1048576">1 GB</option>
-          <option value="2097152">2 GB</option>
-          <option value="4194304">4 GB</option>
+          <option value="262144" data-l10n-id="settings-250-mb">250 MB</option>
+          <option value="524288" data-l10n-id="settings-500-mb">500 MB</option>
+          <option value="1048576" data-l10n-id="settings-1-gb">1 GB</option>
+          <option value="2097152" data-l10n-id="settings-2-gb">2 GB</option>
+          <option value="4194304" data-l10n-id="settings-4-gb">4 GB</option>
         </select>
       </label>
     </section>
 
     <section class="card" id="shortcuts">
-      <h2>Shortcuts</h2>
+      <h2 data-l10n-id="settings-shortcuts-2">Shortcuts</h2>
       <ul class="keys">
-        <li><span><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>C</kbd></span>Compact mode on or off</li>
-        <li><span><kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>S</kbd></span>Split view: two tabs side by side</li>
-        <li><span><kbd>Shift</kbd> + click a link</span>Peek at it without leaving the page</li>
-        <li><span>Right-click a workspace</span>Rename or delete it</li>
-        <li><span>Right-click a tab</span>Move it to another workspace</li>
+        <li><span><kbd data-l10n-id="settings-ctrl-3">Ctrl</kbd> <kbd data-l10n-id="settings-alt-2">Alt</kbd> <kbd data-l10n-id="settings-c-2">C</kbd></span><span data-l10n-id="settings-compact-mode-on-or-off">Compact mode on or off</span></li>
+        <li><span><kbd data-l10n-id="settings-ctrl-4">Ctrl</kbd> <kbd data-l10n-id="settings-alt-3">Alt</kbd> <kbd data-l10n-id="settings-s">S</kbd></span><span data-l10n-id="settings-split-view-two-tabs-side">Split view: two tabs side by side</span></li>
+        <li><span data-l10n-id="settings-shift-click-a-link"><kbd>Shift</kbd> + click a link</span><span data-l10n-id="settings-peek-at-it-without-leaving">Peek at it without leaving the page</span></li>
+        <li data-l10n-id="settings-right-click-a-workspace-rename"><span>Right-click a workspace</span>Rename or delete it</li>
+        <li data-l10n-id="settings-right-click-a-tab-move"><span>Right-click a tab</span>Move it to another workspace</li>
       </ul>
     </section>
 
     <section class="card" id="more">
-      <h2>More</h2>
+      <h2 data-l10n-id="settings-more">More</h2>
       <div class="actions">
-        <button class="secondary" data-open="chrome://aether/content/welcome/welcome.html">Show the welcome again</button>
-        <button class="secondary" id="sidebar-tools">Sidebar tools</button>
-        <button class="secondary" data-open="about:addons">Add-ons</button>
-        <button class="secondary" data-open="about:preferences">Firefox settings</button>
+        <button class="secondary" data-open="chrome://aether/content/welcome/welcome.html" data-l10n-id="settings-show-the-welcome-again">Show the welcome again</button>
+        <button class="secondary" id="sidebar-tools" data-l10n-id="settings-sidebar-tools">Sidebar tools</button>
+        <button class="secondary" data-open="about:addons" data-l10n-id="settings-add-ons">Add-ons</button>
+        <button class="secondary" data-open="about:preferences" data-l10n-id="settings-firefox-settings">Firefox settings</button>
       </div>
     </section>
   </div>

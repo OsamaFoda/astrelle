@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Welcome to Astrelle</title>
+  <title data-l10n-id="welcome-page-title">Welcome to Astrelle</title>
   <link rel="icon" href="../icons/aurora.svg">
   <link rel="stylesheet" href="welcome.css">
   <script type="module" src="welcome.mjs"></script>
+  <link rel="localization" href="astrelle/welcome.ftl">
 </head>
 <body>
   <div class="sky" aria-hidden="true"><b></b><b></b><b></b></div>
@@ -14,204 +15,204 @@
     <div class="panel">
       <button class="back" id="back" hidden>
         <svg viewBox="0 0 16 16" width="14" height="14"><path d="M13 8H3M7 4 3 8l4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Back
+        <span data-l10n-id="welcome-back">Back</span>
       </button>
 
       <section class="step" data-step="hello" hidden>
-        <p class="eyebrow">Hello</p>
-        <h1>Welcome to Astrelle</h1>
-        <p class="lead">A calm, fast browser that's light on your data. Let's make it yours: it takes a minute.</p>
+        <p class="eyebrow" data-l10n-id="welcome-hello">Hello</p>
+        <h1 data-l10n-id="welcome-welcome-to-astrelle">Welcome to Astrelle</h1>
+        <p class="lead" data-l10n-id="welcome-a-calm-fast-browser-that">A calm, fast browser that's light on your data. Let's make it yours: it takes a minute.</p>
         <div class="actions">
-          <button class="primary go" data-next>Get started</button>
+          <button class="primary go" data-next data-l10n-id="welcome-get-started">Get started</button>
         </div>
       </section>
 
       <section class="step" data-step="theme" hidden>
-        <p class="eyebrow">Appearance</p>
-        <h1>Light or dark?</h1>
-        <p class="lead">Astrelle can follow your computer, or stay one way.</p>
+        <p class="eyebrow" data-l10n-id="welcome-appearance">Appearance</p>
+        <h1 data-l10n-id="welcome-light-or-dark">Light or dark?</h1>
+        <p class="lead" data-l10n-id="welcome-astrelle-can-follow-your-computer">Astrelle can follow your computer, or stay one way.</p>
         <div class="choices" data-pref="theme">
           <button class="choice" data-value="system">
             <span class="mock sidebar system"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-            <b>System</b><small>Matches your computer</small>
+            <b data-l10n-id="welcome-system">System</b><small data-l10n-id="welcome-matches-your-computer">Matches your computer</small>
           </button>
           <button class="choice" data-value="light">
             <span class="mock sidebar light"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-            <b>Light</b><small>Always light</small>
+            <b data-l10n-id="welcome-light">Light</b><small data-l10n-id="welcome-always-light">Always light</small>
           </button>
           <button class="choice" data-value="dark">
             <span class="mock sidebar dark"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-            <b>Dark</b><small>Always dark</small>
+            <b data-l10n-id="welcome-dark">Dark</b><small data-l10n-id="welcome-always-dark">Always dark</small>
           </button>
         </div>
         <div class="actions">
-          <button class="primary go" data-next>Continue</button>
+          <button class="primary go" data-next data-l10n-id="welcome-continue">Continue</button>
         </div>
       </section>
 
       <section class="step" data-step="colors" hidden>
-        <p class="eyebrow">Colours</p>
-        <h1>Pick your colours</h1>
-        <p class="lead">They tint the background glow, buttons and highlights.</p>
+        <p class="eyebrow" data-l10n-id="welcome-colours">Colours</p>
+        <h1 data-l10n-id="welcome-pick-your-colours">Pick your colours</h1>
+        <p class="lead" data-l10n-id="welcome-they-tint-the-background-glow">They tint the background glow, buttons and highlights.</p>
         <div class="swatches" data-pref="palette">
-          <button class="swatch" data-value="nebula" aether-palette="nebula"><span></span>Nebula</button>
-          <button class="swatch" data-value="ocean" aether-palette="ocean"><span></span>Ocean</button>
-          <button class="swatch" data-value="aurora" aether-palette="aurora"><span></span>Aurora</button>
-          <button class="swatch" data-value="sunset" aether-palette="sunset"><span></span>Sunset</button>
-          <button class="swatch" data-value="rose" aether-palette="rose"><span></span>Rose</button>
-          <button class="swatch" data-value="graphite" aether-palette="graphite"><span></span>Graphite</button>
+          <button class="swatch" data-value="nebula" aether-palette="nebula"><span></span><span data-l10n-id="welcome-nebula">Nebula</span></button>
+          <button class="swatch" data-value="ocean" aether-palette="ocean"><span></span><span data-l10n-id="welcome-ocean">Ocean</span></button>
+          <button class="swatch" data-value="aurora" aether-palette="aurora"><span></span><span data-l10n-id="welcome-aurora-2">Aurora</span></button>
+          <button class="swatch" data-value="sunset" aether-palette="sunset"><span></span><span data-l10n-id="welcome-sunset">Sunset</span></button>
+          <button class="swatch" data-value="rose" aether-palette="rose"><span></span><span data-l10n-id="welcome-rose">Rose</span></button>
+          <button class="swatch" data-value="graphite" aether-palette="graphite"><span></span><span data-l10n-id="welcome-graphite">Graphite</span></button>
         </div>
         <div class="actions">
-          <button class="primary go" data-next>Continue</button>
+          <button class="primary go" data-next data-l10n-id="welcome-continue-2">Continue</button>
         </div>
       </section>
 
       <section class="step" data-step="icon" hidden>
-        <p class="eyebrow">Icon</p>
-        <h1>Pick your icon</h1>
-        <p class="lead">It's how Astrelle shows up in your dock and app list.</p>
+        <p class="eyebrow" data-l10n-id="welcome-icon">Icon</p>
+        <h1 data-l10n-id="welcome-pick-your-icon">Pick your icon</h1>
+        <p class="lead" data-l10n-id="welcome-it-s-how-astrelle-shows">It's how Astrelle shows up in your dock and app list.</p>
         <div class="app-icons" data-pref="icon">
-          <button class="app-icon" data-value="aurora"><img src="../icons/aurora.svg" alt="">Aurora</button>
-          <button class="app-icon" data-value="eclipse"><img src="../icons/eclipse.svg" alt="">Eclipse</button>
-          <button class="app-icon" data-value="comet"><img src="../icons/comet.svg" alt="">Comet</button>
-          <button class="app-icon" data-value="galaxy"><img src="../icons/galaxy.svg" alt="">Galaxy</button>
+          <button class="app-icon" data-value="aurora"><img src="../icons/aurora.svg" alt=""><span data-l10n-id="welcome-aurora">Aurora</span></button>
+          <button class="app-icon" data-value="eclipse"><img src="../icons/eclipse.svg" alt=""><span data-l10n-id="welcome-eclipse">Eclipse</span></button>
+          <button class="app-icon" data-value="comet"><img src="../icons/comet.svg" alt=""><span data-l10n-id="welcome-comet">Comet</span></button>
+          <button class="app-icon" data-value="galaxy"><img src="../icons/galaxy.svg" alt=""><span data-l10n-id="welcome-galaxy">Galaxy</span></button>
         </div>
         <div class="actions">
-          <button class="primary go" data-next>Continue</button>
+          <button class="primary go" data-next data-l10n-id="welcome-continue-3">Continue</button>
         </div>
       </section>
 
       <section class="step" data-step="layout" hidden>
-        <p class="eyebrow">Layout</p>
-        <h1>Choose your layout</h1>
-        <p class="lead">Where your tabs and the address bar live.</p>
+        <p class="eyebrow" data-l10n-id="welcome-layout">Layout</p>
+        <h1 data-l10n-id="welcome-choose-your-layout">Choose your layout</h1>
+        <p class="lead" data-l10n-id="welcome-where-your-tabs-and-the">Where your tabs and the address bar live.</p>
         <div class="choices" data-pref="layout">
           <button class="choice" data-value="sidebar">
             <span class="mock sidebar"><i class="url"></i><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="page"></i></span>
-            <b>Sidebar</b><small>Tabs down the side</small>
+            <b data-l10n-id="welcome-sidebar">Sidebar</b><small data-l10n-id="welcome-tabs-down-the-side">Tabs down the side</small>
           </button>
           <button class="choice" data-value="top">
             <span class="mock top"><i class="tab on"></i><i class="tab"></i><i class="tab"></i><i class="url"></i><i class="page"></i></span>
-            <b>Top bar</b><small>Classic tabs on top</small>
+            <b data-l10n-id="welcome-top-bar">Top bar</b><small data-l10n-id="welcome-classic-tabs-on-top">Classic tabs on top</small>
           </button>
         </div>
         <label class="switch">
           <input type="checkbox" id="compact">
-          <span class="switch-text"><b>Compact mode</b><small>Hide the bars so pages fill the window. They slide back when your mouse reaches the edge.</small></span>
+          <span class="switch-text"><b data-l10n-id="welcome-compact-mode">Compact mode</b><small data-l10n-id="welcome-hide-the-bars-so-pages">Hide the bars so pages fill the window. They slide back when your mouse reaches the edge.</small></span>
           <span class="toggle" aria-hidden="true"></span>
         </label>
         <div class="actions">
-          <button class="primary go" data-next>Continue</button>
+          <button class="primary go" data-next data-l10n-id="welcome-continue-4">Continue</button>
         </div>
       </section>
 
       <section class="step" data-step="glass" hidden>
-        <p class="eyebrow">Glass</p>
-        <h1>Pick your style</h1>
-        <p class="lead">Standard, or Frosted Glass over your wallpaper.</p>
+        <p class="eyebrow" data-l10n-id="welcome-glass">Glass</p>
+        <h1 data-l10n-id="welcome-pick-your-style">Pick your style</h1>
+        <p class="lead" data-l10n-id="welcome-standard-or-frosted-glass-over">Standard, or Frosted Glass over your wallpaper.</p>
         <div class="choices" data-pref="glass">
           <button class="choice slim" data-value="glass">
-            <b>Standard</b><small>Astrelle's own colours behind the sidebar. Calm, and easy on older computers.</small>
+            <b data-l10n-id="welcome-standard">Standard</b><small data-l10n-id="welcome-astrelle-s-own-colours-behind">Astrelle's own colours behind the sidebar. Calm, and easy on older computers.</small>
           </button>
           <button class="choice slim" data-value="liquid">
-            <b>Frosted Glass</b><small>Glass over your wallpaper (or your desktop, see-through), with clear pills and edges that catch the light.</small>
+            <b data-l10n-id="welcome-frosted-glass">Frosted Glass</b><small data-l10n-id="welcome-glass-over-your-wallpaper-or">Glass over your wallpaper (or your desktop, see-through), with clear pills and edges that catch the light.</small>
           </button>
         </div>
         <div class="actions">
-          <button class="primary go" data-next>Continue</button>
+          <button class="primary go" data-next data-l10n-id="welcome-continue-5">Continue</button>
         </div>
       </section>
 
       <section class="step" data-step="lasttab" hidden>
-        <p class="eyebrow">Closing tabs</p>
-        <h1>When the last tab closes</h1>
-        <p class="lead">Should Astrelle close too, or stay open?</p>
+        <p class="eyebrow" data-l10n-id="welcome-closing-tabs">Closing tabs</p>
+        <h1 data-l10n-id="welcome-when-the-last-tab-closes">When the last tab closes</h1>
+        <p class="lead" data-l10n-id="welcome-should-astrelle-close-too-or">Should Astrelle close too, or stay open?</p>
         <div class="choices" data-pref="lastTab">
           <button class="choice slim" data-value="close">
-            <b>Close Astrelle</b><small>Like most browsers: closing the last tab closes the window.</small>
+            <b data-l10n-id="welcome-close-astrelle">Close Astrelle</b><small data-l10n-id="welcome-like-most-browsers-closing-the">Like most browsers: closing the last tab closes the window.</small>
           </button>
           <button class="choice slim" data-value="keep">
-            <b>Keep it open</b><small>Astrelle stays open, on a fresh new tab.</small>
+            <b data-l10n-id="welcome-keep-it-open">Keep it open</b><small data-l10n-id="welcome-astrelle-stays-open-on-a">Astrelle stays open, on a fresh new tab.</small>
           </button>
         </div>
         <div class="actions">
-          <button class="primary go" data-next>Continue</button>
+          <button class="primary go" data-next data-l10n-id="welcome-continue-6">Continue</button>
         </div>
       </section>
 
       <section class="step" data-step="protection" hidden>
-        <p class="eyebrow">Protection</p>
-        <h1>Turn on protection?</h1>
-        <p class="lead">Astrelle can block ads, trackers and harmful sites for you.</p>
+        <p class="eyebrow" data-l10n-id="welcome-protection">Protection</p>
+        <h1 data-l10n-id="welcome-turn-on-protection">Turn on protection?</h1>
+        <p class="lead" data-l10n-id="welcome-astrelle-can-block-ads-trackers">Astrelle can block ads, trackers and harmful sites for you.</p>
         <ul class="points">
-          <li>Pages load faster and use less data.</li>
-          <li>Fewer companies follow you from site to site.</li>
-          <li>Uses <b>uBlock Origin</b>, a free, open-source blocker trusted by millions.</li>
+          <li data-l10n-id="welcome-pages-load-faster-and-use">Pages load faster and use less data.</li>
+          <li data-l10n-id="welcome-fewer-companies-follow-you-from">Fewer companies follow you from site to site.</li>
+          <li data-l10n-id="welcome-uses-ublock-origin-a-free">Uses <b>uBlock Origin</b>, a free, open-source blocker trusted by millions.</li>
         </ul>
-        <p class="note">One-time download of about 4 MB from Mozilla's add-on site.</p>
+        <p class="note" data-l10n-id="welcome-one-time-download-of-about">One-time download of about 4 MB from Mozilla's add-on site.</p>
         <p class="status" id="protection-status" role="status" hidden></p>
         <div class="actions">
-          <button class="primary" id="protection-on">Turn on protection</button>
-          <button class="secondary" data-next>Not now</button>
+          <button class="primary" id="protection-on" data-l10n-id="welcome-turn-on-protection-2">Turn on protection</button>
+          <button class="secondary" data-next data-l10n-id="welcome-not-now">Not now</button>
         </div>
       </section>
 
       <section class="step" data-step="sip" hidden>
-        <p class="eyebrow">Data saver</p>
-        <h1>Save data with Sip?</h1>
-        <p class="lead">Sip is Astrelle's data saver, made for capped internet.</p>
+        <p class="eyebrow" data-l10n-id="welcome-data-saver">Data saver</p>
+        <h1 data-l10n-id="welcome-save-data-with-sip">Save data with Sip?</h1>
+        <p class="lead" data-l10n-id="welcome-sip-is-astrelle-s-data">Sip is Astrelle's data saver, made for capped internet.</p>
         <ul class="points">
-          <li>Shows how much data you use today, this month, and on which sites.</li>
-          <li>Warns you before you run out: at 75%, 90% and 100%, and when you're on pace to run out early.</li>
-          <li>Stops videos from playing and loading by themselves.</li>
-          <li>Everything stays on your computer.</li>
+          <li data-l10n-id="welcome-shows-how-much-data-you">Shows how much data you use today, this month, and on which sites.</li>
+          <li data-l10n-id="welcome-warns-you-before-you-run">Warns you before you run out: at 75%, 90% and 100%, and when you're on pace to run out early.</li>
+          <li data-l10n-id="welcome-stops-videos-from-playing-and">Stops videos from playing and loading by themselves.</li>
+          <li data-l10n-id="welcome-everything-stays-on-your-computer">Everything stays on your computer.</li>
         </ul>
         <fieldset class="budget">
-          <legend>Your monthly data <span>(optional)</span></legend>
-          <label>Budget <input id="budget-gb" type="number" min="0" step="0.5" placeholder="e.g. 140"> GB</label>
-          <label>Renews on day <input id="reset-day" type="number" min="1" max="31" value="1"></label>
-          <label>Used so far <span>(optional)</span> <input id="used-so-far" type="number" min="0" step="0.1" placeholder="what your carrier says"> GB</label>
+          <legend data-l10n-id="welcome-your-monthly-data-optional">Your monthly data <span>(optional)</span></legend>
+          <label><span data-l10n-id="welcome-budget">Budget</span> <input id="budget-gb" type="number" min="0" step="0.5" placeholder="e.g. 140" data-l10n-id="welcome-e-g-140"> <span data-l10n-id="welcome-gb-2">GB</span></label>
+          <label><span data-l10n-id="welcome-renews-on-day">Renews on day</span> <input id="reset-day" type="number" min="1" max="31" value="1"></label>
+          <label><span data-l10n-id="welcome-used-so-far">Used so far</span> <span data-l10n-id="welcome-optional-2">(optional)</span> <input id="used-so-far" type="number" min="0" step="0.1" placeholder="what your carrier says" data-l10n-id="welcome-what-your-carrier-says"> <span data-l10n-id="welcome-gb">GB</span></label>
         </fieldset>
-        <label class="hint">Highest YouTube quality: your choice, which saving levels never change (an hour of 1080p uses about 1.5–3 GB; 480p about 0.5–0.7 GB)
+        <label class="hint"><span data-l10n-id="welcome-highest-youtube-quality-your-choice">Highest YouTube quality: your choice, which saving levels never change (an hour of 1080p uses about 1.5–3 GB; 480p about 0.5–0.7 GB)</span>
           <select id="youtube-quality">
-            <option value="240">240p</option>
-            <option value="360">360p</option>
-            <option value="480" selected>480p</option>
-            <option value="720">720p (HD)</option>
-            <option value="1080">1080p (Full HD)</option>
-            <option value="0">No limit</option>
+            <option value="240" data-l10n-id="welcome-240p">240p</option>
+            <option value="360" data-l10n-id="welcome-360p">360p</option>
+            <option value="480" selected data-l10n-id="welcome-480p">480p</option>
+            <option value="720" data-l10n-id="welcome-720p-hd">720p (HD)</option>
+            <option value="1080" data-l10n-id="welcome-1080p-full-hd">1080p (Full HD)</option>
+            <option value="0" data-l10n-id="welcome-no-limit">No limit</option>
           </select>
         </label>
-        <label class="hint">Disk space for saved pages, so sites you revisit load from your computer, not your data
+        <label class="hint"><span data-l10n-id="welcome-disk-space-for-saved-pages">Disk space for saved pages, so sites you revisit load from your computer, not your data</span>
           <select id="cache-size">
-            <option value="262144">250 MB</option>
-            <option value="524288">500 MB</option>
-            <option value="1048576">1 GB</option>
-            <option value="2097152">2 GB</option>
-            <option value="4194304">4 GB</option>
+            <option value="262144" data-l10n-id="welcome-250-mb">250 MB</option>
+            <option value="524288" data-l10n-id="welcome-500-mb">500 MB</option>
+            <option value="1048576" data-l10n-id="welcome-1-gb">1 GB</option>
+            <option value="2097152" data-l10n-id="welcome-2-gb">2 GB</option>
+            <option value="4194304" data-l10n-id="welcome-4-gb">4 GB</option>
           </select>
         </label>
-        <p class="hint">Sip's button sits in the toolbar: click it to see what's left.</p>
+        <p class="hint" data-l10n-id="welcome-sip-s-button-sits-in">Sip's button sits in the toolbar: click it to see what's left.</p>
         <div class="actions">
-          <button class="primary" id="sip-on">Turn on Sip</button>
-          <button class="secondary" id="sip-off">Not now</button>
+          <button class="primary" id="sip-on" data-l10n-id="welcome-turn-on-sip">Turn on Sip</button>
+          <button class="secondary" id="sip-off" data-l10n-id="welcome-not-now-2">Not now</button>
         </div>
       </section>
 
       <section class="step" data-step="done" hidden>
-        <p class="eyebrow">All set</p>
-        <h1>You're all set</h1>
-        <p class="lead">A few things worth knowing:</p>
+        <p class="eyebrow" data-l10n-id="welcome-all-set">All set</p>
+        <h1 data-l10n-id="welcome-you-re-all-set">You're all set</h1>
+        <p class="lead" data-l10n-id="welcome-a-few-things-worth-knowing">A few things worth knowing:</p>
         <ul class="tips">
-          <li><kbd>Shift</kbd> + click a link to <b>Peek</b> at it without leaving the page.</li>
-          <li><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> puts two tabs side by side.</li>
-          <li><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>C</kbd> hides the sidebar until you need it.</li>
-          <li>Workspaces sit under the address bar: <b>+</b> makes a new one.</li>
-          <li>Change any of this later in <b>Astrelle Settings</b>: it's in the ≡ menu, or type <b>about:astrelle</b>.</li>
+          <li data-l10n-id="welcome-shift-click-a-link-to"><kbd>Shift</kbd> + click a link to <b>Peek</b> at it without leaving the page.</li>
+          <li data-l10n-id="welcome-ctrl-alt-s-puts-two"><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd> puts two tabs side by side.</li>
+          <li data-l10n-id="welcome-ctrl-alt-c-hides-the"><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>C</kbd> hides the sidebar until you need it.</li>
+          <li data-l10n-id="welcome-workspaces-sit-under-the-address">Workspaces sit under the address bar: <b>+</b> makes a new one.</li>
+          <li data-l10n-id="welcome-change-any-of-this-later">Change any of this later in <b>Astrelle Settings</b>: it's in the ≡ menu, or type <b>about:astrelle</b>.</li>
         </ul>
         <p class="summary" id="summary"></p>
         <div class="actions">
-          <button class="primary go" id="start">Start browsing</button>
+          <button class="primary go" id="start" data-l10n-id="welcome-start-browsing">Start browsing</button>
         </div>
       </section>
     </div>
@@ -285,7 +286,7 @@
           <div class="feed" id="feed"></div>
           <div class="demo-bar">
             <svg viewBox="0 0 16 16" width="15" height="15"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <span>Search or enter address</span>
+            <span data-l10n-id="welcome-search-or-enter-address">Search or enter address</span>
             <i class="shine"></i>
           </div>
           <span class="droplet"></span>
@@ -305,11 +306,11 @@
           <path class="shield-shine" d="M60 14 100 29v15C82 40 62 44 40 60 28 68 20 70 20 62V29Z"/>
           <path class="check" d="M38 70l15 15 30-32"/>
         </svg>
-        <span class="threat" style="--x: -190px; --y: -110px; --d: 0s">AD</span>
+        <span class="threat" style="--x: -190px; --y: -110px; --d: 0s" data-l10n-id="welcome-ad">AD</span>
         <span class="threat eye" style="--x: 185px; --y: -80px; --d: 0.9s"><svg viewBox="0 0 24 16"><path d="M1 8s4-7 11-7 11 7 11 7-4 7-11 7S1 8 1 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="8" r="3.2" fill="currentColor"/></svg></span>
-        <span class="threat" style="--x: 200px; --y: 100px; --d: 1.8s">AD</span>
+        <span class="threat" style="--x: 200px; --y: 100px; --d: 1.8s" data-l10n-id="welcome-ad-2">AD</span>
         <span class="threat eye" style="--x: -180px; --y: 115px; --d: 2.7s"><svg viewBox="0 0 24 16"><path d="M1 8s4-7 11-7 11 7 11 7-4 7-11 7S1 8 1 8Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="8" r="3.2" fill="currentColor"/></svg></span>
-        <span class="threat" style="--x: 10px; --y: -190px; --d: 3.6s">AD</span>
+        <span class="threat" style="--x: 10px; --y: -190px; --d: 3.6s" data-l10n-id="welcome-ad-3">AD</span>
       </div>
 
       <!-- Sip: a cup with water gently moving, and a few of the numbers Sip shows -->
@@ -332,9 +333,9 @@
           <path class="cup-edge" d="M28 18h144l-18 190c-1.5 13-10 20-22 20H68c-12 0-20.5-7-22-20Z"/>
           <path class="cup-shine" d="M44 34l13 160"/>
         </svg>
-        <span class="chip c1"><b>Today</b> 312 MB</span>
-        <span class="chip c2"><b>Safe today</b> 4.6 GB</span>
-        <span class="chip c3"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M5 3.5v9l7-4.5Z" fill="currentColor"/><path d="M2 14 14 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Autoplay stopped</span>
+        <span class="chip c1" data-l10n-id="welcome-today-312-mb"><b>Today</b> 312 MB</span>
+        <span class="chip c2" data-l10n-id="welcome-safe-today-4-6-gb"><b>Safe today</b> 4.6 GB</span>
+        <span class="chip c3"><svg viewBox="0 0 16 16" width="14" height="14"><path d="M5 3.5v9l7-4.5Z" fill="currentColor"/><path d="M2 14 14 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> <span data-l10n-id="welcome-autoplay-stopped">Autoplay stopped</span></span>
       </div>
 
       <!-- All set: the orb with a burst of sparkles (added by welcome.mjs) -->
