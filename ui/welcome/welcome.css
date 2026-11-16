@@ -335,6 +335,19 @@ kbd {
   transform: translateX(4px);
 }
 
+/* Right to left, forward is to the left: both arrows turn round. */
+.go:dir(rtl)::after {
+  transform: scaleX(-1);
+}
+
+.go:dir(rtl):hover::after {
+  transform: translateX(-4px) scaleX(-1);
+}
+
+.back:dir(rtl) svg {
+  transform: scaleX(-1);
+}
+
 .secondary {
   color: var(--text);
   background-color: var(--glass);
@@ -651,6 +664,24 @@ kbd {
   border-radius: 8px;
   background-color: var(--glass-strong);
   color: inherit;
+  font: inherit;
+}
+
+/* Sip's other choices: the explanation, then its menu under it. */
+.step > label.hint {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.step > label.hint select {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--glass-strong);
+  color: var(--text);
   font: inherit;
 }
 
