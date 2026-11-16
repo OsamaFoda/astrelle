@@ -5,6 +5,6 @@
 -brand-short-name = Astrelle
 -brand-shortcut-name = Astrelle
 -brand-full-name = Astrelle
--brand-product-name = Firefox
+-brand-product-name = Astrelle
 -vendor-short-name = Mozilla
 trademarkInfo = { " " }

@@ -17,3 +17,8 @@ override chrome://branding/content/about-logo-private@2x.png chrome://aether/con
 # name Astrelle say Astrelle too (window titles, the private window's title, the address bar's
 # label on Astrelle's own pages). The Fluent half is registered in boot.sys.mjs.
 override chrome://branding/locale/brand.properties chrome://aether/content/branding/brand.properties
+
+# The site panel's pictures (shield icon in the address bar): Astrelle's shields, not Firefox's fox.
+override chrome://browser/skin/trustpanel-graphic-enabled.svg chrome://aether/content/branding/trustpanel-enabled.svg
+override chrome://browser/skin/trustpanel-graphic-disabled.svg chrome://aether/content/branding/trustpanel-disabled.svg
+override chrome://browser/skin/trustpanel-graphic-warning.svg chrome://aether/content/branding/trustpanel-warning.svg

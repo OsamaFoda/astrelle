@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 100 100" fill="none">
+  <!-- Astrelle's picture for the site panel (disabled), in place of Firefox's fox. -->
+  <defs>
+    <linearGradient id="s" x1="22" y1="14" x2="78" y2="86" gradientUnits="userSpaceOnUse"><stop stop-color="#a3a8bd"/><stop offset="1" stop-color="#6f7489"/></linearGradient>
+    <radialGradient id="g" cx="50" cy="52" r="46" gradientUnits="userSpaceOnUse"><stop stop-color="#a3a8bd" stop-opacity="0.35"/><stop offset="1" stop-color="#a3a8bd" stop-opacity="0"/></radialGradient>
+  </defs>
+  <circle cx="50" cy="52" r="46" fill="url(#g)"/>
+  <path d="M50 14 L78 25 V48 C78 66 66 79 50 86 C34 79 22 66 22 48 V25 Z" fill="url(#s)"/>
+  <path d="M50 14 L78 25 V48 C78 54 76.6 59.6 74 64.4 C62 50 44 30 50 14 Z" fill="#fff" fill-opacity="0.16"/>
+  <path d="M38 38 L62 62" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+</svg>

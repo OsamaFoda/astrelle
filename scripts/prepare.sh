@@ -46,6 +46,11 @@ for f in "${BRAND_TEXT[@]}"; do
 done
 grep -q "MOZ_APP_DISPLAYNAME=$DISPLAY_NAME" "$BRAND/configure.sh" \
   || { echo "Display name not set in configure.sh" >&2; exit 1; }
+# The product name too: Firefox's own panels say "Firefox is on guard" with it. (Mozilla's
+# services, "Firefox Suggest", "Mozilla account", have names of their own.)
+sed -i "s/^-brand-product-name = .*/-brand-product-name = $DISPLAY_NAME/" "$BRAND/locales/en-US/brand.ftl"
+grep -qx -- "-brand-product-name = $DISPLAY_NAME" "$BRAND/locales/en-US/brand.ftl" \
+  || { echo "Product name not set in brand.ftl" >&2; exit 1; }
 
 # Our icons and wordmarks (branding/, made by branding-src/render.py) replace Firefox's file for
 # file. A name Firefox doesn't use would be silently ignored, so treat it as a mistake.
