@@ -79,6 +79,18 @@ async function pictureTone(win, url) {
   }
 }
 
+// Whether the window can show this picture at all.
+async function showable(win, url) {
+  try {
+    const picture = new win.Image();
+    picture.src = url;
+    await picture.decode();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function init(win) {
   makeThumbnails(win);
   const root = win.document.documentElement;
@@ -107,6 +119,12 @@ export function init(win) {
           root.style.setProperty("--aether-wallpaper-frosted", css(frosted));
           const tone = await pictureTone(win, frosted);
           if (frostedFor === url && tone) root.setAttribute("aether-wallpaper-tone", tone);
+        } else if (frostedFor === url && !(await showable(win, url)) && frostedFor === url) {
+          // A picture that's gone (moved, deleted) or can't be read: the theme's wallpaper instead,
+          // as for a desktop picture a page can't show. (No frosted copy alone isn't that: the
+          // copy is made by a worker, which can't read SVG.)
+          root.setAttribute("aether-wallpaper", "theme");
+          root.style.removeProperty("--aether-wallpaper");
         }
       }
     } else {
