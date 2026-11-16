@@ -186,7 +186,8 @@ sidebar-main,
   border: none !important;
 }
 
-.tabbrowser-tab .tab-background {
+.tabbrowser-tab .tab-background,
+#tabbrowser-tabs > .aether-lens {
   border-radius: 10px !important;
   transition: background-color 200ms ease, box-shadow 200ms ease, transform var(--aether-spring-time) var(--aether-spring);
 }
@@ -196,7 +197,8 @@ sidebar-main,
   box-shadow: var(--aether-rim) !important;
 }
 
-.tabbrowser-tab .tab-background[selected] {
+.tabbrowser-tab .tab-background[selected],
+#tabbrowser-tabs > .aether-lens {
   background: var(--aether-sheen), var(--aether-glass) !important;
   box-shadow: var(--aether-rim), var(--aether-shadow) !important;
   outline: none !important;
@@ -223,6 +225,24 @@ sidebar-main,
   z-index: -1;
   pointer-events: none;
   will-change: translate, scale;
+}
+
+/* Between a pinned tab and the others the glass can't make the trip itself: they're in boxes of
+ * their own, each clipping its tabs. A stand-in (styled as the glass, above) makes it in the tab
+ * list that holds both, under every tab, while the tab's own glass waits unseen. */
+#tabbrowser-tabs {
+  position: relative;
+}
+
+#tabbrowser-tabs > .aether-lens {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  will-change: translate, scale;
+}
+
+.tabbrowser-tab[aether-lens-across] > .tab-stack > .tab-background {
+  opacity: 0 !important;
 }
 
 /* ---- Address bar: a glass pill ---- */
@@ -1131,6 +1151,7 @@ notification-message::before {
    * pooling inside and the bright edge drawn as a ring around them. */
   .urlbar-background,
   .tabbrowser-tab .tab-background[selected],
+  #tabbrowser-tabs > .aether-lens,
   .tabbrowser-tab:hover > .tab-stack > .tab-background,
   .aether-ws[active] {
     border: none !important;
@@ -1150,6 +1171,7 @@ notification-message::before {
   /* (Firefox uses the address bar's ::before itself.) */
   .urlbar-background::after,
   .tabbrowser-tab .tab-background[selected]::before,
+  #tabbrowser-tabs > .aether-lens::before,
   .tabbrowser-tab:hover > .tab-stack > .tab-background::before,
   .aether-ws[active]::before {
     content: "";
@@ -1167,7 +1189,8 @@ notification-message::before {
     border-radius: 999px !important;
   }
 
-  .tabbrowser-tab .tab-background {
+  .tabbrowser-tab .tab-background,
+  #tabbrowser-tabs > .aether-lens {
     border-radius: 14px !important;
   }
 

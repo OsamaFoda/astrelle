@@ -18,6 +18,13 @@ const SWELL = "cubic-bezier(0.45, 0, 0.55, 1)";
 
 export function init(win) {
   const reducedMotion = win.matchMedia("(prefers-reduced-motion: reduce)");
+  const tabs = win.gBrowser.tabContainer;
+  let standIn = null; // the glass making a trip between pinned and other tabs (styles/aether.css)
+  const land = () => {
+    standIn?.remove();
+    standIn = null;
+    for (const tab of tabs.querySelectorAll("[aether-lens-across]")) tab.removeAttribute("aether-lens-across");
+  };
 
   win.gBrowser.tabContainer.addEventListener("TabSelect", event => {
     if (!Services.prefs.getBoolPref(PREF, true) || reducedMotion.matches) return;
@@ -43,11 +50,14 @@ export function init(win) {
       for (const running of glass.getAnimations()) {
         if (running.id === "aether-lens") running.cancel();
       }
+      land(); // a trip still under way ends where it is
       const end = glass.getBoundingClientRect();
       if (!end.width) return;
 
-      const dx = start.left - end.left;
-      const dy = start.top - end.top;
+      // Centre to centre: the stretch below (scale) is about the glass's centre, so tabs of
+      // different sizes (a pinned one and the rest) line up at the start.
+      const dx = start.left + start.width / 2 - (end.left + end.width / 2);
+      const dy = start.top + start.height / 2 - (end.top + end.height / 2);
       const distance = Math.hypot(dx, dy);
       if (distance < 1 || distance > 2000) return;
 
@@ -56,13 +66,26 @@ export function init(win) {
       const [midX, midY] = Math.abs(dy) > Math.abs(dx) ? [1 / Math.sqrt(stretch), stretch] : [stretch, 1 / Math.sqrt(stretch)];
       const duration = Math.min(380 + distance * 0.35, 620);
 
+      // Between a pinned tab and the others, the stand-in travels, laid over where the glass rests.
+      let moving = glass;
+      if (from.pinned !== to.pinned) {
+        const box = tabs.getBoundingClientRect();
+        standIn = win.document.createXULElement("box");
+        standIn.className = "aether-lens";
+        Object.assign(standIn.style, { left: `${end.left - box.left}px`, top: `${end.top - box.top}px`, width: `${end.width}px`, height: `${end.height}px` });
+        tabs.append(standIn);
+        to.setAttribute("aether-lens-across", "");
+        moving = standIn;
+      }
+
       to.setAttribute("aether-lens-moving", "");
-      const slide = glass.animate([{ translate: `${dx}px ${dy}px`, offset: 0 }], { id: "aether-lens", duration, easing: SPRING });
-      glass.animate([
+      const slide = moving.animate([{ translate: `${dx}px ${dy}px`, offset: 0 }], { id: "aether-lens", duration, easing: SPRING });
+      moving.animate([
         { scale: opening ? "1 1" : `${start.width / end.width} ${start.height / end.height}`, easing: SWELL },
         { scale: `${midX} ${midY}`, offset: 0.4, easing: SWELL },
       ], { id: "aether-lens", duration: duration * 0.9 });
       slide.finished.catch(() => {}).finally(() => {
+        if (moving === standIn) land();
         if (!glass.getAnimations().some(a => a.id === "aether-lens" && a.playState === "running")) {
           to.removeAttribute("aether-lens-moving");
         }
