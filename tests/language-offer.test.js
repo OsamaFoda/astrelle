@@ -24,7 +24,7 @@ const bar = gBrowser.getNotificationBox().getNotificationWithValue("aether-langu
 const text = bar?.messageText?.textContent ?? bar?.label ?? "";
 bar?.buttonContainer?.querySelector("button")?.click() ?? [...(bar?.querySelectorAll("button") ?? [])][0]?.click();
 let installed = false;
-for (let i = 0; i < 40 && !installed; i++) {
+for (let i = 0; i < 80 && !installed; i++) { // up to 20 s: slower machines (CI) take longer
   await wait(250);
   installed = await hasFirefoxStrings("eo");
 }

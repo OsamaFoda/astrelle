@@ -70,6 +70,9 @@ jobs:
           test -n "$ASSET" || { echo "No Astrelle release to test on" >&2; exit 1; }
           gh api -H "Accept: application/octet-stream" "$ASSET" > "$RUNNER_TEMP/astrelle.tar.xz"
           tar -xJf "$RUNNER_TEMP/astrelle.tar.xz" -C "$RUNNER_TEMP"
+          # With this commit's interface, as a build of it would ship (its startup settings and
+          # policies too, not only the scripts the tests point it at).
+          scripts/install_ui.sh "$RUNNER_TEMP/aether"
           "$RUNNER_TEMP/aether/aether" --version
 
       - name: Test the interface
