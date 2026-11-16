@@ -28,6 +28,10 @@ PROFILES = os.path.expanduser("~/.cache")
 UI = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "ui")
 # At most this many test browsers at once, however many runs are started (each takes ~0.5 GB).
 SLOTS = int(os.environ.get("ASTRELLE_DEV_SLOTS", "6"))
+# Test browsers speak English whatever this computer's language is (as on CI): Astrelle follows the
+# system's language, and offers a language pack for it, which the tests aren't about. A test that
+# wants another language asks for it (intl.locale.requested, or ASTRELLE_DEV_PREFS).
+ENGLISH = {"LANG": "en_US.UTF-8", "LC_ALL": "en_US.UTF-8", "LANGUAGE": "en_US"}
 
 
 def take_slot():
@@ -118,7 +122,7 @@ def start(width=1280, height=800, dark=None, show=False):
         for name, value in json.loads(os.environ.get("ASTRELLE_DEV_PREFS", "{}")).items():
             f.write(f"user_pref({json.dumps(name)}, {json.dumps(value)});\n")
     # Its own XDG data folder, so a test run never repoints the real desktop launcher's icon.
-    env = dict(os.environ, MOZ_REMOTE_ALLOW_SYSTEM_ACCESS="1", XDG_DATA_HOME=os.path.join(profile, "xdg-data"))
+    env = dict(os.environ, MOZ_REMOTE_ALLOW_SYSTEM_ACCESS="1", XDG_DATA_HOME=os.path.join(profile, "xdg-data"), **ENGLISH)
     env.setdefault("ASTRELLE_UI", UI)
     proc = subprocess.Popen(
         [find_browser(), *([] if show else ["--headless"]), "--marionette", "--no-remote", "-purgecaches",

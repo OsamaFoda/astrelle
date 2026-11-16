@@ -775,6 +775,15 @@ notification-message {
   border-radius: 12px !important;
 }
 
+/* A bar's buttons wrap onto another line where they don't fit (the narrow sidebar, longer words
+ * in other languages), rather than running past its edge (scripts/notification-bars.mjs does the
+ * rest, inside the bar). */
+notification-message > [slot="actions"] {
+  flex-wrap: wrap !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* The info bars' stripe, in the accent rather than Firefox's rainbow. */
 notification-message::before {
   background-image: none !important;

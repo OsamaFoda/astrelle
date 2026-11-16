@@ -38,7 +38,7 @@ def launch(profile, prefs):
     with open(os.path.join(profile, "user.js"), "w") as f:
         for name, value in {**prefs, "marionette.port": port}.items():
             f.write(f"user_pref({json.dumps(name)}, {json.dumps(value)});\n")
-    env = dict(os.environ, MOZ_REMOTE_ALLOW_SYSTEM_ACCESS="1", XDG_DATA_HOME=os.path.join(profile, "xdg"), ASTRELLE_UI=os.path.join(CHECKOUT, "ui"))
+    env = dict(os.environ, MOZ_REMOTE_ALLOW_SYSTEM_ACCESS="1", XDG_DATA_HOME=os.path.join(profile, "xdg"), ASTRELLE_UI=os.path.join(CHECKOUT, "ui"), **dev.ENGLISH)
     proc = subprocess.Popen([dev.find_browser(), "--headless", "--marionette", "--no-remote", "--profile", profile],
                             env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     m = dev.Marionette(port)

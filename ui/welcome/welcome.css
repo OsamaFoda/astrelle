@@ -1357,7 +1357,7 @@ kbd {
 .chip svg { color: var(--accent); }
 
 .chip.c1 { translate: -150px -128px; --d1: 0.7s; }
-.chip.c2 { translate: 160px -34px; --d1: 0.9s; }
+.chip.c2 { translate: 140px -34px; --d1: 0.9s; } /* room for longer words (French) inside the card */
 .chip.c3 { translate: -140px 112px; --d1: 1.1s; }
 
 .scene[active] .chip {
