@@ -1022,12 +1022,33 @@ notification-message::before {
   font-size: 15px;
 }
 
+/* A long name is cut short; the tooltip has it whole. */
+.aether-ws:not(.aether-ws-add) {
+  max-width: 14em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* In the sidebar it starts the row under the address bar, with the other buttons after it. */
 :root[aether-urlbar-in-sidebar] {
   #aether-workspaces {
     order: 3;
     flex: 1 1 24px; /* room for "+", and not a pixel more before wrapping the buttons after it */
     min-width: 0;
+  }
+
+  /* With workspaces to switch between, they get a row of their own under the buttons, wrapping
+   * onto more lines rather than scrolling out of sight. */
+  #aether-workspaces[several] {
+    order: 5;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  #aether-workspaces[several] > .aether-ws:not(.aether-ws-add) {
+    max-width: 100%;
   }
 
   :is(#unified-extensions-button, #nav-bar-customization-target > [id$="-browser-action"],

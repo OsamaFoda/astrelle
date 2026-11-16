@@ -66,6 +66,12 @@ try {
       item.setAttribute("label", tr("astrelle-workspaces"));
       item.setAttribute("removable", "true");
       item.setAttribute("overflows", "false"); // custom widgets don't get this from `overflows`
+      // On a toolbar too narrow for them all, the wheel scrolls through them.
+      item.addEventListener("wheel", event => {
+        if (!event.deltaY || event.deltaX || item.scrollWidth <= item.clientWidth) return;
+        item.scrollLeft += event.deltaY * (event.deltaMode ? 30 : 1);
+        event.preventDefault();
+      });
       doc.defaultView.aetherWorkspaces?.render(item);
       return item;
     },
@@ -94,6 +100,8 @@ export function init(win) {
       if (workspaceOf(tab) === current) gBrowser.showTab(tab);
       else if (!tab.selected) gBrowser.hideTab(tab);
     }
+    // A tab group shows only in the workspaces that have its tabs: hiding its tabs leaves its name.
+    for (const group of gBrowser.tabGroups ?? []) group.hidden = !group.tabs.some(tab => workspaceOf(tab) === current);
     render();
   }
 
@@ -190,6 +198,15 @@ export function init(win) {
     add.title = tr("astrelle-workspace-add-title");
     add.addEventListener("click", create);
     item.replaceChildren(...buttons, add);
+    item.toggleAttribute("several", buttons.length > 0);
+    // Keep the workspace you're in scrolled into view (on a narrow top toolbar).
+    const shown = buttons.find(button => button.hasAttribute("active"));
+    if (shown && item.scrollWidth > item.clientWidth) {
+      const left = shown.offsetLeft - item.offsetLeft;
+      if (left < item.scrollLeft || left + shown.offsetWidth > item.scrollLeft + item.clientWidth) {
+        item.scrollLeft = left - (item.clientWidth - shown.offsetWidth) / 2;
+      }
+    }
   }
 
   let menu = null;
@@ -229,12 +246,32 @@ export function init(win) {
     }));
   });
 
+  // Closing the last tab of a workspace leaves a new tab in it, rather than Firefox's handling
+  // of the last tab in a window: with "close Astrelle with the last tab" on, that would close
+  // the window and every other workspace's tabs with it.
+  const firefoxRemoveTab = gBrowser.removeTab;
+  gBrowser.removeTab = function (tab, ...rest) {
+    const elsewhere = () => this.tabs.some(t => t !== tab && !t.pinned && !t.closing && workspaceOf(t) !== active());
+    if (tab && !tab.pinned && !tab.closing && tab.visible && this.visibleTabs.length === 1 && elsewhere()) {
+      win.BrowserCommands.openTab();
+    }
+    return firefoxRemoveTab.call(this, tab, ...rest);
+  };
+
   const container = gBrowser.tabContainer;
-  // New tabs join the active workspace.
+  // New tabs join the active workspace, and so does a tab moved here from another window: it's
+  // shown where it was put.
   container.addEventListener("TabOpen", event => {
     if (!workspaceOf(event.target)) assign(event.target, active());
+    else if (event.detail?.adoptedTab && workspaceOf(event.target) !== active()) {
+      assign(event.target, active());
+      apply();
+    }
   });
   container.addEventListener("TabUnpinned", event => assign(event.target, active()));
+  // A tab joining or leaving a group can show or hide that group here.
+  container.addEventListener("TabGrouped", () => apply());
+  container.addEventListener("TabUngrouped", () => apply());
   // Selecting a tab from another workspace (e.g. "Switch to tab" in the address bar) goes there.
   container.addEventListener("TabSelect", event => {
     const ws = workspaceOf(event.target);
@@ -256,5 +293,10 @@ export function init(win) {
   win.addEventListener("unload", () => Services.prefs.removeObserver(LIST, onListChange), { once: true });
 
   win.aetherWorkspaces = { render, apply, switchTo, moveTabs, active, workspaceOf, create, rename, remove, deleteWorkspace };
+  // A window made from a moved tab ("Move to New Window", or dragged out) opens on its workspace.
+  if (!SessionStore.getCustomWindowValue(win, KEY)) {
+    const moved = resolve(workspaceOf(gBrowser.selectedTab));
+    if (moved) SessionStore.setCustomWindowValue(win, KEY, moved);
+  }
   apply();
 }

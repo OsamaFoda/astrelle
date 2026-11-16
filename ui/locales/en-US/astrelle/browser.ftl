@@ -27,6 +27,7 @@ astrelle-workspace-delete-title = Delete workspace
 # $name: the workspace; $tabs: how many tabs it has; $heir: where they go.
 astrelle-workspace-delete-prompt =
     { $tabs ->
+        [0] Delete "{ $name }"? It has no tabs to move.
         [one] Delete "{ $name }"? Its { $tabs } tab will move to "{ $heir }".
        *[other] Delete "{ $name }"? Its { $tabs } tabs will move to "{ $heir }".
     }
