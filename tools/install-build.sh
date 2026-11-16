@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Installs a downloaded Astrelle build in place of the current one, keeping everything you have.
+#
+#   tools/install-build.sh astrelle-…-linux-x86_64.tar.xz            install it
+#   tools/install-build.sh --dry-run astrelle-…-linux-x86_64.tar.xz  say what it would do
+#   tools/install-build.sh --rollback                                go back to the one before
+#
+# The new build goes in exactly the same folder, ~/Applications/astrelle: Firefox ties a profile
+# to the folder a browser is installed in, and a new folder would start an empty profile. First it
+# copies that profile to ~/Backups, and moves the current install aside to astrelle.previous
+# (which --rollback puts back). It deletes nothing. Astrelle must be closed.
+set -euo pipefail
+
+APPS="${ASTRELLE_APPS:-$HOME/Applications}"
+PROFILES="${ASTRELLE_PROFILES:-$HOME/.config/mozilla/firefox}"
+BACKUPS="${ASTRELLE_BACKUPS:-$HOME/Backups}"
+INSTALL="$APPS/astrelle"
+PREVIOUS="$APPS/astrelle.previous"
+REPO="$(cd "$(dirname "$0")/.." && pwd)"
+STAMP="$(date +%Y%m%d-%H%M%S)-$$"
+
+DRY=false
+if [ "${1:-}" = --dry-run ]; then DRY=true; shift; fi
+run() { echo "  $*"; $DRY || "$@"; }
+fail() { echo "Stopped: $*" >&2; exit 1; }
+
+# Any program running from the install folder (the browser and each of its processes).
+running() {
+  local exe
+  for exe in /proc/[0-9]*/exe; do
+    case "$(readlink "$exe" 2>/dev/null)" in "$INSTALL"/*) return 0 ;; esac
+  done
+  pgrep -f "^$INSTALL/aether( |$)" >/dev/null 2>&1
+}
+
+# The profiles this install uses: the ones whose compatibility.ini last ran it.
+profiles() {
+  local dir
+  for dir in "$PROFILES"/*/; do
+    grep -qx "LastPlatformDir=$INSTALL" "$dir/compatibility.ini" 2>/dev/null && echo "${dir%/}"
+  done
+  return 0
+}
+
+if [ "${1:-}" = --rollback ]; then
+  running && fail "Astrelle is open. Close it first."
+  [ -d "$PREVIOUS" ] || fail "there's no $PREVIOUS to go back to."
+  echo "Going back to the previous build:"
+  run mv -T "$INSTALL" "$APPS/astrelle.failed-$STAMP"
+  run mv -T "$PREVIOUS" "$INSTALL"
+  echo "Done. The build you left is in $APPS/astrelle.failed-$STAMP."
+  exit 0
+fi
+
+TAR="${1:-}"
+[ -f "$TAR" ] || fail "give the downloaded astrelle-…-linux-x86_64.tar.xz."
+if running; then $DRY && echo "(Astrelle is open: close it before the real run.)" || fail "Astrelle is open. Close it first."; fi
+[ -d "$INSTALL" ] || fail "there's no current install at $INSTALL."
+
+echo "Checking the download…"
+LISTING="$(tar -tJf "$TAR")" || fail "$TAR isn't a readable .tar.xz (incomplete download?)."
+grep -qx "aether/aether" <<< "$LISTING" && grep -qx "aether/application.ini" <<< "$LISTING" \
+  || fail "$TAR doesn't look like an Astrelle build."
+
+mapfile -t USED < <(profiles)
+[ "${#USED[@]}" -gt 0 ] || fail "found no profile used by $INSTALL in $PROFILES; not touching anything."
+NEED=$(du -sk "${USED[@]}" | awk '{n += $1} END {print n}')
+ROOM="$BACKUPS"; [ -d "$ROOM" ] || ROOM="$(dirname "$BACKUPS")"
+FREE=$(df -Pk "$ROOM" | awk 'NR == 2 {print $4}')
+[ "$FREE" -gt $((NEED * 2)) ] || fail "not enough free space in $BACKUPS for a copy of your profile."
+
+$DRY && echo "Dry run: nothing will change. It would:"
+echo "1. Copy your profile to $BACKUPS/astrelle-profile-$STAMP:"
+run mkdir -p "$BACKUPS/astrelle-profile-$STAMP"
+for profile in "${USED[@]}"; do run cp -a "$profile" "$BACKUPS/astrelle-profile-$STAMP/"; done
+
+echo "2. Unpack the new build beside the current one:"
+STAGE="$APPS/.astrelle-new-$STAMP"
+run mkdir -p "$STAGE"
+run tar -xJf "$TAR" -C "$STAGE"
+$DRY || [ -x "$STAGE/aether/aether" ] || fail "the unpacked build has no program; nothing else was changed (see $STAGE)."
+
+echo "3. Swap them, keeping the current one as $PREVIOUS:"
+[ -e "$PREVIOUS" ] && run mv -T "$PREVIOUS" "$PREVIOUS-$STAMP"
+run mv -T "$INSTALL" "$PREVIOUS"
+run mv -T "$STAGE/aether" "$INSTALL"
+run rmdir "$STAGE"
+
+echo "4. Link the interface (ui/) into it, live from $REPO:"
+run "$REPO/scripts/install_ui.sh" "$INSTALL" --link
+
+$DRY && exit 0
+echo
+echo "Installed. Open Astrelle as usual: your tabs, logins and settings should all be there."
+echo "If anything is wrong, close it and run: $0 --rollback"
