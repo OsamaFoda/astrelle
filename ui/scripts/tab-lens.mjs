@@ -80,10 +80,18 @@ export function init(win) {
 
       to.setAttribute("aether-lens-moving", "");
       const slide = moving.animate([{ translate: `${dx}px ${dy}px`, offset: 0 }], { id: "aether-lens", duration, easing: SPRING });
-      moving.animate([
-        { scale: opening ? "1 1" : `${start.width / end.width} ${start.height / end.height}`, easing: SWELL },
-        { scale: `${midX} ${midY}`, offset: 0.4, easing: SWELL },
-      ], { id: "aether-lens", duration: duration * 0.9 });
+      const [sx, sy] = opening ? [1, 1] : [start.width / end.width, start.height / end.height];
+      if (Math.abs(sx - 1) > 0.25 || Math.abs(sy - 1) > 0.25) {
+        // Between tabs of very different sizes (a pinned one and the rest), the change of size is
+        // the stretch: it grows or shrinks in step with the slide, on the same spring, so both its
+        // edges move steadily one way. (Stretched on top, it overshot and came back.)
+        moving.animate([{ scale: `${sx} ${sy}`, offset: 0 }], { id: "aether-lens", duration, easing: SPRING });
+      } else {
+        moving.animate([
+          { scale: `${sx} ${sy}`, easing: SWELL },
+          { scale: `${midX} ${midY}`, offset: 0.4, easing: SWELL },
+        ], { id: "aether-lens", duration: duration * 0.9 });
+      }
       slide.finished.catch(() => {}).finally(() => {
         if (moving === standIn) land();
         if (!glass.getAnimations().some(a => a.id === "aether-lens" && a.playState === "running")) {
