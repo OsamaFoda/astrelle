@@ -13,10 +13,13 @@ const SCRIPTS = ["scripts/palette.mjs", "scripts/app-icon.mjs", "scripts/sidebar
 // translated into; for anything else Firefox falls back to English.
 const LOCALES = ["en-US", "ar"];
 const STRINGS = ["browser", "newtab", "settings", "welcome"];
+// Astrelle's names for Firefox's features (toolkit/branding/brandings.ftl), in English: a language
+// pack's own copy (Mozilla's, saying Firefox) wins in its language.
 L10nRegistry.getInstance().registerSources([
   new L10nFileSource("astrelle-brand", "app", Services.locale.packagedLocales, BASE, {}, [BASE + "branding/brand.ftl"]),
   new L10nFileSource("astrelle", "app", LOCALES, BASE + "locales/{locale}/", {},
-    LOCALES.flatMap(locale => STRINGS.map(file => `${BASE}locales/${locale}/astrelle/${file}.ftl`))),
+    [...LOCALES.flatMap(locale => STRINGS.map(file => `${BASE}locales/${locale}/astrelle/${file}.ftl`)),
+      `${BASE}locales/en-US/toolkit/branding/brandings.ftl`]),
 ]);
 
 function addStyles(win) {
