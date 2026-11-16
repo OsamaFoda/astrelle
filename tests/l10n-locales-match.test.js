@@ -1,5 +1,6 @@
-// Astrelle's own strings: every language (Arabic, French) has exactly the messages English has,
-// attributes included, so none silently falls back or shows a missing string.
+// Astrelle's own strings: every translation (scripts/astrelle-locales.mjs) has exactly the
+// messages English has, attributes included, so none silently falls back or shows a missing one.
+const { TRANSLATIONS } = ChromeUtils.importESModule("chrome://aether/content/scripts/astrelle-locales.mjs");
 const BASE = "chrome://aether/content/locales/";
 const ids = async url => {
   const text = await (await fetch(url)).text();
@@ -17,7 +18,7 @@ const files = ["astrelle/browser", "astrelle/newtab", "astrelle/settings", "astr
 const problems = {};
 for (const file of files) {
   const english = await ids(`${BASE}en-US/${file}.ftl`);
-  for (const locale of ["ar", "fr"]) {
+  for (const locale of Object.keys(TRANSLATIONS).filter(folder => folder !== "en-US")) {
     const other = await ids(`${BASE}${locale}/${file}.ftl`);
     const missing = [...english].filter(id => !other.has(id));
     const extra = [...other].filter(id => !english.has(id));

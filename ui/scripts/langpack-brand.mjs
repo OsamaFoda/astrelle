@@ -10,7 +10,7 @@
 const BASE = "chrome://aether/content/";
 const BRAND = "branding/brand.ftl";
 const BRANDINGS = "toolkit/branding/brandings.ftl";
-const TRANSLATED = ["en-US", "ar", "fr"]; // languages with their own brandings.ftl in ui/locales
+import { folderFor } from "./astrelle-locales.mjs";
 
 // The files a pack has under one of its sources' localization folders, as the URLs Fluent asks
 // for: read from the pack's own zip.
@@ -49,7 +49,7 @@ function rebrand(langpack) {
   registry.registerSources([
     new L10nFileSource(`${own}-brand`, id, locales, BASE, {}, [`${BASE}branding/brand.ftl`]),
     ...locales.map(locale => {
-      const folder = `${BASE}locales/${TRANSLATED.includes(locale) ? locale : "en-US"}/`;
+      const folder = `${BASE}locales/${folderFor(locale) ?? "en-US"}/`;
       return new L10nFileSource(`${own}-${locale}`, id, [locale], folder, {}, [folder + BRANDINGS]);
     }),
   ]);

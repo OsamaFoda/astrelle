@@ -9,19 +9,22 @@ const SCRIPTS = ["scripts/palette.mjs", "scripts/app-icon.mjs", "scripts/sidebar
 
 // The brand name in Firefox's Fluent strings (branding/brand.ftl), from ui/branding/ (see
 // chrome.manifest). It's the only file there, so Firefox doesn't look in ui/ for the others.
-// Astrelle's own strings (ui/locales/<locale>/astrelle/*.ftl), in the languages they've been
-// translated into; for anything else Firefox falls back to English.
-const LOCALES = ["en-US", "ar", "fr"];
+// Astrelle's own strings (ui/locales/<folder>/astrelle/*.ftl), one source per translation, each
+// serving the Firefox languages it's for (scripts/astrelle-locales.mjs); for anything else
+// Firefox falls back to English. English also has Astrelle's names for Firefox's features
+// (toolkit/branding/brandings.ftl); with a language pack, the pack's language gets its own
+// (scripts/langpack-brand.mjs, which also rebrands each pack as it starts, before any window).
+const { TRANSLATIONS } = ChromeUtils.importESModule(BASE + "scripts/astrelle-locales.mjs");
 const STRINGS = ["browser", "newtab", "settings", "welcome"];
-// Astrelle's names for Firefox's features (toolkit/branding/brandings.ftl), in English: a language
-// pack's own copy (Mozilla's, saying Firefox) wins in its language.
-// Mozilla's language packs, rebranded as each starts (before any window).
 ChromeUtils.importESModule(BASE + "scripts/langpack-brand.mjs").init();
 L10nRegistry.getInstance().registerSources([
   new L10nFileSource("astrelle-brand", "app", Services.locale.packagedLocales, BASE, {}, [BASE + "branding/brand.ftl"]),
-  new L10nFileSource("astrelle", "app", LOCALES, BASE + "locales/{locale}/", {},
-    [...LOCALES.flatMap(locale => STRINGS.map(file => `${BASE}locales/${locale}/astrelle/${file}.ftl`)),
-      `${BASE}locales/en-US/toolkit/branding/brandings.ftl`]),
+  ...Object.entries(TRANSLATIONS).map(([folder, locales]) => {
+    const path = `${BASE}locales/${folder}/`;
+    const files = STRINGS.map(file => `${path}astrelle/${file}.ftl`);
+    if (folder === "en-US") files.push(`${path}toolkit/branding/brandings.ftl`);
+    return new L10nFileSource(`astrelle-${folder}`, "app", locales, path, {}, files);
+  }),
 ]);
 
 function addStyles(win) {
