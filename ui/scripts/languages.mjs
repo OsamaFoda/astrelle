@@ -50,14 +50,22 @@ export async function hasFirefoxStrings(locale) {
 
 // Downloads and installs Mozilla's language pack for this Firefox version, trying once more after
 // a moment if that fails (a connection that dropped; a just-started browser busy installing).
-export async function installLanguage(locale) {
-  try {
-    return await installLanguageOnce(locale);
-  } catch (error) {
-    console.warn(`Astrelle: language pack ${locale}, trying again after`, error);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    return installLanguageOnce(locale);
+// Asked again while it's installing (the bar and Settings both), it's the same install: two at
+// once race for the same file, and both fail.
+const installing = new Map();
+export function installLanguage(locale) {
+  if (!installing.has(locale)) {
+    installing.set(locale, (async () => {
+      try {
+        return await installLanguageOnce(locale);
+      } catch (error) {
+        console.warn(`Astrelle: language pack ${locale}, trying again after`, error);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        return installLanguageOnce(locale);
+      }
+    })().finally(() => installing.delete(locale)));
   }
+  return installing.get(locale);
 }
 
 async function installLanguageOnce(locale) {

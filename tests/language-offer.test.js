@@ -25,7 +25,7 @@ const text = bar?.messageText?.textContent ?? bar?.label ?? "";
 const logged = [];
 const listener = { observe: message => { if (/langpack|language pack|Esperanto|AddonManager|XPIInstall|xpi/i.test(message.message ?? message.errorMessage ?? "")) logged.push(String(message.message ?? message.errorMessage).replace(/^.*?: \[Exception/, "[Exception").slice(0, 600)); } };
 Services.console.registerListener(listener);
-bar?.buttonContainer?.querySelector("button")?.click() ?? [...(bar?.querySelectorAll("button") ?? [])][0]?.click();
+(bar?.buttonContainer?.querySelector("button") ?? bar?.querySelector("button"))?.click(); // once: click() returns nothing
 let installed = false;
 for (let i = 0; i < 80 && !installed; i++) { // up to 20 s: slower machines (CI) take longer
   await wait(250);
