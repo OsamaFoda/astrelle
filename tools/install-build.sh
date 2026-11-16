@@ -8,7 +8,8 @@
 # The new build goes in exactly the same folder, ~/Applications/astrelle: Firefox ties a profile
 # to the folder a browser is installed in, and a new folder would start an empty profile. First it
 # copies that profile to ~/Backups, and moves the current install aside to astrelle.previous
-# (which --rollback puts back). It deletes nothing. Astrelle must be closed.
+# (which --rollback puts back). It deletes nothing. Astrelle must be closed; the next start reopens
+# your windows and tabs, as Firefox does after updating itself.
 set -euo pipefail
 
 APPS="${ASTRELLE_APPS:-$HOME/Applications}"
@@ -88,6 +89,11 @@ run rmdir "$STAGE"
 
 echo "4. Link the interface (ui/) into it, live from $REPO:"
 run "$REPO/scripts/install_ui.sh" "$INSTALL" --link
+
+# Firefox clears this after the one start it applies to.
+resume_once() { echo 'user_pref("browser.sessionstore.resume_session_once", true);' >> "$1/prefs.js"; }
+echo "5. Reopen your windows and tabs on the next start:"
+for profile in "${USED[@]}"; do run resume_once "$profile"; done
 
 $DRY && exit 0
 echo
