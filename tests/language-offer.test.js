@@ -23,7 +23,7 @@ const offered = await offerLanguage(window);
 const bar = gBrowser.getNotificationBox().getNotificationWithValue("aether-language");
 const text = bar?.messageText?.textContent ?? bar?.label ?? "";
 const logged = [];
-const listener = { observe: message => { if (/langpack|language pack|Esperanto|AddonManager|XPIInstall|xpi/i.test(message.message ?? message.errorMessage ?? "")) logged.push(String(message.message ?? message.errorMessage).slice(0, 300)); } };
+const listener = { observe: message => { if (/langpack|language pack|Esperanto|AddonManager|XPIInstall|xpi/i.test(message.message ?? message.errorMessage ?? "")) logged.push(String(message.message ?? message.errorMessage).replace(/^.*?: \[Exception/, "[Exception").slice(0, 600)); } };
 Services.console.registerListener(listener);
 bar?.buttonContainer?.querySelector("button")?.click() ?? [...(bar?.querySelectorAll("button") ?? [])][0]?.click();
 let installed = false;
