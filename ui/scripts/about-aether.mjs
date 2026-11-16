@@ -3,6 +3,7 @@
 // "Astrelle Settings…" in the sidebar and toolbar right-click menus.
 
 import { iconURL } from "./app-icon.mjs";
+import { tr } from "./l10n.mjs";
 
 const PAGE = "chrome://aether/content/settings/settings.html";
 const ABOUT = "about:astrelle";
@@ -46,7 +47,7 @@ export function init(win) {
     const menu = doc.getElementById(id);
     if (!menu) continue;
     const item = doc.createXULElement("menuitem");
-    item.setAttribute("label", "Astrelle Settings…");
+    item.setAttribute("label", tr("astrelle-settings-menu"));
     item.addEventListener("command", open);
     menu.prepend(item);
   }
@@ -57,7 +58,7 @@ export function init(win) {
     const item = doc.createXULElement("toolbarbutton");
     item.id = "appMenu-aether-settings";
     item.className = "subviewbutton";
-    item.setAttribute("label", "Astrelle Settings");
+    item.setAttribute("label", tr("astrelle-settings"));
     item.addEventListener("command", () => {
       win.PanelUI.hide();
       open();

@@ -9,6 +9,7 @@ import { iconURL } from "../scripts/app-icon.mjs";
 import { desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
 import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings, readSipSummary, readSipYoutube, saveSipYoutube, saveSipUsedSoFar, openSip, showSipButton } from "../scripts/choices.mjs";
+import { tr } from "../scripts/l10n.mjs";
 
 const $ = id => document.getElementById(id);
 const BOOKMARKS_BAR = "browser.toolbars.bookmarks.visibility"; // "always", "never", or "newtab" (on new tabs only)
@@ -97,7 +98,7 @@ function wallpaperTile(url, image, label) {
 
 async function choosePicture() {
   const picker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
-  picker.init(window.browsingContext, "Choose a wallpaper", Ci.nsIFilePicker.modeOpen);
+  picker.init(window.browsingContext, tr("astrelle-choose-wallpaper"), Ci.nsIFilePicker.modeOpen);
   picker.appendFilters(Ci.nsIFilePicker.filterImages);
   if (await IOUtils.exists(wallpaperFolder)) picker.displayDirectory = new FileUtils.File(wallpaperFolder);
   const result = await new Promise(resolve => picker.open(resolve));
@@ -117,14 +118,14 @@ Services.prefs.addObserver(WALLPAPER, wallpaperChanged);
 // ones or a slideshow), the pictures in ~/Pictures/Wallpapers, one chosen from elsewhere, then
 // "Choose a picture…".
 async function buildWallpapers() {
-  const tiles = [wallpaperTile("", null, "Your theme")];
+  const tiles = [wallpaperTile("", null, tr("astrelle-wallpaper-theme"))];
   const desktop = await desktopWallpaper(matchMedia("(prefers-color-scheme: dark)").matches);
-  if (desktop) tiles.push(wallpaperTile("desktop", desktop, "Your desktop"));
+  if (desktop) tiles.push(wallpaperTile("desktop", desktop, tr("astrelle-wallpaper-desktop")));
   const urls = await wallpaperFiles();
   const chosen = Services.prefs.getStringPref(WALLPAPER, "");
   if (chosen && chosen !== "desktop" && !urls.includes(chosen)) urls.unshift(chosen);
   tiles.push(...urls.map(url => wallpaperTile(url, url)));
-  const choose = Object.assign(document.createElement("button"), { className: "wallpaper choose", textContent: "Choose a picture…" });
+  const choose = Object.assign(document.createElement("button"), { className: "wallpaper choose", textContent: tr("astrelle-choose-picture") });
   choose.addEventListener("click", choosePicture);
   $("wallpapers").replaceChildren(...tiles, choose);
   refresh();
@@ -166,16 +167,16 @@ $("protection-on").addEventListener("change", async event => {
   box.disabled = true;
   status.hidden = false;
   status.className = "status";
-  status.textContent = box.checked ? "Turning on…" : "Turning off…";
+  status.textContent = tr(box.checked ? "astrelle-turning-on" : "astrelle-turning-off");
   try {
     await setProtection(box.checked);
-    status.textContent = box.checked ? "Protection is on ✓" : "Protection is off";
+    status.textContent = tr(box.checked ? "astrelle-protection-on" : "astrelle-protection-off");
     status.dataset.on = box.checked;
   } catch (e) {
     console.error("Astrelle settings: protection", e);
     status.dataset.on = false;
     status.className = "status error";
-    status.textContent = "Couldn't download it. Check your connection and try again.";
+    status.textContent = tr("astrelle-download-failed");
   }
   box.disabled = false;
   refreshAddons();
@@ -211,7 +212,7 @@ $("used-set").addEventListener("click", async event => {
   status.hidden = false;
   status.className = "status";
   const ok = await saveSipUsedSoFar($("used-so-far").value);
-  status.textContent = ok ? "Sip counts on from there ✓" : "Enter what your carrier says you've used, in GB.";
+  status.textContent = tr(ok ? "astrelle-sip-used-saved" : "astrelle-sip-used-invalid");
   if (!ok) status.className = "status error";
   if (ok) $("used-so-far").value = "";
 });

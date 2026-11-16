@@ -1,3 +1,4 @@
+import { tr } from "./l10n.mjs";
 // The Liquid Glass setting: see-through glass, closer to Apple's. The window lets the desktop
 // show through the sidebar and toolbar, with clear pills and edges that catch the light; the
 // other choice is Standard. Off by default; switch it in the welcome, Astrelle Settings, or "Liquid
@@ -19,7 +20,7 @@ export function init(win) {
     if (!menu) continue;
     const item = doc.createXULElement("menuitem");
     item.setAttribute("type", "checkbox");
-    item.setAttribute("label", "Frosted Glass");
+    item.setAttribute("label", tr("astrelle-frosted-glass"));
     item.addEventListener("command", toggle);
     menu.prepend(item);
     menu.addEventListener("popupshowing", () => {

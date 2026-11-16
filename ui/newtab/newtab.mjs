@@ -11,6 +11,7 @@ import { iconURL } from "../scripts/app-icon.mjs";
 import { wallpaperURL } from "../scripts/wallpaper.mjs";
 import { followSipSettings, openSip, readSipSummary } from "../scripts/choices.mjs";
 import { SIP_ID } from "../scripts/sip.mjs";
+import { tr } from "../scripts/l10n.mjs";
 
 const PINNED = "aether.newtab.pinned"; // [{ url, title }]
 const HIDDEN = "aether.newtab.hidden"; // [site] (siteOf; older entries are whole URLs)
@@ -138,7 +139,7 @@ async function renderShortcuts() {
     tile.querySelector(".title").textContent = site.title;
     const pin = tile.querySelector(".pin");
     pin.textContent = "📌";
-    pin.title = site.pinned ? "Unpin" : "Pin";
+    pin.title = tr(site.pinned ? "astrelle-newtab-unpin" : "astrelle-newtab-pin");
     pin.addEventListener("click", () => togglePin(site));
     tile.querySelector(".remove").addEventListener("click", () => remove(site));
     return tile;

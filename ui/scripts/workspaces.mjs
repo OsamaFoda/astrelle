@@ -7,6 +7,7 @@
 
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
 const { SessionStore } = ChromeUtils.importESModule("resource:///modules/sessionstore/SessionStore.sys.mjs");
+import { tr } from "./l10n.mjs";
 
 const LIST = "aether.workspaces"; // [{ id, name }], shared by all windows
 // Where each deleted workspace's tabs went, { deletedId: heirId }, so every window sends them to
@@ -56,13 +57,13 @@ try {
   CustomizableUI.createWidget({
     id: WIDGET,
     type: "custom",
-    label: "Workspaces",
+    label: tr("astrelle-workspaces"),
     defaultArea: CustomizableUI.AREA_NAVBAR,
     overflows: false, // always visible, never tucked into the » menu
     onBuild(doc) {
       const item = doc.createXULElement("toolbaritem");
       item.id = WIDGET;
-      item.setAttribute("label", "Workspaces");
+      item.setAttribute("label", tr("astrelle-workspaces"));
       item.setAttribute("removable", "true");
       item.setAttribute("overflows", "false"); // custom widgets don't get this from `overflows`
       doc.defaultView.aetherWorkspaces?.render(item);
@@ -123,7 +124,7 @@ export function init(win) {
 
   function create() {
     const name = { value: "" };
-    if (!Services.prompt.prompt(win, "New workspace", "Name for the new workspace:", name, null, { value: false })) return;
+    if (!Services.prompt.prompt(win, tr("astrelle-workspace-new-title"), tr("astrelle-workspace-new-prompt"), name, null, { value: false })) return;
     const label = name.value.trim();
     if (!label) return;
     const id = `ws-${Date.now().toString(36)}`;
@@ -133,7 +134,7 @@ export function init(win) {
 
   function rename(id) {
     const name = { value: workspaces().find(w => w.id === id).name };
-    if (!Services.prompt.prompt(win, "Rename workspace", "New name:", name, null, { value: false })) return;
+    if (!Services.prompt.prompt(win, tr("astrelle-workspace-rename-title"), tr("astrelle-workspace-rename-prompt"), name, null, { value: false })) return;
     if (!name.value.trim()) return;
     // Read the list again: another window may have changed it while the name was being typed.
     const list = workspaces();
@@ -151,8 +152,8 @@ export function init(win) {
     // Its tabs move in every window, so count them all (a window still opening has none yet).
     const windows = [...Services.wm.getEnumerator("navigator:browser")];
     const count = windows.flatMap(w => w.gBrowser?.tabs ?? []).filter(t => !t.pinned && workspaceOf(t) === id).length;
-    const ok = Services.prompt.confirm(win, "Delete workspace",
-      `Delete "${list.find(w => w.id === id).name}"? Its ${count} tab${count === 1 ? "" : "s"} will move to "${heir.name}".`);
+    const ok = Services.prompt.confirm(win, tr("astrelle-workspace-delete-title"),
+      tr("astrelle-workspace-delete-prompt", { name: list.find(w => w.id === id).name, tabs: count, heir: heir.name }));
     if (ok) deleteWorkspace(id);
   }
 
@@ -173,7 +174,7 @@ export function init(win) {
       const button = doc.createElement("button");
       button.className = "aether-ws";
       button.textContent = ws.name;
-      button.title = `${ws.name} (right-click to rename or delete)`;
+      button.title = tr("astrelle-workspace-button-title", { name: ws.name });
       button.toggleAttribute("active", ws.id === current);
       button.addEventListener("click", () => switchTo(ws.id));
       button.addEventListener("contextmenu", event => {
@@ -186,7 +187,7 @@ export function init(win) {
     const add = doc.createElement("button");
     add.className = "aether-ws aether-ws-add";
     add.textContent = "+";
-    add.title = "New workspace: a separate set of tabs to switch to, like Study or Work";
+    add.title = tr("astrelle-workspace-add-title");
     add.addEventListener("click", create);
     item.replaceChildren(...buttons, add);
   }
@@ -202,8 +203,8 @@ export function init(win) {
       entry.addEventListener("command", action);
       menu.append(entry);
     };
-    item("Rename…", () => rename(id));
-    item("Delete…", () => remove(id), workspaces().length < 2);
+    item(tr("astrelle-workspace-rename"), () => rename(id));
+    item(tr("astrelle-workspace-delete"), () => remove(id), workspaces().length < 2);
     doc.getElementById("mainPopupSet").append(menu);
     return menu;
   }
@@ -211,7 +212,7 @@ export function init(win) {
   // "Move to Workspace" in the tab right-click menu.
   const tabMenu = doc.getElementById("tabContextMenu");
   const moveMenu = doc.createXULElement("menu");
-  moveMenu.setAttribute("label", "Move to Workspace");
+  moveMenu.setAttribute("label", tr("astrelle-move-to-workspace"));
   const movePopup = doc.createXULElement("menupopup");
   moveMenu.append(movePopup);
   tabMenu?.prepend(moveMenu);

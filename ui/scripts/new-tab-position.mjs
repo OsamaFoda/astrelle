@@ -1,3 +1,4 @@
+import { tr } from "./l10n.mjs";
 // With vertical tabs, where a new tab (Ctrl+T, the + button) goes: to the top of the list, just
 // below pinned tabs, like Zen, or to the end. The aether.newTabsAt pref ("top" or "bottom", in
 // Astrelle Settings) decides, and the "+ New Tab" button moves to the same end (styles/aether.css,
@@ -37,7 +38,7 @@ export function init(win) {
     button.addEventListener("mousemove", event => {
       const hover = onPrivate(event);
       button.toggleAttribute("aether-private-hover", hover);
-      if (hover) button.setAttribute("tooltiptext", "New private window (Ctrl+Shift+P)");
+      if (hover) button.setAttribute("tooltiptext", tr("astrelle-new-private-window-tooltip"));
       else if (tooltip) button.setAttribute("tooltiptext", tooltip);
       else button.removeAttribute("tooltiptext");
     });

@@ -10,6 +10,7 @@
 // own hover tracking, which fought this and made the sidebar flicker.
 
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
+import { tr } from "./l10n.mjs";
 
 const PREF = "aether.compactMode";
 const VERTICAL_TABS = "sidebar.verticalTabs";
@@ -21,8 +22,8 @@ const WIDGET = "aether-compact-mode";
 try {
   CustomizableUI.createWidget({
     id: WIDGET,
-    label: "Compact Mode",
-    tooltiptext: "Compact Mode: hide the sidebar until the mouse reaches the edge (Ctrl+Alt+C)",
+    label: tr("astrelle-compact-mode"),
+    tooltiptext: tr("astrelle-compact-mode-tooltip"),
     defaultArea: CustomizableUI.AREA_NAVBAR,
     overflows: false, // always visible, never tucked into the » menu
     onCreated(node) {
@@ -115,7 +116,7 @@ export function init(win) {
     if (!menu) continue;
     const item = doc.createXULElement("menuitem");
     item.setAttribute("type", "checkbox");
-    item.setAttribute("label", "Compact Mode");
+    item.setAttribute("label", tr("astrelle-compact-mode"));
     item.setAttribute("acceltext", "Ctrl+Alt+C");
     item.addEventListener("command", toggle);
     menu.prepend(item);

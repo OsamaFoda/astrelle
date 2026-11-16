@@ -4,6 +4,7 @@
 
 const { ClickHandlerParent } = ChromeUtils.importESModule("resource:///actors/ClickHandlerParent.sys.mjs");
 const { E10SUtils } = ChromeUtils.importESModule("resource://gre/modules/E10SUtils.sys.mjs");
+import { tr } from "./l10n.mjs";
 
 // Link clicks from every window arrive in this one class, so it's patched once per session.
 if (!ClickHandlerParent.prototype.aetherPeek) {
@@ -55,11 +56,11 @@ export function init(win) {
     title.setAttribute("value", url);
     const keep = doc.createElement("button");
     keep.className = "aether-peek-button";
-    keep.textContent = "Open in tab";
+    keep.textContent = tr("astrelle-peek-open-in-tab");
     const shut = doc.createElement("button");
     shut.className = "aether-peek-button";
     shut.textContent = "✕";
-    shut.title = "Close (Esc)";
+    shut.title = tr("astrelle-peek-close");
     bar.append(title, keep, shut);
 
     const browser = doc.createXULElement("browser");

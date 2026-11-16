@@ -8,6 +8,7 @@
 import { follow } from "../scripts/palette.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
 import { CHOICES, setProtection, setSip, saveSipBudget, saveSipUsedSoFar, saveSipYoutube } from "../scripts/choices.mjs";
+import { tr } from "../scripts/l10n.mjs";
 
 const NEW_TAB = "chrome://aether/content/newtab/newtab.html";
 
@@ -126,17 +127,17 @@ $("protection-on").addEventListener("click", async () => {
   buttons.forEach(b => (b.disabled = true));
   status.hidden = false;
   status.className = "status";
-  status.textContent = "Downloading and turning on…";
+  status.textContent = tr("astrelle-addon-downloading");
   try {
     await setProtection(true);
     chosen.protection = true;
     $("protect-scene").setAttribute("on", "");
-    status.textContent = "Protection is on ✓";
+    status.textContent = tr("astrelle-protection-on");
     setTimeout(() => next(step), 900);
   } catch (e) {
     console.error("Astrelle welcome: protection", e);
     status.className = "status error";
-    status.textContent = "Couldn't download it. Check your connection and try again, or skip for now.";
+    status.textContent = tr("astrelle-download-failed-skip");
     buttons.forEach(b => (b.disabled = false));
   }
 });
@@ -167,10 +168,8 @@ for (const [id, on] of [["sip-on", true], ["sip-off", false]]) {
 // ---- Done ----
 
 function summarize() {
-  const on = [chosen.protection && "Protection", chosen.sip && "Sip"].filter(Boolean);
-  $("summary").textContent = on.length
-    ? `${on.join(" and ")} ${on.length > 1 ? "are" : "is"} on. You can change this any time in Astrelle Settings.`
-    : "You can turn on protection or Sip any time in Astrelle Settings.";
+  const which = chosen.protection && chosen.sip ? "both" : chosen.protection ? "protection" : chosen.sip ? "sip" : "none";
+  $("summary").textContent = tr(`astrelle-welcome-done-${which}`);
 }
 
 $("start").addEventListener("click", () => {

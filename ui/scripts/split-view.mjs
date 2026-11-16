@@ -4,6 +4,7 @@
 // page for it, which doesn't look like Astrelle (the address bar still finds your open tabs).
 
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
+import { tr } from "./l10n.mjs";
 
 const WIDGET = "aether-split-view";
 
@@ -15,8 +16,8 @@ function toggle(win) {
 try {
   CustomizableUI.createWidget({
     id: WIDGET,
-    label: "Split View",
-    tooltiptext: "Split View: show two tabs side by side (Ctrl+Alt+S)",
+    label: tr("astrelle-split-view"),
+    tooltiptext: tr("astrelle-split-view-tooltip"),
     defaultArea: CustomizableUI.AREA_NAVBAR,
     overflows: false, // always visible, never tucked into the » menu
     onCreated(node) {

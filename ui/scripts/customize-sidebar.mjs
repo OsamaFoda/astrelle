@@ -8,6 +8,7 @@
 // reached from there ("Sidebar tools", through window.aetherCustomizeSidebar).
 
 import { openSettings } from "./about-aether.mjs";
+import { tr } from "./l10n.mjs";
 
 const PAGE = "chrome://browser/content/sidebar/sidebar-customize.html";
 const COMPACT = "aether.compactMode";
@@ -49,8 +50,8 @@ export function init(win) {
 
     const compact = doc.createElement("moz-checkbox");
     compact.id = "aether-compact-mode";
-    compact.setAttribute("label", "Compact mode");
-    compact.setAttribute("description", "Hide the sidebar until the mouse reaches the edge of the window (Ctrl+Alt+C)");
+    compact.setAttribute("label", tr("astrelle-compact-mode-item"));
+    compact.setAttribute("description", tr("astrelle-compact-mode-description"));
     const sync = () => (compact.checked = Services.prefs.getBoolPref(COMPACT, false));
     compact.addEventListener("change", () => Services.prefs.setBoolPref(COMPACT, compact.checked));
     Services.prefs.addObserver(COMPACT, sync);
@@ -62,7 +63,7 @@ export function init(win) {
     const settings = root.querySelector("#manage-settings a");
     if (settings) {
       settings.removeAttribute("data-l10n-id");
-      settings.textContent = "Manage Astrelle settings";
+      settings.textContent = tr("astrelle-manage-settings");
     }
     for (const type of ["click", "keydown"]) {
       settings?.addEventListener(type, e => {
