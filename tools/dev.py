@@ -114,6 +114,9 @@ def start(width=1280, height=800, dark=None, show=False):
         f.write(f'user_pref("marionette.port", {port});\n')
         if dark is not None:
             f.write(f'user_pref("ui.systemUsesDarkTheme", {1 if dark else 0});\n')
+        # Extra prefs for a run, e.g. ASTRELLE_DEV_PREFS='{"intl.locale.requested": "ar"}'.
+        for name, value in json.loads(os.environ.get("ASTRELLE_DEV_PREFS", "{}")).items():
+            f.write(f"user_pref({json.dumps(name)}, {json.dumps(value)});\n")
     # Its own XDG data folder, so a test run never repoints the real desktop launcher's icon.
     env = dict(os.environ, MOZ_REMOTE_ALLOW_SYSTEM_ACCESS="1", XDG_DATA_HOME=os.path.join(profile, "xdg-data"))
     env.setdefault("ASTRELLE_UI", UI)

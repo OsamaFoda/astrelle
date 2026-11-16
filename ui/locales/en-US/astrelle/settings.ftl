@@ -113,3 +113,7 @@ settings-sunset = Sunset
 settings-aurora-2 = Aurora
 settings-ocean = Ocean
 settings-nebula = Nebula
+settings-language-link = Language
+settings-language-title = Language
+settings-language-hint = Astrelle's menus, pages and dialogs
+settings-language-restart = Restart Astrelle

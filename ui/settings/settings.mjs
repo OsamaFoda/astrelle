@@ -10,6 +10,7 @@ import { desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
 import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings, readSipSummary, readSipYoutube, saveSipYoutube, saveSipUsedSoFar, openSip, showSipButton } from "../scripts/choices.mjs";
 import { tr } from "../scripts/l10n.mjs";
+import { firefoxLocaleFor, hasFirefoxStrings, installLanguage, LOCALES, nameOf, restart, setLanguage } from "../scripts/languages.mjs";
 
 const $ = id => document.getElementById(id);
 const BOOKMARKS_BAR = "browser.toolbars.bookmarks.visibility"; // "always", "never", or "newtab" (on new tabs only)
@@ -249,3 +250,37 @@ window.addEventListener("unload", () => {
 refresh();
 refreshAddons();
 buildWallpapers();
+
+// ---- Language: the system's, or any Firefox comes in (each in its own name) ----
+
+function buildLanguages() {
+  const os = Cc["@mozilla.org/intl/ospreferences;1"].getService(Ci.mozIOSPreferences).systemLocales[0] ?? "en-US";
+  const choices = LOCALES.map(locale => [locale, nameOf(locale)]).sort((a, b) => a[1].localeCompare(b[1]));
+  $("language").replaceChildren(
+    new Option(tr("astrelle-language-system", { language: nameOf(firefoxLocaleFor(os) ?? os) }), ""),
+    ...choices.map(([locale, name]) => Object.assign(new Option(name, locale), { lang: locale })));
+  $("language").value = Services.prefs.getStringPref("intl.locale.requested", "").split(",")[0];
+}
+
+$("language").addEventListener("change", async () => {
+  const status = $("language-status");
+  const chosen = $("language").value;
+  const locale = firefoxLocaleFor(chosen || (Cc["@mozilla.org/intl/ospreferences;1"].getService(Ci.mozIOSPreferences).systemLocales[0] ?? "en-US"));
+  status.hidden = false;
+  status.className = "status";
+  try {
+    if (locale && !locale.startsWith("en") && !(await hasFirefoxStrings(locale))) {
+      status.textContent = tr("astrelle-language-downloading");
+      await installLanguage(locale);
+    }
+    setLanguage(chosen);
+    status.textContent = tr("astrelle-language-restart-needed");
+    $("language-restart").hidden = false;
+  } catch (e) {
+    console.error("Astrelle settings: language", e);
+    status.className = "status error";
+    status.textContent = tr("astrelle-language-failed");
+  }
+});
+$("language-restart").addEventListener("click", restart);
+buildLanguages();

@@ -1,0 +1,34 @@
+// timeout: 60
+// When the system's language has no Firefox strings here, Astrelle offers Mozilla's language pack
+// once, installs it from the archive on Download (here a local stand-in), and asks to restart.
+const { offerLanguage, hasFirefoxStrings } = ChromeUtils.importESModule("chrome://aether/content/scripts/languages.mjs");
+const wait = ms => new Promise(r => setTimeout(r, ms));
+// A stand-in language pack, as Mozilla's archive serves them.
+const dir = PathUtils.join(PathUtils.profileDir, "langpack-eo");
+await IOUtils.writeJSON(PathUtils.join(dir, "manifest.json"), {
+  manifest_version: 2, name: "Language: Esperanto", version: `${Services.appinfo.version}.1`, langpack_id: "eo",
+  languages: { eo: { chrome_resources: {}, version: "1" } }, sources: { browser: { base_path: "browser/" } },
+  browser_specific_settings: { gecko: { id: "langpack-eo@firefox.mozilla.org", strict_min_version: Services.appinfo.version.split(".")[0] + ".0", strict_max_version: Services.appinfo.version.split(".")[0] + ".*" } },
+});
+await IOUtils.makeDirectory(PathUtils.join(dir, "browser"), { ignoreExisting: true });
+const xpi = PathUtils.join(PathUtils.profileDir, "eo.xpi");
+const zip = Cc["@mozilla.org/zipwriter;1"].createInstance(Ci.nsIZipWriter);
+zip.open(await IOUtils.getFile(xpi), 0x04 | 0x08 | 0x20);
+zip.addEntryFile("manifest.json", Ci.nsIZipWriter.COMPRESSION_DEFAULT, await IOUtils.getFile(PathUtils.join(dir, "manifest.json")), false);
+zip.close();
+Services.prefs.setBoolPref("extensions.langpacks.signatures.required", false);
+Services.prefs.setStringPref("aether.languages.packURL", Services.io.newFileURI(await IOUtils.getFile(xpi)).spec.replace("eo.xpi", "{locale}.xpi"));
+Services.prefs.setStringPref("intl.locale.requested", "eo");
+const offered = await offerLanguage(window);
+const bar = gBrowser.getNotificationBox().getNotificationWithValue("aether-language");
+const text = bar?.messageText?.textContent ?? bar?.label ?? "";
+bar?.buttonContainer?.querySelector("button")?.click() ?? [...(bar?.querySelectorAll("button") ?? [])][0]?.click();
+let installed = false;
+for (let i = 0; i < 40 && !installed; i++) {
+  await wait(250);
+  installed = await hasFirefoxStrings("eo");
+}
+await wait(500);
+const restart = !!gBrowser.getNotificationBox().getNotificationWithValue("aether-language-restart");
+Services.prefs.clearUserPref("intl.locale.requested");
+return { ok: offered && installed && restart && /Esperanto|esperanto/.test(text), offered, installed, restart, text };

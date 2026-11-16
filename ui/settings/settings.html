@@ -22,7 +22,7 @@
 
     <nav class="jump">
       <a href="#layout" data-l10n-id="settings-layout">Layout</a><a href="#look" data-l10n-id="settings-look">Look</a><a href="#icon" data-l10n-id="settings-icon">Icon</a>
-      <a href="#protection" data-l10n-id="settings-protection">Protection</a><a href="#sip" data-l10n-id="settings-data-saver">Data saver</a><a href="#shortcuts" data-l10n-id="settings-shortcuts">Shortcuts</a>
+      <a href="#protection" data-l10n-id="settings-protection">Protection</a><a href="#sip" data-l10n-id="settings-data-saver">Data saver</a><a href="#language" data-l10n-id="settings-language-link">Language</a><a href="#shortcuts" data-l10n-id="settings-shortcuts">Shortcuts</a>
     </nav>
 
     <section class="card" id="layout">
@@ -184,6 +184,15 @@
           <option value="4194304" data-l10n-id="settings-4-gb">4 GB</option>
         </select>
       </label>
+    </section>
+
+    <section class="card" id="language">
+      <h2 data-l10n-id="settings-language-title">Language</h2>
+      <label class="hint"><span data-l10n-id="settings-language-hint">Astrelle's menus, pages and dialogs</span>
+        <select id="language"></select>
+      </label>
+      <p class="status" id="language-status" hidden></p>
+      <div class="actions"><button class="secondary" id="language-restart" data-l10n-id="settings-language-restart" hidden>Restart Astrelle</button></div>
     </section>
 
     <section class="card" id="shortcuts">

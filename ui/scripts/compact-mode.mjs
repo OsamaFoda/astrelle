@@ -138,7 +138,7 @@ export function init(win) {
     // (Bars that are there because compact mode is off, or a sidebar panel is open, aren't out:
     // kept, they'd stay when it's switched on or the panel closes.)
     const forPanel = vertical() && !doc.getElementById("sidebar-box").hidden;
-    wasOut = root.hasAttribute("aether-compact") && !forPanel && (vertical() ? bars.right > 0 : bars.bottom > 0);
+    wasOut = root.hasAttribute("aether-compact") && !forPanel && (vertical() ? bars.right > 0 && bars.left < win.innerWidth : bars.bottom > 0);
     // Leaving takes the address bar's focus, which would hide the bars while you're away.
     root.toggleAttribute("aether-kept", wasOut);
   });
