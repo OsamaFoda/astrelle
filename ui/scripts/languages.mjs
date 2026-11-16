@@ -48,8 +48,19 @@ export async function hasFirefoxStrings(locale) {
   return !!(await AddonManager.getAddonByID(packId(locale)))?.isActive;
 }
 
-// Downloads and installs Mozilla's language pack for this Firefox version.
+// Downloads and installs Mozilla's language pack for this Firefox version, trying once more after
+// a moment if that fails (a connection that dropped; a just-started browser busy installing).
 export async function installLanguage(locale) {
+  try {
+    return await installLanguageOnce(locale);
+  } catch (error) {
+    console.warn(`Astrelle: language pack ${locale}, trying again after`, error);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return installLanguageOnce(locale);
+  }
+}
+
+async function installLanguageOnce(locale) {
   const version = Services.appinfo.version;
   const template = Services.prefs.getStringPref(PACK_URL,
     "https://archive.mozilla.org/pub/firefox/releases/{version}esr/linux-x86_64/xpi/{locale}.xpi");
@@ -58,8 +69,8 @@ export async function installLanguage(locale) {
   return new Promise((resolve, reject) => {
     install.addListener({
       onInstallEnded: (_, addon) => resolve(addon),
-      onDownloadFailed: () => reject(new Error("download")),
-      onInstallFailed: () => reject(new Error("install")),
+      onDownloadFailed: () => reject(new Error(`download (${install.error})`)),
+      onInstallFailed: () => reject(new Error(`install (${install.error})`)),
       onDownloadCancelled: () => reject(new Error("cancelled")),
       onInstallCancelled: () => reject(new Error("cancelled")),
     });

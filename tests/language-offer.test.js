@@ -22,6 +22,9 @@ Services.prefs.setStringPref("intl.locale.requested", "eo");
 const offered = await offerLanguage(window);
 const bar = gBrowser.getNotificationBox().getNotificationWithValue("aether-language");
 const text = bar?.messageText?.textContent ?? bar?.label ?? "";
+const logged = [];
+const listener = { observe: message => { if (/langpack|language pack|Esperanto|AddonManager|XPIInstall|xpi/i.test(message.message ?? message.errorMessage ?? "")) logged.push(String(message.message ?? message.errorMessage).slice(0, 300)); } };
+Services.console.registerListener(listener);
 bar?.buttonContainer?.querySelector("button")?.click() ?? [...(bar?.querySelectorAll("button") ?? [])][0]?.click();
 let installed = false;
 for (let i = 0; i < 80 && !installed; i++) { // up to 20 s: slower machines (CI) take longer
@@ -30,10 +33,11 @@ for (let i = 0; i < 80 && !installed; i++) { // up to 20 s: slower machines (CI)
 }
 await wait(500);
 const restart = !!gBrowser.getNotificationBox().getNotificationWithValue("aether-language-restart");
+Services.console.unregisterListener(listener);
 // When it didn't install, why: the failure bar, and the error from installing it again directly.
 let why = null;
 if (!installed) {
-  why = { failedBar: !!gBrowser.getNotificationBox().getNotificationWithValue("aether-language-failed") };
+  why = { failedBar: !!gBrowser.getNotificationBox().getNotificationWithValue("aether-language-failed"), logged };
   try { await installLanguage("eo"); why.again = await hasFirefoxStrings("eo"); } catch (e) { why.error = String(e?.message ?? e); }
 }
 Services.prefs.clearUserPref("intl.locale.requested");
