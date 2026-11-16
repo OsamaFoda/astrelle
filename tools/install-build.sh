@@ -99,3 +99,15 @@ $DRY && exit 0
 echo
 echo "Installed. Open Astrelle as usual: your tabs, logins and settings should all be there."
 echo "If anything is wrong, close it and run: $0 --rollback"
+
+# Each update keeps another build and another profile copy. Nothing is deleted here; past the
+# newest two of each, say how much room they take, so they can be removed by hand.
+mapfile -t OLD < <(
+  ls -1dt "$APPS"/astrelle.previous-* 2>/dev/null | tail -n +3
+  ls -1dt "$BACKUPS"/astrelle-profile-* 2>/dev/null | tail -n +3
+)
+if [ "${#OLD[@]}" -gt 0 ]; then
+  echo
+  echo "Older copies from earlier updates take $(du -shc "${OLD[@]}" | tail -n1 | cut -f1); delete them when you're sure you won't need them:"
+  printf '  %s\n' "${OLD[@]}"
+fi
