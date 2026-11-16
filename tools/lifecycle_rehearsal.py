@@ -5,7 +5,7 @@ restarts of this checkout's interface:
   restart    Settings' "Restart Astrelle": every window, tab, workspace, pinned tab, tab group,
              compact mode and colour theme comes back as it was
   crash      the browser killed outright: crash recovery brings the same back
-  quit       a normal quit and start, with "Open previous windows and tabs" on
+  quit       a normal quit and start: Astrelle continues where you left off by default
 
     python3 tools/lifecycle_rehearsal.py [scenario ...]
 """
@@ -148,11 +148,11 @@ def scenario_crash(profile):
 
 
 def scenario_quit(profile):
-    proc, m = start(profile, {"browser.startup.page": 3})
+    proc, m = start(profile)
     js(m, SETUP)
     before = js(m, SNAPSHOT)
     quit(proc, m)
-    proc, m = start(profile, {"browser.startup.page": 3})
+    proc, m = start(profile)
     after = js(m, SNAPSHOT)
     quit(proc, m)
     diff = same(before, after)
