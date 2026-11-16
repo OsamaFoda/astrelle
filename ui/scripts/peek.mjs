@@ -30,6 +30,17 @@ export function init(win) {
   const doc = win.document;
   let overlay = null;
 
+  // The card sits over the page, not the sidebar (on either side of it); the dimming covers both.
+  function place() {
+    if (!overlay) return;
+    const page = doc.getElementById("tabbrowser-tabbox")?.getBoundingClientRect();
+    const whole = overlay.getBoundingClientRect();
+    if (!page?.width) return;
+    overlay.style.paddingLeft = `${Math.max(0, page.left - whole.left)}px`;
+    overlay.style.paddingRight = `${Math.max(0, whole.right - page.right)}px`;
+  }
+  win.addEventListener("resize", place);
+
   function close() {
     if (!overlay) return;
     const closing = overlay;
@@ -78,6 +89,7 @@ export function init(win) {
     card.append(bar, browser);
     overlay.append(card);
     doc.getElementById("browser").append(overlay);
+    place();
 
     // Keep the title bar showing where the peek is. A browser outside a tab gets no title
     // events, so update when the address changes and when a page finishes loading.
@@ -109,6 +121,8 @@ export function init(win) {
       triggeringPrincipal: data.triggeringPrincipal ?? Services.scriptSecurityManager.createNullPrincipal({}),
       policyContainer: data.policyContainer,
     });
+    // Keys go to the peek (scrolling, typing, Esc), not the page under it.
+    browser.focus();
   }
 
   win.addEventListener("keydown", event => {
@@ -117,6 +131,9 @@ export function init(win) {
       close();
     }
   }, true);
+
+  // A peek belongs to the page it was opened from: switching tabs (or workspaces) closes it.
+  win.gBrowser.tabContainer.addEventListener("TabSelect", close);
 
   win.aetherPeek = { open, close, get isOpen() { return Boolean(overlay); } };
 }

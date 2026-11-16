@@ -118,6 +118,8 @@ export function init(win) {
   }
 
   function moveTabs(tabs, id) {
+    // A split view's tabs move together: half of one left behind would be hidden in its workspace.
+    tabs = [...new Set(tabs.flatMap(tab => tab.splitview?.tabs ?? [tab]))];
     for (const tab of tabs) {
       if (tab.pinned) continue;
       if (tab.selected && id !== active()) {

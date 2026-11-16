@@ -797,7 +797,7 @@ notification-message::before {
 }
 
 .aether-peek-card {
-  width: min(1100px, 82vw);
+  width: min(1100px, calc(100% - 64px));
   height: 84vh;
   border-radius: 16px;
   overflow: clip;
