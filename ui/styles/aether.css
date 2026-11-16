@@ -474,7 +474,9 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
     /* Firefox draws the address bar in the top layer, out of reach of the toolbar's transform
      * and opacity, so it slides and fades on its own. */
     &[aether-urlbar-in-sidebar] #urlbar {
-      translate: calc(-1 * var(--aether-sidebar-width, 250px) - 24px) 0;
+      /* The same trip as the sidebar it rides on (and the same way: right to left too), so it
+       * doesn't trail it as they slide. */
+      translate: calc(var(--aether-dir) * (-1 * var(--aether-sidebar-width, 250px) - var(--aether-compact-inset) - 8px)) 0;
       opacity: 0;
       transition: var(--aether-conceal);
     }
@@ -558,13 +560,15 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
       position: fixed !important;
       inset: 0 0 auto 0;
       z-index: 15;
-      transform: translateY(calc(-100% - 8px));
+      /* Hidden (and faded out) as far up as the page comes down when it's out, so the toolbar,
+       * the address bar and the page slide together, the same distance. */
+      transform: translateY(calc(-100% + 8px));
       opacity: 0;
       transition: var(--aether-conceal);
     }
 
     #urlbar {
-      translate: 0 calc(-1 * var(--aether-toolbox-height, 80px) - 24px);
+      translate: 0 calc(-1 * var(--aether-toolbox-height, 80px) + 8px);
       opacity: 0;
       transition: var(--aether-conceal);
     }

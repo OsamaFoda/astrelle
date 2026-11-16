@@ -6,7 +6,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 const root = document.documentElement;
 const out = (vertical) => vertical
   ? document.getElementById("sidebar-container").getBoundingClientRect().right > 0
-  : document.getElementById("navigator-toolbox").getBoundingClientRect().bottom > 0;
+  : document.getElementById("navigator-toolbox").getBoundingClientRect().bottom > 8; // hidden, it rests faded out with 8 px over the page's top margin
 const notify = (box, value) => box.appendNotification(value, {
   label: "Astrelle prevented this site from opening a pop-up window.",
   priority: box.PRIORITY_WARNING_MEDIUM,

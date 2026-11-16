@@ -15,7 +15,7 @@ for (const vertical of [false, true]) {
   const onBar = ["sidebar-container", "navigator-toolbox"].some(id => document.getElementById(id).matches(":hover"));
   Services.prefs.setBoolPref("aether.compactMode", true);
   await wait(1500);
-  const gone = r => vertical ? r.right <= 0 : r.bottom <= 0;
+  const gone = r => vertical ? r.right <= 0 : r.bottom <= 8; // (hidden, the top bar rests faded out, 8 px down)
   const hidden = gone(bar.getBoundingClientRect());
   move(innerWidth / 2, innerHeight / 2);
   await wait(300);

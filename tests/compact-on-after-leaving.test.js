@@ -16,7 +16,7 @@ for (const vertical of [true, false]) {
   Services.prefs.setBoolPref("aether.compactMode", true);
   await wait(1500);
   const bars = document.getElementById(vertical ? "sidebar-container" : "navigator-toolbox").getBoundingClientRect();
-  const hidden = vertical ? bars.right <= 0 : bars.bottom <= 0;
+  const hidden = vertical ? bars.right <= 0 : bars.bottom <= 8; // (hidden, the top bar rests faded out, 8 px down)
   result[vertical ? "verticalHidden" : "topHidden"] = hidden;
   result.ok &&= hidden;
 }
