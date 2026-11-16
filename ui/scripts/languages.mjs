@@ -2,7 +2,7 @@
 // intl.locale.requested to "", which means just that), or the one chosen in Astrelle Settings.
 // Astrelle's own parts come from ui/locales/; Firefox's own menus and dialogs come from Mozilla's
 // language pack for that language, which Astrelle offers to download (signed by Mozilla, from its
-// release archive, about 1 MB) the first time it's missing, rather than making every download
+// release archive, under 1 MB) the first time it's missing, rather than making every download
 // carry all of them.
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
 const { setTimeout } = ChromeUtils.importESModule("resource://gre/modules/Timer.sys.mjs");

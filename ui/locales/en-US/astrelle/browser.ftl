@@ -64,7 +64,7 @@ astrelle-sip-used-invalid = Enter what your carrier says you've used, in GB.
 ## Languages
 
 # $language: a language's own name, e.g. العربية
-astrelle-language-offer = Astrelle's menus and dialogs are available in { $language }. Download them (about 1 MB)?
+astrelle-language-offer = Astrelle's menus and dialogs are available in { $language }. Download them (under 1 MB)?
 astrelle-language-download = Download
 astrelle-language-not-now = Not now
 astrelle-language-restart-to = Restart Astrelle to finish switching to { $language }.

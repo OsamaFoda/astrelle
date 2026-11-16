@@ -66,7 +66,7 @@ astrelle-sip-used-invalid = أدخل ما يقول مزوّد الخدمة إن�
 
 ## Languages
 
-astrelle-language-offer = قوائم Astrelle ونوافذه متاحة بـ{ $language }. هل تنزّلها (نحو ١ ميجا)؟
+astrelle-language-offer = قوائم Astrelle ونوافذه متاحة بـ{ $language }. هل تنزّلها (أقل من ١ ميجا)؟
 astrelle-language-download = تنزيل
 astrelle-language-not-now = ليس الآن
 astrelle-language-restart-to = أعد تشغيل Astrelle لإكمال التحويل إلى { $language }.
