@@ -1390,6 +1390,163 @@ split-view-footer[aether-own-page] {
   display: none !important;
 }
 
+/* ---- Media controls in the sidebar (scripts/media-controls.mjs) ---- */
+
+.aether-media {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 8px;
+  padding: 8px 8px 10px;
+  border-radius: 14px;
+  overflow: hidden;
+  color: var(--aether-text);
+  background: var(--aether-sheen), var(--aether-glass);
+  box-shadow: var(--aether-rim), var(--aether-shadow);
+  font-size: 12px;
+}
+
+.aether-media[hidden] {
+  display: none;
+}
+
+:root[aether-liquid] .aether-media {
+  background: var(--aether-liquid-fill);
+  box-shadow: var(--aether-liquid-light), var(--aether-liquid-drop);
+}
+
+.aether-media-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.aether-media-art {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* A tab's icon rather than a picture of what's playing: small, on a tile. */
+.aether-media-art[icon] {
+  padding: 9px;
+  box-sizing: border-box;
+  object-fit: contain;
+  background: var(--aether-glass-hover);
+  -moz-context-properties: fill;
+  fill: currentColor;
+}
+
+.aether-media-words {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.aether-media-title,
+.aether-media-artist {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.aether-media-title {
+  font-weight: 600;
+}
+
+.aether-media-artist {
+  opacity: 0.7;
+}
+
+/* Previous on the left and next on the right in every language, as media controls are. */
+.aether-media-controls {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  direction: ltr;
+}
+
+.aether-media-button {
+  appearance: none;
+  flex: none;
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.aether-media-button[hidden] {
+  display: none;
+}
+
+.aether-media-button:hover {
+  background: var(--aether-glass-hover);
+}
+
+.aether-media-button::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  background-color: currentColor;
+  mask: var(--icon) center / contain no-repeat;
+}
+
+.aether-media-close {
+  align-self: flex-start;
+  width: 22px;
+  height: 22px;
+  opacity: 0.6;
+}
+
+.aether-media-close::before { width: 12px; height: 12px; --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 4l8 8M12 4l-8 8' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.aether-media-previous::before { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 3h2v10h-2z M13 3.5v9L6.5 8z' fill='black'/%3E%3C/svg%3E"); }
+.aether-media-next::before { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M10.5 3h2v10h-2z M3 3.5v9L9.5 8z' fill='black'/%3E%3C/svg%3E"); }
+.aether-media-play::before { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 3.5v9l7.5-4.5z' fill='black'/%3E%3C/svg%3E"); }
+.aether-media-play[playing]::before { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 3h2.5v10H4.5zM9 3h2.5v10H9z' fill='black'/%3E%3C/svg%3E"); }
+.aether-media-mute::before { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 6h2.5L8 3v10L4.5 10H2z' fill='black'/%3E%3Cpath d='M10.5 5.5a3.5 3.5 0 0 1 0 5M12.5 3.5a6.3 6.3 0 0 1 0 9' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.aether-media-mute[muted]::before { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 6h2.5L8 3v10L4.5 10H2z' fill='black'/%3E%3Cpath d='M10.5 6l4 4M14.5 6l-4 4' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E"); }
+
+/* Play and pause, the one used most, stands out. */
+.aether-media-play {
+  width: 36px;
+  border-radius: 999px;
+  color: var(--aether-accent);
+}
+
+/* How far it's got, a thin line along the bottom edge (left to right in every language, as
+ * the buttons). */
+.aether-media-track {
+  direction: ltr;
+  position: absolute;
+  inset: auto 10px 4px;
+  height: 2px;
+  border-radius: 1px;
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.aether-media-track[hidden] {
+  display: none;
+}
+
+.aether-media-bar {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: var(--aether-accent);
+}
+
 /* ---- Reduce motion (the system's "reduce animation" setting) ----
  * Nothing springs, swells, slides or shrinks: the springs take no time, compact mode's bars
  * and the page arrive and leave in place, fading, and a peek appears and goes without its scale.
