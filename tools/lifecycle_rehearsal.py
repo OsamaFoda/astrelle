@@ -1,7 +1,7 @@
 """Rehearses starting and quitting Astrelle on a throwaway profile (never yours), across real
 restarts of this checkout's interface:
 
-  first-run  a new profile opens the welcome once, and never again
+  first-run  a new profile opens the welcome once, and never again (once closed)
   restart    Settings' "Restart Astrelle": every window, tab, workspace, pinned tab, tab group,
              compact mode and colour theme comes back as it was
   crash      the browser killed outright: crash recovery brings the same back
@@ -104,6 +104,9 @@ def same(before, after):
 def scenario_first_run(profile):
     proc, m = start(profile)
     first = js(m, "return gBrowser.tabs.map(t => t.linkedBrowser.currentURI.spec);")
+    # Closed, or Astrelle would bring it back as one of the tabs you left open.
+    js(m, 'for (const t of gBrowser.tabs) if (t.linkedBrowser.currentURI.spec.includes("welcome")) gBrowser.removeTab(t); '
+          'await new Promise(r => setTimeout(r, 1000)); return true;')
     quit(proc, m)
     proc, m = start(profile)
     second = js(m, "return gBrowser.tabs.map(t => t.linkedBrowser.currentURI.spec);")

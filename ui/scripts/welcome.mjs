@@ -9,12 +9,14 @@ import { SIP_ID } from "./sip.mjs";
 const PREF = "aether.welcome.shown";
 const WELCOME = "chrome://aether/content/welcome/welcome.html";
 
-export async function init(win) {
+// Not awaited by the window's other scripts: asking for Sip takes most of a second on a first start.
+export function init(win) {
   if (Services.prefs.getBoolPref(PREF, false)) return;
   Services.prefs.setBoolPref(PREF, true); // before anything async, so a second window doesn't open it too
 
-  const sip = await AddonManager.getAddonByID(SIP_ID);
-  if (sip?.isActive) await sip.disable();
-
-  win.gBrowser.selectedTab = win.gBrowser.addTrustedTab(WELCOME);
+  (async () => {
+    const sip = await AddonManager.getAddonByID(SIP_ID);
+    if (sip?.isActive) await sip.disable();
+    win.gBrowser.selectedTab = win.gBrowser.addTrustedTab(WELCOME);
+  })().catch(error => console.error("Astrelle: welcome", error));
 }

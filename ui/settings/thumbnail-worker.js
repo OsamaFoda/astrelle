@@ -1,9 +1,29 @@
 // Makes the small wallpaper copies for Astrelle Settings' tiles (settings.mjs), away from the page
 // so it stays smooth while they're made: reads a picture, scales it to 320px wide, saves a JPEG.
 
+const TYPES = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", avif: "image/avif", gif: "image/gif" };
+
+// The picture, decoded off the main thread: ImageDecoder decodes on Firefox's image threads, while
+// createImageBitmap, in a worker, hands the decoding back to the main thread and stalls the browser
+// (a third of a second for a large photo). createImageBitmap stays for what ImageDecoder can't read.
+async function decode(path) {
+  const bytes = await IOUtils.read(path);
+  const type = TYPES[path.split(".").pop().toLowerCase()];
+  if (typeof ImageDecoder === "function" && type && await ImageDecoder.isTypeSupported(type)) {
+    const decoder = new ImageDecoder({ data: bytes, type });
+    try {
+      const { image } = await decoder.decode();
+      return Object.assign(image, { width: image.displayWidth, height: image.displayHeight });
+    } finally {
+      decoder.close();
+    }
+  }
+  return createImageBitmap(new Blob([bytes]));
+}
+
 onmessage = async ({ data: { id, path, copy, frosted } }) => {
   try {
-    const picture = await createImageBitmap(new Blob([await IOUtils.read(path)]));
+    const picture = await decode(path);
     const canvas = new OffscreenCanvas(320, Math.round(320 * picture.height / picture.width));
     const context = canvas.getContext("2d");
     if (frosted) {
