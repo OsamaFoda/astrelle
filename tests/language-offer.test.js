@@ -1,7 +1,7 @@
 // timeout: 60
 // When the system's language has no Firefox strings here, Astrelle offers Mozilla's language pack
 // once, installs it from the archive on Download (here a local stand-in), and asks to restart.
-const { offerLanguage, hasFirefoxStrings } = ChromeUtils.importESModule("chrome://aether/content/scripts/languages.mjs");
+const { offerLanguage, hasFirefoxStrings, installLanguage } = ChromeUtils.importESModule("chrome://aether/content/scripts/languages.mjs");
 const wait = ms => new Promise(r => setTimeout(r, ms));
 // A stand-in language pack, as Mozilla's archive serves them.
 const dir = PathUtils.join(PathUtils.profileDir, "langpack-eo");
@@ -30,5 +30,11 @@ for (let i = 0; i < 80 && !installed; i++) { // up to 20 s: slower machines (CI)
 }
 await wait(500);
 const restart = !!gBrowser.getNotificationBox().getNotificationWithValue("aether-language-restart");
+// When it didn't install, why: the failure bar, and the error from installing it again directly.
+let why = null;
+if (!installed) {
+  why = { failedBar: !!gBrowser.getNotificationBox().getNotificationWithValue("aether-language-failed") };
+  try { await installLanguage("eo"); why.again = await hasFirefoxStrings("eo"); } catch (e) { why.error = String(e?.message ?? e); }
+}
 Services.prefs.clearUserPref("intl.locale.requested");
-return { ok: offered && installed && restart && /Esperanto|esperanto/.test(text), offered, installed, restart, text };
+return { ok: offered && installed && restart && /Esperanto|esperanto/.test(text), offered, installed, restart, text, why };
