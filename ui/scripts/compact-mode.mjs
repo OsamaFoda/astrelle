@@ -60,7 +60,13 @@ export function init(win) {
       root.setAttribute("aether-leaving", "");
       win.clearTimeout(leaving);
       leaving = win.setTimeout(() => root.removeAttribute("aether-leaving"), 700);
+      // Switched on with the mouse on the bars (its button, a menu in them): they go anyway, and
+      // the mouse being there doesn't bring them back until it has left them (styles/aether.css,
+      // [aether-dismissed]). Otherwise they'd stay out until the mouse moved off them.
+      const bars = ["sidebar-container", "navigator-toolbox"].map(id => doc.getElementById(id));
+      root.toggleAttribute("aether-dismissed", bars.some(bar => bar?.matches(":hover")));
     }
+    if (!compact) root.removeAttribute("aether-dismissed");
     root.toggleAttribute("aether-compact", compact);
     root.toggleAttribute("aether-vertical", Services.prefs.getBoolPref(VERTICAL_TABS, false));
     doc.getElementById(WIDGET)?.toggleAttribute("checked", Services.prefs.getBoolPref(PREF, false));
@@ -151,6 +157,13 @@ export function init(win) {
       for (const { popup, anchor } of closedByLeaving.splice(0)) reopen(popup, anchor);
     }, 300);
   });
+
+  // Dismissed bars (switched on from them) answer the mouse again once it's somewhere else, or at
+  // once for the address bar's focus (Ctrl+L) or a menu opened from them.
+  const undismiss = () => root.removeAttribute("aether-dismissed");
+  win.addEventListener("mousemove", e => root.hasAttribute("aether-dismissed") && !inBars(e.target) && undismiss(), true);
+  win.addEventListener("popupshown", e => inBars(e.target.triggerNode ?? e.target.anchorNode) && undismiss(), true);
+  doc.getElementById("urlbar")?.addEventListener("focus", undismiss, true);
 
   // Bars kept out stay out until you've been and gone from them, clicked elsewhere (the address
   // bar losing focus, below), or switched tabs.

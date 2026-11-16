@@ -460,7 +460,7 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
 
     /* Not while a sidebar panel is open: that has the bars out already, and the page beside it
      * (below), so sliding the page too would open a gap. */
-    &:not(:has(#sidebar-box:not([hidden]))):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #sidebar-container:hover, #navigator-toolbox:hover, #urlbar[focused]:is([usertyping], [open], [aether-just-focused]),
+    &:not([aether-dismissed]):not(:has(#sidebar-box:not([hidden]))):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #sidebar-container:hover, #navigator-toolbox:hover, #urlbar[focused]:is([usertyping], [open], [aether-just-focused]),
           #navigator-toolbox [open="true"], :is(#notification-popup, #identity-popup, #permission-popup, #protections-popup, #appMenu-popup, #downloadsPanel,
           #unified-extensions-panel, #widget-overflow, #customizationui-widget-panel, #editBookmarkPanel)[panelopen])) {
       #sidebar-container,
@@ -556,7 +556,7 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
       transition: var(--aether-conceal);
     }
 
-    &:is([aether-hold], [aether-kept], :has(#aether-edge:hover, #navigator-toolbox:hover, #urlbar[focused]:is([usertyping], [open], [aether-just-focused]),
+    &:not([aether-dismissed]):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #navigator-toolbox:hover, #urlbar[focused]:is([usertyping], [open], [aether-just-focused]),
           #navigator-toolbox [open="true"], :is(#notification-popup, #identity-popup, #permission-popup, #protections-popup, #appMenu-popup, #downloadsPanel,
           #unified-extensions-panel, #widget-overflow, #customizationui-widget-panel, #editBookmarkPanel)[panelopen])) {
       :is(#navigator-toolbox, #urlbar) {
@@ -616,7 +616,7 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
     transition: var(--aether-conceal);
   }
 
-  &:not(:has(#sidebar-box:not([hidden]))):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #sidebar-container:hover)) {
+  &:not([aether-dismissed]):not(:has(#sidebar-box:not([hidden]))):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #sidebar-container:hover)) {
     #sidebar-container {
       transform: none;
       transition: var(--aether-reveal);
