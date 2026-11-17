@@ -1405,11 +1405,10 @@ split-view-footer[aether-own-page] {
   display: none !important;
 }
 
-/* ---- Compact mode floating over the page (aether.compactReveal "over") ----
- * The sidebar, and the toolbar riding on it, come in above the page instead of pushing it aside.
- * Nothing can blur a web page behind them, so they're solid there, or in Frosted Glass over a
- * wallpaper frosted with its frosted copy (as the address bar's list is), with a shadow to lift
- * them off the page. */
+/* ---- Compact mode hovering over the page (aether.compactReveal "over") ----
+ * The sidebar, and the toolbar riding on it, come in above the page instead of sliding it aside,
+ * with a shadow to lift them off it: solid in Standard, frosted with the page itself in Frosted
+ * Glass (below). */
 :root[aether-compact][aether-over][aether-vertical]:not([inFullscreen], [inDOMFullscreen]) {
   #sidebar-container {
     z-index: 3;
@@ -1421,12 +1420,30 @@ split-view-footer[aether-own-page] {
     z-index: 4;
   }
 
-  &[aether-liquid][aether-wallpaper] #sidebar-container {
-    background: linear-gradient(var(--aether-frost), var(--aether-frost)),
-                var(--aether-wallpaper-frosted, none) center / cover no-repeat fixed,
-                var(--aether-panel) !important;
+  /* In Frosted Glass, what's behind it is the website: the strip of it under the sidebar, small and
+   * stretched back out, so blurred (scripts/hover-glass.mjs), under the frost. Solid until the
+   * first picture comes. */
+  &[aether-liquid] #sidebar-container {
     backdrop-filter: none;
   }
+
+  &[aether-liquid][aether-hover-backdrop] #sidebar-container {
+    background: linear-gradient(var(--aether-frost), var(--aether-frost)),
+                -moz-element(#aether-hover-backdrop) var(--aether-hover-at, 0 0) / var(--aether-hover-size, 100% 100%) no-repeat,
+                var(--aether-panel) !important;
+  }
+}
+
+/* With tabs on top, the toolbar hovering over the page's top edge: the same, under its own glass. */
+:root[aether-compact][aether-over][aether-liquid]:not([aether-vertical], [inFullscreen], [inDOMFullscreen]) #navigator-toolbox {
+  background: var(--aether-sheen), var(--aether-panel) !important;
+  box-shadow: var(--aether-shadow);
+}
+
+:root[aether-compact][aether-over][aether-liquid][aether-hover-backdrop]:not([aether-vertical], [inFullscreen], [inDOMFullscreen]) #navigator-toolbox {
+  background: linear-gradient(var(--aether-frost), var(--aether-frost)),
+              -moz-element(#aether-hover-backdrop) var(--aether-hover-at, 0 0) / var(--aether-hover-size, 100% 100%) no-repeat,
+              var(--aether-panel) !important;
 }
 
 /* ---- Media controls in the sidebar (scripts/media-controls.mjs) ---- */
