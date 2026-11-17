@@ -57,6 +57,7 @@ astrelle-welcome-done-sip = Sip açık. Bunu istediğiniz zaman Astrelle ayarlar
 astrelle-welcome-done-none = Korumayı ya da Sip’i istediğiniz zaman Astrelle ayarlarından açabilirsiniz.
 astrelle-choose-wallpaper = Duvar kâğıdı seçin
 astrelle-wallpaper-astrelle = Astrelle
+astrelle-wallpaper-calm = Sakin gökyüzü
 astrelle-wallpaper-theme = Temanız
 astrelle-wallpaper-desktop = Masaüstünüz
 astrelle-choose-picture = Resim seçin…

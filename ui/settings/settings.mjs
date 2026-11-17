@@ -7,7 +7,7 @@ const { FileUtils } = ChromeUtils.importESModule("resource://gre/modules/FileUti
 import { follow } from "../scripts/palette.mjs";
 import { setUpIconPicker } from "../scripts/icon-picker.mjs";
 import { iconURL, inFlatpak } from "../scripts/app-icon.mjs";
-import { ASTRELLE_WALLPAPER, desktopWallpaper } from "../scripts/wallpaper.mjs";
+import { ASTRELLE_WALLPAPER, CALM_WALLPAPER, desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
 import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings, readSipSummary, readSipYoutube, saveSipYoutube, saveSipUsedSoFar, openSip, showSipButton } from "../scripts/choices.mjs";
 import { tr } from "../scripts/l10n.mjs";
@@ -76,7 +76,7 @@ for (const pref of WATCHED) Services.prefs.addObserver(pref, refresh);
 
 // ---- Wallpapers ----
 
-const WALLPAPER = "aether.wallpaper"; // "" for Astrelle's, "theme" for the theme's, "desktop", or a file: URL
+const WALLPAPER = "aether.wallpaper"; // "" for Astrelle's, "astrelle-calm", "theme" for the theme's, "desktop", or a file: URL
 
 function wallpaperTile(url, image, label) {
   const tile = document.createElement("button");
@@ -116,11 +116,15 @@ function wallpaperChanged() {
 }
 Services.prefs.addObserver(WALLPAPER, wallpaperChanged);
 
-// Astrelle's own wallpaper, the theme's, the desktop's (if it's a picture a page can show: not GNOME's .jxl
+// Astrelle's own wallpapers, the theme's, the desktop's (if it's a picture a page can show: not GNOME's .jxl
 // ones or a slideshow), the pictures in ~/Pictures/Wallpapers, one chosen from elsewhere, then
 // "Choose a picture…".
 async function buildWallpapers() {
-  const tiles = [wallpaperTile("", ASTRELLE_WALLPAPER, tr("astrelle-wallpaper-astrelle")), wallpaperTile("theme", null, tr("astrelle-wallpaper-theme"))];
+  const tiles = [
+    wallpaperTile("", ASTRELLE_WALLPAPER, tr("astrelle-wallpaper-astrelle")),
+    wallpaperTile("astrelle-calm", CALM_WALLPAPER, tr("astrelle-wallpaper-calm")),
+    wallpaperTile("theme", null, tr("astrelle-wallpaper-theme")),
+  ];
   const desktop = await desktopWallpaper(matchMedia("(prefers-color-scheme: dark)").matches);
   if (desktop) tiles.push(wallpaperTile("desktop", desktop, tr("astrelle-wallpaper-desktop")));
   const urls = await wallpaperFiles();

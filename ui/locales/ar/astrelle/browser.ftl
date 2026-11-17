@@ -60,6 +60,7 @@ astrelle-welcome-done-sip = سِب يعمل. يمكنك تغيير ذلك في �
 astrelle-welcome-done-none = يمكنك تشغيل الحماية أو سِب في أي وقت من إعدادات Astrelle.
 astrelle-choose-wallpaper = اختر خلفية
 astrelle-wallpaper-astrelle = Astrelle
+astrelle-wallpaper-calm = سماء هادئة
 astrelle-wallpaper-theme = سمتك
 astrelle-wallpaper-desktop = سطح مكتبك
 astrelle-choose-picture = اختر صورة…

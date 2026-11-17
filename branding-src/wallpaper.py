@@ -7,7 +7,8 @@ The icons' drawings are taken from their files (ui/icons/), so the wallpaper alw
         -quality 90 ui/wallpapers/astrelle.jpg
 
 (Rendered at twice its size, 4K, less PAD on each side.) Astrelle shows it as its default
-wallpaper (scripts/wallpaper.mjs).
+wallpaper (scripts/wallpaper.mjs). Its calm sky, wallpapers/astrelle-calm.jpg, is the same drawn
+with --without=comets,galaxy.
 """
 import math
 import random
@@ -63,7 +64,7 @@ def stars(rng, n):
     return "\n".join(out)
 
 
-def main(icons, out):
+def main(icons, out, without=()):
     rng = random.Random(7)
     a_defs, aurora = part(icons, "aurora", "a-")
     e_defs, eclipse = part(icons, "eclipse", "e-")
@@ -72,11 +73,13 @@ def main(icons, out):
     # The aurora's hills, the ground the sky sits over, are drawn once, below its curtains.
     ground = next(l for l in aurora.splitlines() if "url(#a-ground)" in l)
     curtains = aurora.replace(ground, "")
-    comets = [  # (x, y of the head, size): falling the same way, as a shower does
-        (1180, 150, .62), (1290, 420, .34), (930, 70, .30), (1520, 560, .22), (720, 250, .2),
+    # (x, y of the head, size): falling the same way, as a shower does, down to the left. The
+    # icon's comet climbs (head up and right), so each is turned round: head first, tail behind.
+    comets = [
+        (1060, 330, .62), (1290, 430, .34), (860, 170, .30), (1500, 560, .22), (610, 300, .2),
     ]
     shower = "\n".join(
-        f'<g transform="translate({x} {y}) scale({s}) translate(-346 -166)" opacity="{.95 if s > .5 else .8}">{comet}</g>'
+        f'<g transform="translate({x} {y}) scale({s}) rotate(180) translate(-346 -166)" opacity="{.95 if s > .5 else .8}">{comet}</g>'
         for x, y, s in comets)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="{-PAD} 0 {W + 2 * PAD} {H}" width="{W + 2 * PAD}" height="{H}">
   <!-- Astrelle's wallpaper: its four icons as one night sky. Drawn by wallpaper.py from ui/icons/. -->
@@ -102,11 +105,11 @@ def main(icons, out):
   <rect width="{W}" height="{H}" fill="url(#w-haze)"/>
   {stars(rng, 520)}
   <!-- The galaxy, far off. -->
-  <g transform="translate(330 215) scale(.62) translate(-256 -256)" opacity=".9">{galaxy}</g>
+  {"" if "galaxy" in without else f'<g transform="translate(330 215) scale(.62) translate(-256 -256)" opacity=".9">{galaxy}</g>'}
   <!-- The eclipse, the sun or moon. -->
   <g transform="translate(1600 210) scale(.78) translate(-256 -256)">{eclipse}</g>
   <!-- The comets, a shower. -->
-  {shower}
+  {"" if "comets" in without else shower}
   <!-- The aurora: its curtains, stretched into waves across the sky, over its hills. -->
   <g transform="translate(-560 300) scale(5.8 2.05) translate(-20 -50)" opacity=".9">{curtains}</g>
   <g transform="translate(-60 120) scale(4.15 2.2) translate(-20 0)">{ground}</g>
@@ -116,4 +119,6 @@ def main(icons, out):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    # e.g. --without=comets,galaxy for a quieter sky
+    without = next((a.split("=", 1)[1].split(",") for a in sys.argv[3:] if a.startswith("--without=")), ())
+    main(sys.argv[1], sys.argv[2], without)

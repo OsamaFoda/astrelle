@@ -58,6 +58,7 @@ astrelle-welcome-done-sip = Sip ist eingeschaltet. Sie können das jederzeit in 
 astrelle-welcome-done-none = Sie können Schutz oder Sip jederzeit in den Astrelle-Einstellungen einschalten.
 astrelle-choose-wallpaper = Hintergrundbild wählen
 astrelle-wallpaper-astrelle = Astrelle
+astrelle-wallpaper-calm = Ruhiger Himmel
 astrelle-wallpaper-theme = Ihr Farbschema
 astrelle-wallpaper-desktop = Ihr Desktop
 astrelle-choose-picture = Bild wählen…

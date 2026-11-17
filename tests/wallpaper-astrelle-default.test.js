@@ -1,7 +1,7 @@
 // timeout: 60
 // Frosted Glass on a wallpaper: by default it's Astrelle's own (its icons as one night sky), on the
 // window and on the home page alike; Astrelle Settings lists it first, chosen, with its picture,
-// then the theme's, which still works when chosen. The home page's text is light on its dark sky.
+// then its calm sky and the theme's, which work when chosen. The home page's text is light on its dark sky.
 const wait = ms => new Promise(r => setTimeout(r, ms));
 Services.prefs.setBoolPref("aether.liquidGlass", true);
 Services.prefs.clearUserPref("aether.wallpaper");
@@ -27,14 +27,19 @@ const sdoc = settings.linkedBrowser.contentDocument;
 const tiles = [...sdoc.querySelectorAll("#wallpapers [data-url]")];
 const img = tiles[0]?.querySelector("img");
 for (let i = 0; i < 40 && !(img?.complete && img.naturalWidth); i++) await wait(250);
-out.tiles = tiles.slice(0, 2).map(t => `${t.dataset.url || "(default)"}:${t.querySelector("span")?.textContent}:${t.getAttribute("aria-pressed")}`);
+out.tiles = tiles.slice(0, 3).map(t => `${t.dataset.url || "(default)"}:${t.querySelector("span")?.textContent}:${t.getAttribute("aria-pressed")}`);
 out.thumbnailSmall = img?.naturalWidth > 0 && img.naturalWidth < 1000;
 tiles[1].click();
+await wait(800);
+out.calmChosen = [Services.prefs.getStringPref("aether.wallpaper", ""), root.style.getPropertyValue("--aether-wallpaper").split("/").pop(),
+  page().style.getPropertyValue("--aether-wallpaper").split("/").pop()];
+tiles[2].click();
 await wait(800);
 out.themeChosen = [Services.prefs.getStringPref("aether.wallpaper", ""), root.getAttribute("aether-wallpaper"), page().getAttribute("aether-wallpaper")];
 Services.prefs.clearUserPref("aether.wallpaper");
 Services.prefs.clearUserPref("aether.liquidGlass");
 const ok = out.window.join() === "picture,astrelle.jpg\")" && out.home.join() === "picture,astrelle.jpg\")" && out.frosted && out.tone.join() === "dark,light text"
-  && out.tiles.join() === "(default):Astrelle:true,theme:Your theme:false" && out.thumbnailSmall
+  && out.tiles.join() === "(default):Astrelle:true,astrelle-calm:Calm sky:false,theme:Your theme:false"
+  && out.calmChosen.join() === 'astrelle-calm,astrelle-calm.jpg"),astrelle-calm.jpg")' && out.thumbnailSmall
   && out.themeChosen.join() === "theme,theme,theme";
 return { ok, ...out };

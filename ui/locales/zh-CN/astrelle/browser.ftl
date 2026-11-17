@@ -57,6 +57,7 @@ astrelle-welcome-done-sip = Sip 已开启。你可以随时在 Astrelle 设置�
 astrelle-welcome-done-none = 你可以随时在 Astrelle 设置中开启保护或 Sip。
 astrelle-choose-wallpaper = 选择壁纸
 astrelle-wallpaper-astrelle = Astrelle
+astrelle-wallpaper-calm = 宁静夜空
 astrelle-wallpaper-theme = 你的主题
 astrelle-wallpaper-desktop = 你的桌面
 astrelle-choose-picture = 选择图片…

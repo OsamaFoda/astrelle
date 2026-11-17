@@ -58,6 +58,7 @@ astrelle-welcome-done-sip = Sip est activé. Vous pouvez changer cela à tout mo
 astrelle-welcome-done-none = Vous pouvez activer la protection ou Sip à tout moment dans les paramètres d’Astrelle.
 astrelle-choose-wallpaper = Choisir un fond d’écran
 astrelle-wallpaper-astrelle = Astrelle
+astrelle-wallpaper-calm = Ciel paisible
 astrelle-wallpaper-theme = Votre thème
 astrelle-wallpaper-desktop = Votre bureau
 astrelle-choose-picture = Choisir une image…

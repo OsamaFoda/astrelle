@@ -3,10 +3,11 @@
 // what shares the browser area with the glass, never what's behind the window, so over the
 // wallpaper the sidebar is real frosted glass, on any computer. The wallpaper is one made from
 // Astrelle's own (its icons as one night sky, the default: wallpapers/astrelle.jpg, drawn by
-// branding-src/wallpaper.py), one made from the colour theme (styles/palettes.css, --p-wallpaper),
+// branding-src/wallpaper.py; or its calm sky, the same without the comets and the galaxy), one
+// made from the colour theme (styles/palettes.css, --p-wallpaper),
 // the desktop's own (asked of GNOME, and again when the window comes forward), or a picture chosen
-// in Astrelle Settings. Prefs: aether.background, and aether.wallpaper ("" for Astrelle's, "theme"
-// for the theme's, "desktop", or a file: URL). The look is in aether.css (:root[aether-wallpaper]).
+// in Astrelle Settings. Prefs: aether.background, and aether.wallpaper ("" for Astrelle's,
+// "astrelle-calm" for its calm sky, "theme" for the theme's, "desktop", or a file: URL). The look is in aether.css (:root[aether-wallpaper]).
 
 const { Subprocess } = ChromeUtils.importESModule("resource://gre/modules/Subprocess.sys.mjs");
 import { thumbnail, wallpaperFiles } from "./thumbnails.mjs";
@@ -15,6 +16,7 @@ const BACKGROUND = "aether.background";
 const WALLPAPER = "aether.wallpaper";
 const PREFS = [BACKGROUND, WALLPAPER, "aether.liquidGlass"];
 export const ASTRELLE_WALLPAPER = "chrome://aether/content/wallpapers/astrelle.jpg";
+export const CALM_WALLPAPER = "chrome://aether/content/wallpapers/astrelle-calm.jpg";
 
 // GNOME's wallpaper for the light or dark look, as a file: URL, asked of GNOME's own `gsettings`
 // (this Firefox has no reader of its own); null if there isn't one, or it's a slideshow (an .xml
@@ -39,6 +41,7 @@ export async function desktopWallpaper(dark) {
 export async function wallpaperURL(win) {
   const chosen = Services.prefs.getStringPref(WALLPAPER, "");
   if (chosen === "desktop") return (await desktopWallpaper(win.matchMedia("(prefers-color-scheme: dark)").matches)) || "theme";
+  if (chosen === "astrelle-calm") return CALM_WALLPAPER;
   return chosen || ASTRELLE_WALLPAPER;
 }
 

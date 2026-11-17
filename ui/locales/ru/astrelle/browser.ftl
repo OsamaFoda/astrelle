@@ -60,6 +60,7 @@ astrelle-welcome-done-sip = Sip включён. Это можно изменит
 astrelle-welcome-done-none = Включить защиту или Sip можно в любой момент в настройках Astrelle.
 astrelle-choose-wallpaper = Выбрать обои
 astrelle-wallpaper-astrelle = Astrelle
+astrelle-wallpaper-calm = Тихое небо
 astrelle-wallpaper-theme = Ваша тема
 astrelle-wallpaper-desktop = Ваш рабочий стол
 astrelle-choose-picture = Выбрать изображение…
