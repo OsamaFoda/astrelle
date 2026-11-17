@@ -41,7 +41,7 @@ function refresh() {
   $("wallpapers").hidden = CHOICES.background.get() !== "wallpaper";
   let wallpaper = Services.prefs.getStringPref(WALLPAPER, "");
   // With no desktop picture to show (no tile for it), "desktop" shows the theme's.
-  if (wallpaper === "desktop" && !$("wallpapers").querySelector('[data-url="desktop"]')) wallpaper = "theme";
+  if (wallpaper === "theme" || (wallpaper === "desktop" && !$("wallpapers").querySelector('[data-url="desktop"]'))) wallpaper = "";
   for (const tile of $("wallpapers").querySelectorAll("[data-url]")) {
     tile.setAttribute("aria-pressed", tile.dataset.url === wallpaper);
   }
@@ -76,11 +76,11 @@ for (const pref of WATCHED) Services.prefs.addObserver(pref, refresh);
 
 // ---- Wallpapers ----
 
-const WALLPAPER = "aether.wallpaper"; // "" for Astrelle's, "astrelle-calm", "theme" for the theme's, "desktop", or a file: URL
+const WALLPAPER = "aether.wallpaper"; // "" for the theme's, "astrelle", "astrelle-calm", "desktop", or a file: URL
 
 function wallpaperTile(url, image, label) {
   const tile = document.createElement("button");
-  tile.className = url === "theme" ? "wallpaper theme" : "wallpaper";
+  tile.className = url ? "wallpaper" : "wallpaper theme";
   tile.dataset.url = url;
   tile.title = label || decodeURIComponent(url.split("/").pop());
   if (image) {
@@ -116,14 +116,14 @@ function wallpaperChanged() {
 }
 Services.prefs.addObserver(WALLPAPER, wallpaperChanged);
 
-// Astrelle's own wallpapers, the theme's, the desktop's (if it's a picture a page can show: not GNOME's .jxl
+// The theme's own wallpaper, Astrelle's two, the desktop's (if it's a picture a page can show: not GNOME's .jxl
 // ones or a slideshow), the pictures in ~/Pictures/Wallpapers, one chosen from elsewhere, then
 // "Choose a picture…".
 async function buildWallpapers() {
   const tiles = [
-    wallpaperTile("", ASTRELLE_WALLPAPER, tr("astrelle-wallpaper-astrelle")),
+    wallpaperTile("", null, tr("astrelle-wallpaper-theme")),
+    wallpaperTile("astrelle", ASTRELLE_WALLPAPER, tr("astrelle-wallpaper-astrelle")),
     wallpaperTile("astrelle-calm", CALM_WALLPAPER, tr("astrelle-wallpaper-calm")),
-    wallpaperTile("theme", null, tr("astrelle-wallpaper-theme")),
   ];
   const desktop = await desktopWallpaper(matchMedia("(prefers-color-scheme: dark)").matches);
   if (desktop) tiles.push(wallpaperTile("desktop", desktop, tr("astrelle-wallpaper-desktop")));

@@ -6,8 +6,8 @@ The icons' drawings are taken from their files (ui/icons/), so the wallpaper alw
     magick -background none -density 192 /tmp/astrelle.svg -crop 3840x2160+480+0 +repage \
         -quality 90 ui/wallpapers/astrelle.jpg
 
-(Rendered at twice its size, 4K, less PAD on each side.) Astrelle shows it as its default
-wallpaper (scripts/wallpaper.mjs). Its calm sky, wallpapers/astrelle-calm.jpg, is the same drawn
+(Rendered at twice its size, 4K, less PAD on each side.) It's one of the wallpapers Astrelle
+Settings offers (scripts/wallpaper.mjs). Its calm sky, wallpapers/astrelle-calm.jpg, is the same drawn
 with --without=comets,galaxy.
 """
 import math

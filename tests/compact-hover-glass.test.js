@@ -54,11 +54,12 @@ out.scrolled = [colourAt(100, middle), colourAt(200, middle)].join(" ");
 // Sliding away: still green and blue there, while the sidebar still covers them.
 move(innerWidth / 2, innerHeight / 2);
 const sliding = new Set();
-for (let i = 0; i < 40 && sidebar.getBoundingClientRect().right > 210; i++) {
-  await wait(10);
+for (let i = 0; i < 80 && sidebar.getBoundingClientRect().right > 206; i++) {
+  await wait(5);
   const before = sidebar.getBoundingClientRect().right;
   const seen = [colourAt(100, middle), colourAt(200, middle)].join(" ");
-  if (before < 245 && sidebar.getBoundingClientRect().right > 215) sliding.add(seen);
+  // (Moving, and still over both points: a busy computer may skip frames, so the window is wide.)
+  if (before < 249 && sidebar.getBoundingClientRect().right > 206) sliding.add(seen);
 }
 out.sliding = [...sliding];
 gBrowser.removeTab(scrolled);

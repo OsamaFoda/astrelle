@@ -2,12 +2,12 @@
 // setting), or a wallpaper drawn inside Astrelle ("wallpaper", the default). Firefox can blur only
 // what shares the browser area with the glass, never what's behind the window, so over the
 // wallpaper the sidebar is real frosted glass, on any computer. The wallpaper is one made from
-// Astrelle's own (its icons as one night sky, the default: wallpapers/astrelle.jpg, drawn by
-// branding-src/wallpaper.py; or its calm sky, the same without the comets and the galaxy), one
-// made from the colour theme (styles/palettes.css, --p-wallpaper),
-// the desktop's own (asked of GNOME, and again when the window comes forward), or a picture chosen
-// in Astrelle Settings. Prefs: aether.background, and aether.wallpaper ("" for Astrelle's,
-// "astrelle-calm" for its calm sky, "theme" for the theme's, "desktop", or a file: URL). The look is in aether.css (:root[aether-wallpaper]).
+// the colour theme (styles/palettes.css, --p-wallpaper, the default), one of Astrelle's own (its
+// icons as one night sky, wallpapers/astrelle.jpg, or its calm sky without the comets and the
+// galaxy, both drawn by branding-src/wallpaper.py), the desktop's own (asked of GNOME, and again
+// when the window comes forward), or a picture chosen in Astrelle Settings. Prefs:
+// aether.background, and aether.wallpaper ("" for the theme's, "astrelle", "astrelle-calm",
+// "desktop", or a file: URL). The look is in aether.css (:root[aether-wallpaper]).
 
 const { Subprocess } = ChromeUtils.importESModule("resource://gre/modules/Subprocess.sys.mjs");
 import { thumbnail, wallpaperFiles } from "./thumbnails.mjs";
@@ -41,8 +41,9 @@ export async function desktopWallpaper(dark) {
 export async function wallpaperURL(win) {
   const chosen = Services.prefs.getStringPref(WALLPAPER, "");
   if (chosen === "desktop") return (await desktopWallpaper(win.matchMedia("(prefers-color-scheme: dark)").matches)) || "theme";
+  if (chosen === "astrelle") return ASTRELLE_WALLPAPER;
   if (chosen === "astrelle-calm") return CALM_WALLPAPER;
-  return chosen || ASTRELLE_WALLPAPER;
+  return chosen && chosen !== "theme" ? chosen : "theme"; // ("theme" was the theme's, briefly)
 }
 
 // A little after Astrelle starts, while nothing else is going on, make the wallpaper thumbnails
