@@ -1,21 +1,18 @@
 // Astrelle's welcome (opened once, on first run, by scripts/welcome.mjs). It walks through light or
-// dark, colours, the app icon, layout, glass, what closing the last tab does, protection
+// dark, colours, layout, glass, what closing the last tab does, protection
 // (installs uBlock Origin from Mozilla's add-on site) and Sip (the built-in data saver, off
 // unless chosen). Every choice applies at once, and the illustration on the right follows it.
 // All of it can be changed later in Astrelle Settings (about:astrelle, settings/), which shares the
 // choices in scripts/choices.mjs.
 
 import { follow } from "../scripts/palette.mjs";
-import { setUpIconPicker } from "../scripts/icon-picker.mjs";
-import { iconURL, inFlatpak } from "../scripts/app-icon.mjs";
+import { iconURL } from "../scripts/app-icon.mjs";
 import { CHOICES, setProtection, setSip, saveSipBudget, saveSipUsedSoFar, saveSipYoutube } from "../scripts/choices.mjs";
 import { tr } from "../scripts/l10n.mjs";
 
 const NEW_TAB = "chrome://aether/content/newtab/newtab.html";
 
 const $ = id => document.getElementById(id);
-// No icon to pick in the Flatpak (scripts/app-icon.mjs).
-if (inFlatpak()) document.querySelector('.step[data-step="icon"]').remove();
 const flow = [...document.querySelectorAll(".step")].map(step => step.dataset.step);
 const chosen = { protection: false, sip: false };
 
@@ -97,9 +94,9 @@ function refresh() {
   preview.toggleAttribute("compact", compact);
   preview.toggleAttribute("liquid", liquid);
   $("theme-badge").dataset.theme = CHOICES.theme.get();
-  const icon = iconURL(CHOICES.icon.get());
+  const icon = iconURL();
   document.querySelector('link[rel="icon"]').href = icon;
-  for (const img of document.querySelectorAll(".orb, #icon-hero, #icon-dock")) {
+  for (const img of document.querySelectorAll(".orb")) {
     if (img.src === icon) continue;
     img.src = icon;
     if (img.id) pop(img);
@@ -229,5 +226,3 @@ const CACHE = "browser.cache.disk.capacity";
 $("cache-size").value = String(Services.prefs.getIntPref(CACHE, 1048576));
 $("cache-size").addEventListener("change", event => Services.prefs.setIntPref(CACHE, Number(event.target.value)));
 
-// The app icon cards and their colours (scripts/icon-picker.mjs).
-setUpIconPicker(document, window);

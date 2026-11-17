@@ -7,7 +7,7 @@ const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/Addo
 const { ExtensionPermissions } = ChromeUtils.importESModule("resource://gre/modules/ExtensionPermissions.sys.mjs");
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
 const { setTimeout, clearTimeout } = ChromeUtils.importESModule("resource://gre/modules/Timer.sys.mjs");
-import { chosen as chosenIcon } from "./app-icon.mjs";
+import { DEFAULT_PALETTE } from "./palette.mjs";
 import { allowPrivate, followSip, followSipMedia, migrateSip, showSipButton, SIP_DEFAULTS, SIP_ID, SIP_WIDGET, sipGet, sipSet, sipStarted, YOUTUBE_CHOICES } from "./sip.mjs";
 
 export { showSipButton };
@@ -33,12 +33,8 @@ export const CHOICES = {
     set: value => Services.prefs.setBoolPref("aether.liquidGlass", value === "liquid"),
   },
   palette: {
-    get: () => Services.prefs.getStringPref("aether.palette", "nebula"),
+    get: () => Services.prefs.getStringPref("aether.palette", DEFAULT_PALETTE),
     set: value => Services.prefs.setStringPref("aether.palette", value),
-  },
-  icon: {
-    get: chosenIcon,
-    set: value => Services.prefs.setStringPref("aether.appIcon", value),
   },
   background: {
     get: () => Services.prefs.getStringPref("aether.background", "wallpaper") === "desktop" ? "desktop" : "wallpaper",

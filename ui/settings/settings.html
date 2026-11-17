@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title data-l10n-id="settings-page-title">Astrelle Settings</title>
-  <link rel="icon" href="chrome://aether/content/icons/aurora-sunrise.svg">
+  <link rel="icon" href="chrome://aether/content/icons/astrelle.svg">
   <link rel="stylesheet" href="chrome://aether/content/settings/settings.css">
   <script type="module" src="chrome://aether/content/settings/settings.mjs"></script>
   <link rel="localization" href="astrelle/settings.ftl">
@@ -13,7 +13,7 @@
 
   <div class="settings">
     <header class="masthead">
-      <img class="logo" id="logo" src="chrome://aether/content/icons/aurora-sunrise.svg" alt="">
+      <img class="logo" id="logo" src="chrome://aether/content/icons/astrelle.svg" alt="">
       <div>
         <h1 data-l10n-id="settings-astrelle-settings">Astrelle Settings</h1>
         <p class="lead" data-l10n-id="settings-everything-that-makes-astrelle-yours">Everything that makes Astrelle yours, in one place. Changes apply right away.</p>
@@ -21,7 +21,7 @@
     </header>
 
     <nav class="jump">
-      <a href="#layout" data-l10n-id="settings-layout">Layout</a><a href="#look" data-l10n-id="settings-look">Look</a><a href="#icon" data-l10n-id="settings-icon">Icon</a>
+      <a href="#layout" data-l10n-id="settings-layout">Layout</a><a href="#look" data-l10n-id="settings-look">Look</a>
       <a href="#protection" data-l10n-id="settings-protection">Protection</a><a href="#sip" data-l10n-id="settings-data-saver">Data saver</a><a href="#language" data-l10n-id="settings-language-link">Language</a><a href="#shortcuts" data-l10n-id="settings-shortcuts">Shortcuts</a>
     </nav>
 
@@ -143,44 +143,6 @@
       </div>
     </section>
 
-    <section class="card" id="icon">
-      <h2 data-l10n-id="settings-app-icon">App icon</h2>
-      <p class="hint" data-l10n-id="settings-how-astrelle-shows-up-in">How Astrelle shows up in your dock and app list.</p>
-      <div class="app-icons" data-pref="icon">
-        <div class="app-icon-card" data-shape="aurora">
-          <button class="app-icon" data-value="aurora-sunrise"><img src="chrome://aether/content/icons/aurora-sunrise.svg" alt=""><span data-l10n-id="settings-aurora">Aurora</span></button>
-          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
-            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
-            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
-            <option value="sunrise" selected data-l10n-id="settings-icon-sunrise">Sunrise</option>
-          </select>
-        </div>
-        <div class="app-icon-card" data-shape="eclipse">
-          <button class="app-icon" data-value="eclipse"><img src="chrome://aether/content/icons/eclipse.svg" alt=""><span data-l10n-id="settings-eclipse">Eclipse</span></button>
-          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
-            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
-            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
-            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
-          </select>
-        </div>
-        <div class="app-icon-card" data-shape="comet">
-          <button class="app-icon" data-value="comet"><img src="chrome://aether/content/icons/comet.svg" alt=""><span data-l10n-id="settings-comet">Comet</span></button>
-          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
-            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
-            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
-            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
-          </select>
-        </div>
-        <div class="app-icon-card" data-shape="galaxy">
-          <button class="app-icon" data-value="galaxy"><img src="chrome://aether/content/icons/galaxy.svg" alt=""><span data-l10n-id="settings-galaxy">Galaxy</span></button>
-          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
-            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
-            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
-            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
-          </select>
-        </div>
-      </div>
-    </section>
 
     <section class="card" id="protection">
       <h2 data-l10n-id="settings-protection-2">Protection</h2>

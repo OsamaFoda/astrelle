@@ -1,6 +1,6 @@
-"""Renders Astrelle's branding from its default app icon (ui/icons/aurora-sunrise.svg) into ../branding/,
+"""Renders Astrelle's branding from its icon (ui/icons/astrelle.svg, drawn by icon.py) into ../branding/,
 using the same file names and sizes as Firefox's own branding folder, which they replace.
-The other icons (ui/icons/) are picked in the browser; see ui/scripts/app-icon.mjs.
+The browser shows the same icon everywhere; see ui/scripts/app-icon.mjs.
 
     python3 branding-src/render.py
 """
@@ -13,7 +13,7 @@ gi.require_version("GdkPixbuf", "2.0")
 from gi.repository import GdkPixbuf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ORB = os.path.join(HERE, "..", "ui", "icons", "aurora-sunrise.svg")
+ORB = os.path.join(HERE, "..", "ui", "icons", "astrelle.svg")
 OUT = os.path.join(HERE, "..", "branding")
 
 # Firefox branding file -> square size in pixels.

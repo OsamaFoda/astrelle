@@ -1,8 +1,8 @@
 """Draws Astrelle's own wallpaper from its four icons: the aurora's curtains as waves across the
 sky over its hills, the eclipse as the sun or moon, a shower of comets, the galaxy, and stars.
-The icons' drawings are taken from their files (ui/icons/), so the wallpaper always matches them.
+The drawings are Astrelle's earlier icons (branding-src/icons/), the sources of its icon and wallpaper.
 
-    python3 branding-src/wallpaper.py ui/icons /tmp/astrelle.svg
+    python3 branding-src/wallpaper.py branding-src/icons /tmp/astrelle.svg
     magick -background none -density 192 /tmp/astrelle.svg -crop 3840x2160+480+0 +repage \
         -quality 90 ui/wallpapers/astrelle.jpg
 
@@ -82,7 +82,7 @@ def main(icons, out, without=()):
         f'<g transform="translate({x} {y}) scale({s}) rotate(180) translate(-346 -166)" opacity="{.95 if s > .5 else .8}">{comet}</g>'
         for x, y, s in comets)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="{-PAD} 0 {W + 2 * PAD} {H}" width="{W + 2 * PAD}" height="{H}">
-  <!-- Astrelle's wallpaper: its four icons as one night sky. Drawn by wallpaper.py from ui/icons/. -->
+  <!-- Astrelle's wallpaper: its four icons as one night sky. Drawn by wallpaper.py from branding-src/icons/. -->
   <defs>
     <linearGradient id="w-sky" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#05060f"/>

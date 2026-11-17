@@ -19,7 +19,7 @@ const SHORTCUTS = 8;
 
 const $ = id => document.getElementById(id);
 
-document.querySelector('link[rel="icon"]').href = iconURL(); // the app icon picked in the welcome
+document.querySelector('link[rel="icon"]').href = iconURL();
 const chromeWindow = () => window.browsingContext.topChromeWindow;
 
 function readList(pref) {

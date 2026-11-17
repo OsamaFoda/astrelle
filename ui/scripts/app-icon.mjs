@@ -1,38 +1,20 @@
-// Astrelle's app icon: Aurora (in Sunrise's colours, the default), Eclipse, Comet or Galaxy, each in its Original
-// colours, Nightfall's (black, grey and white) or Sunrise's (warmer): "aurora", "aurora-sunrise" and so on (the drawings are in ui/icons/), chosen in
-// the welcome or in Customize Astrelle and kept in the aether.appIcon pref. The desktop takes the
-// icon from Astrelle's launcher (aether.desktop in ~/.local/share/applications), so this keeps a copy
-// of the chosen icon beside it and points the launcher at the copy; the dock follows in a moment.
-// Builds carry the default as the window and About icon. In the Flatpak, the icon is the one its
-// package gives the desktop, which nothing inside can change: the default, with no choice offered.
+// Astrelle's icon: the Aurora Sunrise scene with a frosted-glass "a" in front of it (icons/astrelle.svg,
+// drawn by branding-src/icon.py), the same everywhere: the window and About (builds carry it, from
+// branding/), the pages, the launcher, the Flatpak. The desktop takes the icon from Astrelle's
+// launcher (aether.desktop in ~/.local/share/applications), so this keeps a copy of the icon beside
+// it and points the launcher at the copy: a launcher that showed an icon chosen before (there were
+// several, once) shows this one. In the Flatpak, the icon is its package's (from branding/ too).
 
 const { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
 
-export const SHAPES = ["eclipse", "aurora", "comet", "galaxy"];
-export const COLOURWAYS = ["original", "nightfall", "sunrise"];
-export const ICONS = SHAPES.flatMap(shape => COLOURWAYS.map(colours => nameOf(shape, colours)));
+export const ICON_URL = "chrome://aether/content/icons/astrelle.svg";
 
-// "aurora" in its Original colours, "aurora-sunrise" in Sunrise's.
-export function nameOf(shape, colours) {
-  return colours === "original" ? shape : `${shape}-${colours}`;
+export function iconURL() {
+  return ICON_URL;
 }
-const PREF = "aether.appIcon";
 
 export function inFlatpak() {
   return !!Services.env.get("FLATPAK_ID");
-}
-
-export const DEFAULT_ICON = "aurora-sunrise";
-
-export function chosen() {
-  if (inFlatpak()) return DEFAULT_ICON;
-  let name = Services.prefs.getStringPref(PREF, DEFAULT_ICON);
-  if (name === "nightfall" || name === "sunrise") name = `eclipse-${name}`; // briefly icons of their own
-  return ICONS.includes(name) ? name : DEFAULT_ICON;
-}
-
-export function iconURL(name = chosen()) {
-  return `chrome://aether/content/icons/${name}.svg`;
 }
 
 function dataHome() {
@@ -43,10 +25,9 @@ function dataHome() {
 async function updateLauncher() {
   const launcher = PathUtils.join(dataHome(), "applications", "aether.desktop");
   if (!(await IOUtils.exists(launcher))) return;
-  const name = chosen();
   const source = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIChromeRegistry)
-    .convertChromeURL(Services.io.newURI(iconURL(name))).QueryInterface(Ci.nsIFileURL).file.path;
-  const copy = PathUtils.join(dataHome(), "aether", "icons", `${name}.svg`);
+    .convertChromeURL(Services.io.newURI(ICON_URL)).QueryInterface(Ci.nsIFileURL).file.path;
+  const copy = PathUtils.join(dataHome(), "aether", "icons", "astrelle.svg");
   await IOUtils.makeDirectory(PathUtils.parent(copy));
   await IOUtils.copy(source, copy);
   const text = await IOUtils.readUTF8(launcher);
@@ -60,7 +41,6 @@ let started = false;
 export function init() {
   if (started || AppConstants.platform !== "linux") return;
   started = true;
-  const update = () => updateLauncher().catch(e => console.error("Astrelle: app icon", e));
-  Services.prefs.addObserver(PREF, update);
-  update();
+  Services.prefs.clearUserPref("aether.appIcon"); // the icon once chosen, of several
+  updateLauncher().catch(e => console.error("Astrelle: app icon", e));
 }
