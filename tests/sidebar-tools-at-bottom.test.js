@@ -1,6 +1,8 @@
 // timeout: 60
-// With tabs in the sidebar, its top has the navigation buttons, the address bar (full width) and
-// workspaces, and its bottom the tools: the add-on buttons, Split View, Compact Mode and the menu.
+// With tabs in the sidebar, its top has the navigation buttons and the address bar (full width),
+// and its bottom workspaces and the tools: the add-on buttons, Split View, Compact Mode and the
+// menu. Nothing reaches past the sidebar's edge, even with more buttons than fit in a row (they
+// wrap, each row on its own).
 // Between them the tabs take the clicks, not the toolbar over them. With tabs on top, the same
 // buttons are one row, as before. In compact mode the tools slide away and back with the sidebar.
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -8,14 +10,21 @@ const move = (x, y) => synthesizeMouseEvent("mousemove", x, y, {}, { isDOMEventS
 const rect = id => document.getElementById(id).getBoundingClientRect();
 const TOOLS = ["unified-extensions-button", "aether-split-view", "aether-compact-mode", "PanelUI-button"];
 Services.prefs.setBoolPref("sidebar.verticalTabs", true);
+// More buttons than fit: some by the navigation ones, as Firefox adds Downloads after a download.
+const EXTRA = ["downloads-button", "print-button", "history-panelmenu", "fullscreen-button"];
+for (const id of EXTRA) CustomizableUI.addWidgetToArea(id, "nav-bar");
 await wait(1500);
 const sidebar = rect("sidebar-container"), tabs = rect("tabbrowser-tabs"), urlbar = rect("urlbar-container");
+const inside = [...document.querySelectorAll("#nav-bar > *, #nav-bar-customization-target > *")]
+  .filter(el => el.checkVisibility()).map(el => [el.id, el.getBoundingClientRect()]);
 const out = {
-  topFirst: rect("back-button").top < urlbar.top && urlbar.bottom <= rect("aether-workspaces").top + 1 && rect("aether-workspaces").bottom <= tabs.top + 1,
-  urlbarFull: urlbar.width > sidebar.width - 24,
-  toolsAtBottom: TOOLS.every(id => rect(id).bottom > sidebar.bottom - 50 && rect(id).top >= tabs.bottom),
+  topFirst: rect("back-button").top < urlbar.top && urlbar.bottom <= tabs.top + 1,
+  urlbarFull: urlbar.width > sidebar.width - 24 && urlbar.right <= sidebar.right,
+  toolsAtBottom: [...TOOLS, "aether-workspaces"].every(id => rect(id).bottom > sidebar.bottom - 50 && rect(id).top >= tabs.bottom),
   toolsInARow: new Set(TOOLS.map(id => Math.round(rect(id).top))).size === 1,
+  nothingPastTheEdge: inside.filter(([, r]) => r.right > sidebar.right + 1 || r.left < sidebar.left - 1).map(([id]) => id),
 };
+out.allInside = out.nothingPastTheEdge.length === 0;
 const middle = document.elementFromPoint(sidebar.left + sidebar.width / 2, (tabs.top + tabs.bottom) / 2);
 out.middleIsTabs = !middle.closest("#navigator-toolbox") && !!middle.closest("#sidebar-container");
 // Compact mode: away with the sidebar, and back with it.
@@ -34,4 +43,6 @@ const row = Math.round(rect("urlbar-container").top);
 out.topOneRow = [...TOOLS, "back-button"].every(id => Math.abs(Math.round(rect(id).top) - row) < 8);
 out.topNoBottom = document.documentElement.style.getPropertyValue("--aether-toolbox-bottom") === "0px";
 Services.prefs.clearUserPref("sidebar.verticalTabs");
-return { ok: Object.values(out).every(Boolean), ...out };
+for (const id of EXTRA) CustomizableUI.removeWidgetFromArea(id);
+const { nothingPastTheEdge, ...checks } = out;
+return { ok: Object.values(checks).every(Boolean), ...out };

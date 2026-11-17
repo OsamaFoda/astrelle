@@ -307,11 +307,13 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
 /* ---- Address bar in the sidebar ----
  * While tabs are vertical and the sidebar is expanded (scripts/sidebar-urlbar.mjs sets the
  * attribute), the toolbar floats over the sidebar, as tall as it is: at the top, back, forward,
- * reload and home with the window buttons, the address bar, and workspaces; at the bottom, the
+ * reload and home with the window buttons, then the address bar; at the bottom, workspaces and the
  * tools (the add-on buttons, Split View, Compact Mode and the menu), like Zen's and Arc's. It's
- * clipped to those two parts, so between them the tabs underneath take the clicks. The page gets
- * the full height of the window. A long address ends in "…". The buttons stay on Firefox's toolbar
- * either way, so with top tabs (one row) nothing has moved. */
+ * laid out in rows as it always was (each row as wide as the sidebar, wrapping), and the bottom
+ * ones are moved down to the sidebar's foot (scripts/sidebar-urlbar.mjs measures how far,
+ * --aether-tools-drop). It's clipped to its top and its foot, so between them the tabs underneath
+ * take the clicks. The page gets the full height of the window. A long address ends in "…". The
+ * buttons stay on Firefox's toolbar either way, so with top tabs (one row) nothing has moved. */
 
 :root[aether-urlbar-in-sidebar]:not([inFullscreen], [inDOMFullscreen]) {
   #navigator-toolbox {
@@ -325,14 +327,9 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
                        0 calc(100% - var(--aether-toolbox-bottom, 0px)), 100% calc(100% - var(--aether-toolbox-bottom, 0px)), 100% 100%, 0 100%);
   }
 
-  /* A grid: the buttons' row, the address bar, workspaces, the room for the tabs, the tools' row. */
   #nav-bar {
-    flex: 1;
-    display: grid !important;
-    grid-template-columns: repeat(10, max-content) 1fr max-content;
-    grid-template-rows: max-content max-content max-content 1fr max-content;
-    align-items: center;
-    padding: 6px 8px 6px !important;
+    flex-wrap: wrap;
+    padding: 6px 8px 2px !important;
     -moz-window-dragging: drag;
     /* Slightly tighter buttons, so back, forward, reload and home fit beside the window buttons. */
     --toolbarbutton-padding-outer: 0px;
@@ -353,15 +350,9 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
     position: sticky !important;
   }
 
-  /* (No weight of its own, so a part's own row, below, wins.) */
-  :where(#nav-bar-customization-target) > * {
-    grid-row: 1;
-  }
-
   #nav-bar > .titlebar-buttonbox-container {
-    grid-row: 1;
-    grid-column: -2;
-    justify-self: end;
+    order: 1;
+    margin-inline-start: auto;
   }
 
   #nav-bar .titlebar-buttonbox {
@@ -374,12 +365,9 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
   }
 
   #urlbar-container {
-    grid-row: 2;
-    grid-column: 1 / -1;
-    justify-self: stretch;
+    order: 2;
     flex: 1 0 100% !important;
     width: auto !important;
-    max-width: none !important;
     min-width: 0 !important;
     margin: 4px 0 !important;
   }
@@ -1096,25 +1084,35 @@ notification-message::before {
   white-space: nowrap;
 }
 
-/* In the sidebar it has the row under the address bar, wrapping onto more lines rather than
- * scrolling out of sight; the tools have the bottom row. */
+/* In the sidebar it starts the bottom row, with the tools after it; with workspaces to switch
+ * between, they get a row of their own under the tools, wrapping onto more lines rather than
+ * scrolling out of sight. The two rows are moved to the sidebar's foot (above). */
 :root[aether-urlbar-in-sidebar] {
   #aether-workspaces {
-    grid-row: 3;
-    grid-column: 1 / -1;
-    justify-self: stretch;
+    order: 3;
+    flex: 1 1 24px; /* room for "+", and not a pixel more before wrapping the buttons after it */
     min-width: 0;
+  }
+
+  #aether-workspaces[several] {
+    order: 5;
+    flex-basis: 100%;
     flex-wrap: wrap;
     overflow: visible;
   }
 
-  #aether-workspaces > .aether-ws:not(.aether-ws-add) {
+  #aether-workspaces[several] > .aether-ws:not(.aether-ws-add) {
     max-width: 100%;
   }
 
   :is(#unified-extensions-button, #nav-bar-customization-target > [id$="-browser-action"],
       #aether-split-view, #aether-compact-mode, #reset-pbm-toolbar-button, #PanelUI-button) {
-    grid-row: 5;
+    order: 4;
+  }
+
+  :is(#aether-workspaces, #unified-extensions-button, #nav-bar-customization-target > [id$="-browser-action"],
+      #aether-split-view, #aether-compact-mode, #reset-pbm-toolbar-button, #PanelUI-button) {
+    translate: 0 var(--aether-tools-drop, 0px);
   }
 }
 
@@ -1487,6 +1485,12 @@ split-view-footer[aether-own-page] {
 }
 
 /* With tabs on top, the toolbar hovering over the page's top edge: the same, under its own glass. */
+/* (In Standard too: hovering over the page, it can't show the window's colour behind it.) */
+:root[aether-compact][aether-over]:not([aether-vertical], [aether-liquid], [inFullscreen], [inDOMFullscreen]) #navigator-toolbox {
+  background: var(--aether-sheen), var(--aether-panel) !important;
+  box-shadow: var(--aether-shadow);
+}
+
 :root[aether-compact][aether-over][aether-liquid]:not([aether-vertical], [inFullscreen], [inDOMFullscreen]) #navigator-toolbox {
   background: var(--aether-sheen), var(--aether-panel) !important;
   box-shadow: var(--aether-shadow);

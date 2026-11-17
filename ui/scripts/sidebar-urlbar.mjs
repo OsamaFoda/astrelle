@@ -25,22 +25,31 @@ export function init(win) {
     win.requestAnimationFrame(measure);
   };
 
-  // In the sidebar, the toolbar's rows (styles/aether.css gives each part of it its grid row):
-  // 1 to 3 at the top, 5 at the bottom.
+  // In the sidebar: its top rows (the buttons and the address bar), which the tabs start under;
+  // and its bottom group (workspaces and the tools, laid out under the address bar), moved down
+  // by --aether-tools-drop to end at the sidebar's foot, which the tabs end above.
+  const BOTTOM = "#aether-workspaces, #unified-extensions-button, #nav-bar-customization-target > [id$='-browser-action'], " +
+    "#aether-split-view, #aether-compact-mode, #reset-pbm-toolbar-button, #PanelUI-button";
+  let drop = 0;
   const measure = () => {
     const box = toolbox.getBoundingClientRect();
     let top = box.height, bottom = 0;
+    drop = 0;
     if (root.hasAttribute("aether-urlbar-in-sidebar") && box.height) {
-      const parts = [...doc.querySelectorAll("#nav-bar > *, #nav-bar-customization-target > *")]
-        .filter(el => el.checkVisibility())
-        .map(el => [win.getComputedStyle(el).gridRowStart, el.getBoundingClientRect()]);
-      const ends = parts.filter(([row]) => ["1", "2", "3"].includes(row)).map(([, r]) => r.bottom);
-      const starts = parts.filter(([row]) => row === "5").map(([, r]) => r.top);
-      if (ends.length) top = Math.max(...ends) - box.top + 4;
-      if (starts.length) bottom = box.bottom - Math.min(...starts) + 4;
+      const urlbar = doc.getElementById("urlbar-container").getBoundingClientRect();
+      top = urlbar.bottom - box.top + 4;
+      // Where the bottom group is laid out (less how far it's moved now).
+      const moved = parseFloat(root.style.getPropertyValue("--aether-tools-drop")) || 0;
+      const group = [...doc.querySelectorAll(BOTTOM)].filter(el => el.checkVisibility()).map(el => el.getBoundingClientRect());
+      if (group.length) {
+        const from = Math.min(...group.map(r => r.top)) - moved, to = Math.max(...group.map(r => r.bottom)) - moved;
+        drop = Math.max(0, box.bottom - 6 - to);
+        bottom = box.bottom - (from + drop) + 4;
+      }
     }
     root.style.setProperty("--aether-toolbox-height", `${top}px`);
     root.style.setProperty("--aether-toolbox-bottom", `${bottom}px`);
+    root.style.setProperty("--aether-tools-drop", `${drop}px`);
   };
 
   const sizes = new win.ResizeObserver(() => {
