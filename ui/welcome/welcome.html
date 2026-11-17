@@ -72,12 +72,38 @@
         <h1 data-l10n-id="welcome-pick-your-icon">Pick your icon</h1>
         <p class="lead" data-l10n-id="welcome-it-s-how-astrelle-shows">It's how Astrelle shows up in your dock and app list.</p>
         <div class="app-icons" data-pref="icon">
-          <button class="app-icon" data-value="eclipse"><img src="../icons/eclipse.svg" alt=""><span data-l10n-id="welcome-eclipse">Eclipse</span></button>
-          <button class="app-icon" data-value="nightfall"><img src="../icons/nightfall.svg" alt=""><span data-l10n-id="welcome-icon-nightfall">Nightfall</span></button>
-          <button class="app-icon" data-value="sunrise"><img src="../icons/sunrise.svg" alt=""><span data-l10n-id="welcome-icon-sunrise">Sunrise</span></button>
-          <button class="app-icon" data-value="aurora"><img src="../icons/aurora.svg" alt=""><span data-l10n-id="welcome-aurora">Aurora</span></button>
-          <button class="app-icon" data-value="comet"><img src="../icons/comet.svg" alt=""><span data-l10n-id="welcome-comet">Comet</span></button>
-          <button class="app-icon" data-value="galaxy"><img src="../icons/galaxy.svg" alt=""><span data-l10n-id="welcome-galaxy">Galaxy</span></button>
+          <div class="app-icon-card" data-shape="eclipse">
+            <button class="app-icon" data-value="eclipse"><img src="../icons/eclipse.svg" alt=""><span data-l10n-id="welcome-eclipse">Eclipse</span></button>
+            <select class="app-icon-colours" data-l10n-id="welcome-icon-colours">
+              <option value="original" data-l10n-id="welcome-colourway-original">Original</option>
+              <option value="nightfall" data-l10n-id="welcome-icon-nightfall">Nightfall</option>
+              <option value="sunrise" data-l10n-id="welcome-icon-sunrise">Sunrise</option>
+            </select>
+          </div>
+          <div class="app-icon-card" data-shape="aurora">
+            <button class="app-icon" data-value="aurora"><img src="../icons/aurora.svg" alt=""><span data-l10n-id="welcome-aurora">Aurora</span></button>
+            <select class="app-icon-colours" data-l10n-id="welcome-icon-colours">
+              <option value="original" data-l10n-id="welcome-colourway-original">Original</option>
+              <option value="nightfall" data-l10n-id="welcome-icon-nightfall">Nightfall</option>
+              <option value="sunrise" data-l10n-id="welcome-icon-sunrise">Sunrise</option>
+            </select>
+          </div>
+          <div class="app-icon-card" data-shape="comet">
+            <button class="app-icon" data-value="comet"><img src="../icons/comet.svg" alt=""><span data-l10n-id="welcome-comet">Comet</span></button>
+            <select class="app-icon-colours" data-l10n-id="welcome-icon-colours">
+              <option value="original" data-l10n-id="welcome-colourway-original">Original</option>
+              <option value="nightfall" data-l10n-id="welcome-icon-nightfall">Nightfall</option>
+              <option value="sunrise" data-l10n-id="welcome-icon-sunrise">Sunrise</option>
+            </select>
+          </div>
+          <div class="app-icon-card" data-shape="galaxy">
+            <button class="app-icon" data-value="galaxy"><img src="../icons/galaxy.svg" alt=""><span data-l10n-id="welcome-galaxy">Galaxy</span></button>
+            <select class="app-icon-colours" data-l10n-id="welcome-icon-colours">
+              <option value="original" data-l10n-id="welcome-colourway-original">Original</option>
+              <option value="nightfall" data-l10n-id="welcome-icon-nightfall">Nightfall</option>
+              <option value="sunrise" data-l10n-id="welcome-icon-sunrise">Sunrise</option>
+            </select>
+          </div>
         </div>
         <div class="actions">
           <button class="primary go" data-next data-l10n-id="welcome-continue-3">Continue</button>

@@ -5,6 +5,7 @@
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
 const { FileUtils } = ChromeUtils.importESModule("resource://gre/modules/FileUtils.sys.mjs");
 import { follow } from "../scripts/palette.mjs";
+import { setUpIconPicker } from "../scripts/icon-picker.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
 import { desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
@@ -360,3 +361,6 @@ document.addEventListener("pointerdown", event => {
 });
 $("language-restart").addEventListener("click", restart);
 buildLanguages();
+
+// The app icon cards and their colours (scripts/icon-picker.mjs).
+setUpIconPicker(document, window);

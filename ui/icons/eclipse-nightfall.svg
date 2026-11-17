@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- Astrelle's icon: Nightfall, an eclipse whose corona runs cyan, indigo and violet from the star round. -->
+  <!-- Astrelle's icon: Eclipse in Nightfall's colours, an eclipse whose corona runs cyan, indigo and violet from the star round. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#101221"/>

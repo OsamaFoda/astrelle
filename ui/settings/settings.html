@@ -147,12 +147,38 @@
       <h2 data-l10n-id="settings-app-icon">App icon</h2>
       <p class="hint" data-l10n-id="settings-how-astrelle-shows-up-in">How Astrelle shows up in your dock and app list.</p>
       <div class="app-icons" data-pref="icon">
-        <button class="app-icon" data-value="eclipse"><img src="chrome://aether/content/icons/eclipse.svg" alt=""><span data-l10n-id="settings-eclipse">Eclipse</span></button>
-        <button class="app-icon" data-value="nightfall"><img src="chrome://aether/content/icons/nightfall.svg" alt=""><span data-l10n-id="settings-icon-nightfall">Nightfall</span></button>
-        <button class="app-icon" data-value="sunrise"><img src="chrome://aether/content/icons/sunrise.svg" alt=""><span data-l10n-id="settings-icon-sunrise">Sunrise</span></button>
-        <button class="app-icon" data-value="aurora"><img src="chrome://aether/content/icons/aurora.svg" alt=""><span data-l10n-id="settings-aurora">Aurora</span></button>
-        <button class="app-icon" data-value="comet"><img src="chrome://aether/content/icons/comet.svg" alt=""><span data-l10n-id="settings-comet">Comet</span></button>
-        <button class="app-icon" data-value="galaxy"><img src="chrome://aether/content/icons/galaxy.svg" alt=""><span data-l10n-id="settings-galaxy">Galaxy</span></button>
+        <div class="app-icon-card" data-shape="eclipse">
+          <button class="app-icon" data-value="eclipse"><img src="chrome://aether/content/icons/eclipse.svg" alt=""><span data-l10n-id="settings-eclipse">Eclipse</span></button>
+          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
+            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
+            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
+            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
+          </select>
+        </div>
+        <div class="app-icon-card" data-shape="aurora">
+          <button class="app-icon" data-value="aurora"><img src="chrome://aether/content/icons/aurora.svg" alt=""><span data-l10n-id="settings-aurora">Aurora</span></button>
+          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
+            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
+            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
+            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
+          </select>
+        </div>
+        <div class="app-icon-card" data-shape="comet">
+          <button class="app-icon" data-value="comet"><img src="chrome://aether/content/icons/comet.svg" alt=""><span data-l10n-id="settings-comet">Comet</span></button>
+          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
+            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
+            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
+            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
+          </select>
+        </div>
+        <div class="app-icon-card" data-shape="galaxy">
+          <button class="app-icon" data-value="galaxy"><img src="chrome://aether/content/icons/galaxy.svg" alt=""><span data-l10n-id="settings-galaxy">Galaxy</span></button>
+          <select class="app-icon-colours" data-l10n-id="settings-icon-colours">
+            <option value="original" data-l10n-id="settings-colourway-original">Original</option>
+            <option value="nightfall" data-l10n-id="settings-icon-nightfall">Nightfall</option>
+            <option value="sunrise" data-l10n-id="settings-icon-sunrise">Sunrise</option>
+          </select>
+        </div>
       </div>
     </section>
 

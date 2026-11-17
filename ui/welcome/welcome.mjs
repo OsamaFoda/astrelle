@@ -6,6 +6,7 @@
 // choices in scripts/choices.mjs.
 
 import { follow } from "../scripts/palette.mjs";
+import { setUpIconPicker } from "../scripts/icon-picker.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
 import { CHOICES, setProtection, setSip, saveSipBudget, saveSipUsedSoFar, saveSipYoutube } from "../scripts/choices.mjs";
 import { tr } from "../scripts/l10n.mjs";
@@ -225,3 +226,6 @@ show(flow[0]);
 const CACHE = "browser.cache.disk.capacity";
 $("cache-size").value = String(Services.prefs.getIntPref(CACHE, 1048576));
 $("cache-size").addEventListener("change", event => Services.prefs.setIntPref(CACHE, Number(event.target.value)));
+
+// The app icon cards and their colours (scripts/icon-picker.mjs).
+setUpIconPicker(document, window);

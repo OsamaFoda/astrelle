@@ -1,5 +1,5 @@
-// Astrelle's app icon: Eclipse (the default), Nightfall or Sunrise (the same eclipse in other
-// colours), Aurora, Comet or Galaxy (the drawings are in ui/icons/), chosen in
+// Astrelle's app icon: Eclipse (the default), Aurora, Comet or Galaxy, each in its Original
+// colours, Nightfall's (cooler) or Sunrise's (warmer): "aurora", "aurora-sunrise" and so on (the drawings are in ui/icons/), chosen in
 // the welcome or in Customize Astrelle and kept in the aether.appIcon pref. The desktop takes the
 // icon from Astrelle's launcher (aether.desktop in ~/.local/share/applications), so this keeps a copy
 // of the chosen icon beside it and points the launcher at the copy; the dock follows in a moment.
@@ -7,11 +7,19 @@
 
 const { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
 
-export const ICONS = ["eclipse", "nightfall", "sunrise", "aurora", "comet", "galaxy"];
+export const SHAPES = ["eclipse", "aurora", "comet", "galaxy"];
+export const COLOURWAYS = ["original", "nightfall", "sunrise"];
+export const ICONS = SHAPES.flatMap(shape => COLOURWAYS.map(colours => nameOf(shape, colours)));
+
+// "aurora" in its Original colours, "aurora-sunrise" in Sunrise's.
+export function nameOf(shape, colours) {
+  return colours === "original" ? shape : `${shape}-${colours}`;
+}
 const PREF = "aether.appIcon";
 
 export function chosen() {
-  const name = Services.prefs.getStringPref(PREF, "eclipse");
+  let name = Services.prefs.getStringPref(PREF, "eclipse");
+  if (name === "nightfall" || name === "sunrise") name = `eclipse-${name}`; // briefly icons of their own
   return ICONS.includes(name) ? name : "eclipse";
 }
 

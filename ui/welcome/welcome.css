@@ -626,6 +626,25 @@ kbd {
 }
 
 /* The drawings leave a small margin around the tile, so the ring sits just outside it. */
+/* An icon's card: the icon, and its colours to choose under it. */
+.app-icon-card {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.app-icon-colours {
+  max-width: 100px;
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: var(--glass-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .app-icon img {
   width: 72px;
   height: 72px;
