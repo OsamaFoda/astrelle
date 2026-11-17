@@ -1,6 +1,6 @@
 // In the Flatpak, the icon is the one its package gives the desktop: the welcome has no icon step
 // (and one dot fewer), Astrelle Settings no App icon card or link to it, and the pages show
-// Eclipse whatever aether.appIcon says. Outside it, both are there.
+// the default (Aurora in Sunrise's colours) whatever aether.appIcon says. Outside it, both are there.
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const look = async () => {
   const welcome = gBrowser.addTrustedTab("chrome://aether/content/welcome/welcome.html");
@@ -28,5 +28,5 @@ Services.env.set("FLATPAK_ID", "");
 Services.prefs.clearUserPref("aether.appIcon");
 const ok = outside.iconStep && outside.iconCard && outside.iconLink && outside.favicon === "comet-sunrise.svg"
   && !inside.iconStep && inside.dots === inside.steps && inside.dots === outside.dots - 1
-  && !inside.iconCard && !inside.iconLink && inside.favicon === "eclipse.svg";
+  && !inside.iconCard && !inside.iconLink && inside.favicon === "aurora-sunrise.svg";
 return { ok, outside, inside };

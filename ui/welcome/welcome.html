@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title data-l10n-id="welcome-page-title">Welcome to Astrelle</title>
-  <link rel="icon" href="../icons/eclipse.svg">
+  <link rel="icon" href="../icons/aurora-sunrise.svg">
   <link rel="stylesheet" href="welcome.css">
   <script type="module" src="welcome.mjs"></script>
   <link rel="localization" href="astrelle/welcome.ftl">
@@ -72,16 +72,16 @@
         <h1 data-l10n-id="welcome-pick-your-icon">Pick your icon</h1>
         <p class="lead" data-l10n-id="welcome-it-s-how-astrelle-shows">It's how Astrelle shows up in your dock and app list.</p>
         <div class="app-icons" data-pref="icon">
-          <div class="app-icon-card" data-shape="eclipse">
-            <button class="app-icon" data-value="eclipse"><img src="../icons/eclipse.svg" alt=""><span data-l10n-id="welcome-eclipse">Eclipse</span></button>
+          <div class="app-icon-card" data-shape="aurora">
+            <button class="app-icon" data-value="aurora-sunrise"><img src="../icons/aurora-sunrise.svg" alt=""><span data-l10n-id="welcome-aurora">Aurora</span></button>
             <select class="app-icon-colours" data-l10n-id="welcome-icon-colours">
               <option value="original" data-l10n-id="welcome-colourway-original">Original</option>
               <option value="nightfall" data-l10n-id="welcome-icon-nightfall">Nightfall</option>
-              <option value="sunrise" data-l10n-id="welcome-icon-sunrise">Sunrise</option>
+              <option value="sunrise" selected data-l10n-id="welcome-icon-sunrise">Sunrise</option>
             </select>
           </div>
-          <div class="app-icon-card" data-shape="aurora">
-            <button class="app-icon" data-value="aurora"><img src="../icons/aurora.svg" alt=""><span data-l10n-id="welcome-aurora">Aurora</span></button>
+          <div class="app-icon-card" data-shape="eclipse">
+            <button class="app-icon" data-value="eclipse"><img src="../icons/eclipse.svg" alt=""><span data-l10n-id="welcome-eclipse">Eclipse</span></button>
             <select class="app-icon-colours" data-l10n-id="welcome-icon-colours">
               <option value="original" data-l10n-id="welcome-colourway-original">Original</option>
               <option value="nightfall" data-l10n-id="welcome-icon-nightfall">Nightfall</option>
@@ -260,7 +260,7 @@
             <circle class="planet small" r="4"><animateMotion dur="36s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear" path="M150 0A150 46 0 1 1-150 0 150 46 0 1 1 150 0"/></circle>
           </g>
         </svg>
-        <img class="orb" src="../icons/eclipse.svg" alt="">
+        <img class="orb" src="../icons/aurora-sunrise.svg" alt="">
       </div>
 
       <!-- Light or dark, colours and layout: a little Astrelle window that follows each choice -->
@@ -287,9 +287,9 @@
       <!-- Icon: the chosen icon up close, and sitting in a dock among other apps -->
       <div class="scene icon-scene" data-scenes="icon">
         <span class="halo"></span>
-        <span class="hero"><img id="icon-hero" src="../icons/eclipse.svg" alt=""></span>
+        <span class="hero"><img id="icon-hero" src="../icons/aurora-sunrise.svg" alt=""></span>
         <div class="dock">
-          <i></i><i></i><span class="me"><img id="icon-dock" src="../icons/eclipse.svg" alt=""></span><i></i><i></i>
+          <i></i><i></i><span class="me"><img id="icon-dock" src="../icons/aurora-sunrise.svg" alt=""></span><i></i><i></i>
         </div>
       </div>
       <div class="scene badge" data-scenes="theme">
@@ -370,7 +370,7 @@
       <div class="scene done" data-scenes="done">
         <span class="ring r1"></span><span class="ring r2"></span>
         <span class="sparks"></span>
-        <img class="orb" src="../icons/eclipse.svg" alt="">
+        <img class="orb" src="../icons/aurora-sunrise.svg" alt="">
         <span class="done-check"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></span>
       </div>
     </div>

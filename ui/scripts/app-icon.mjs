@@ -1,10 +1,10 @@
-// Astrelle's app icon: Eclipse (the default), Aurora, Comet or Galaxy, each in its Original
+// Astrelle's app icon: Aurora (in Sunrise's colours, the default), Eclipse, Comet or Galaxy, each in its Original
 // colours, Nightfall's (black, grey and white) or Sunrise's (warmer): "aurora", "aurora-sunrise" and so on (the drawings are in ui/icons/), chosen in
 // the welcome or in Customize Astrelle and kept in the aether.appIcon pref. The desktop takes the
 // icon from Astrelle's launcher (aether.desktop in ~/.local/share/applications), so this keeps a copy
 // of the chosen icon beside it and points the launcher at the copy; the dock follows in a moment.
-// Builds carry Eclipse as the window and About icon. In the Flatpak, the icon is the one its package
-// gives the desktop, which nothing inside can change: Eclipse, with no choice offered.
+// Builds carry the default as the window and About icon. In the Flatpak, the icon is the one its
+// package gives the desktop, which nothing inside can change: the default, with no choice offered.
 
 const { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
 
@@ -22,11 +22,13 @@ export function inFlatpak() {
   return !!Services.env.get("FLATPAK_ID");
 }
 
+export const DEFAULT_ICON = "aurora-sunrise";
+
 export function chosen() {
-  if (inFlatpak()) return "eclipse";
-  let name = Services.prefs.getStringPref(PREF, "eclipse");
+  if (inFlatpak()) return DEFAULT_ICON;
+  let name = Services.prefs.getStringPref(PREF, DEFAULT_ICON);
   if (name === "nightfall" || name === "sunrise") name = `eclipse-${name}`; // briefly icons of their own
-  return ICONS.includes(name) ? name : "eclipse";
+  return ICONS.includes(name) ? name : DEFAULT_ICON;
 }
 
 export function iconURL(name = chosen()) {
