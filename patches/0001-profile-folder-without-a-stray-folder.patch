@@ -1,0 +1,28 @@
+# Firefox 153, built with its own profile name (MOZ_APP_PROFILE), makes an empty ~/astrelle to mark
+# that its profiles are in ~/.astrelle. With this, it looks for and makes ~/.astrelle itself.
+--- a/toolkit/xre/nsXREDirProvider.cpp	2026-11-17 13:27:28.639560367 +0200
++++ b/toolkit/xre/nsXREDirProvider.cpp	2026-11-17 13:27:28.657663097 +0200
+@@ -1334,9 +1334,12 @@
+   // TODO: Bug 1990407 - Evaluate if refactoring might be required there in the
+   // future?
+   if (gAppData->profile) {
++    // Astrelle: dotted like the vendor folder, so the folder looked for is the profile folder
++    // itself (~/.astrelle), not an empty ~/astrelle that's made to mark it.
+     nsAutoCString profile;
+     profile = gAppData->profile;
+-    MOZ_TRY(aFile->AppendRelativeNativePath(profile));
++    MOZ_TRY(aFile->AppendRelativeNativePath(aIsDotted ? ("."_ns + profile)
++                                                      : profile));
+   } else {
+     nsAutoCString vendor;
+     nsAutoCString appName;
+@@ -1522,7 +1525,8 @@
+       MOZ_TRY(localDir->Clone(getter_AddRefs(parentDir)));
+     }
+ 
+-    MOZ_TRY(AppendFromAppData(localDir, false));
++    // Astrelle: the profile folder made here is ~/.astrelle, the one profiles go in.
++    MOZ_TRY(AppendFromAppData(localDir, !!gAppData->profile));
+   }
+ 
+   // If required return the parent directory that matches the profile root

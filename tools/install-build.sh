@@ -7,7 +7,7 @@
 #
 # The new build goes in exactly the same folder, ~/Applications/astrelle: Firefox ties a profile
 # to the folder a browser is installed in, and a new folder would start an empty profile. The
-# first build with its own profile folder (~/.config/astrelle) gets your profile copied there. First it
+# first build with its own profile folder (~/.astrelle) gets your profile copied there. First it
 # copies that profile to ~/Backups, and moves the current install aside to astrelle.previous
 # (which --rollback puts back). It deletes nothing. Astrelle must be closed; the next start reopens
 # your windows and tabs, as Firefox does after updating itself.
@@ -64,9 +64,9 @@ LISTING="$(tar -tJf "$TAR")" || fail "$TAR isn't a readable .tar.xz (incomplete 
 grep -qx "aether/aether" <<< "$LISTING" && grep -qx "aether/application.ini" <<< "$LISTING" \
   || fail "$TAR doesn't look like an Astrelle build."
 # A build with a profile folder of its own (application.ini's Profile=, from MOZ_APP_PROFILE) keeps
-# its profiles in ~/.config/<that>, not Firefox's ~/.config/mozilla/firefox.
+# its profiles in ~/.<that>, as Firefox did before ~/.config (and as LibreWolf's ~/.librewolf).
 OWN="$(tar -xJOf "$TAR" aether/application.ini | sed -n 's/^Profile=//p' | head -n1 | tr '[:upper:]' '[:lower:]')"
-OWN_ROOT=""; [ -n "$OWN" ] && OWN_ROOT="${XDG_CONFIG_HOME:-$HOME/.config}/$OWN"
+OWN_ROOT=""; [ -n "$OWN" ] && OWN_ROOT="$HOME/.$OWN"
 # Once it has one, that's where the profile in use is (Firefox's folder keeps only the old copy).
 [ -n "$OWN_ROOT" ] && [ -e "$OWN_ROOT/profiles.ini" ] && PROFILES="$OWN_ROOT"
 

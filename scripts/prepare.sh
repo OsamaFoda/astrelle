@@ -62,8 +62,9 @@ done < <(cd branding && find . -type f -printf '%P\n')
 cp mozconfig src/mozconfig
 echo "ac_add_options --with-app-name=$APP_NAME" >> src/mozconfig
 echo "ac_add_options --with-branding=browser/branding/$APP_NAME" >> src/mozconfig
-# A profile folder of its own, ~/.config/astrelle (and ~/.cache/astrelle), not Firefox's
-# ~/.config/mozilla/firefox, as LibreWolf and Zen have theirs. tools/install-build.sh moves the
+# A profile folder of its own, ~/.astrelle (and ~/.cache/astrelle), not Firefox's
+# ~/.config/mozilla/firefox, as LibreWolf and Zen have theirs (~/.librewolf, ~/.zen); see also
+# patches/0001. tools/install-build.sh moves the
 # profile there for the first build that has it. Configure takes it only as implied by the
 # browser's moz.configure (a mozconfig and confvars.sh are both refused), so it goes beside
 # Firefox's own vendor there.

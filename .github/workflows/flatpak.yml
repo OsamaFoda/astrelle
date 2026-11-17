@@ -75,4 +75,5 @@ jobs:
           # Headless, it draws a page to a file and quits: the Flatpak starts and works.
           timeout 120 flatpak run io.github.osamafoda.Astrelle --headless --screenshot "$HOME/Downloads/started.png" about:robots
           test -s "$HOME/Downloads/started.png" && echo "Astrelle started in its Flatpak and drew a page."
-          flatpak run --command=sh io.github.osamafoda.Astrelle -c 'echo "Profile folder: $XDG_CONFIG_HOME"; ls /app/lib/astrelle | head'
+          # (Kept, the sandbox's ~/.astrelle is this folder outside it.)
+          ls -d "$HOME/.var/app/io.github.osamafoda.Astrelle/.astrelle"/*.default* && echo "Its profile is kept from run to run."

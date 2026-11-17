@@ -23,7 +23,7 @@ main() {
   local app="$home/app"
   local launcher="$data/applications/aether.desktop" # the name Astrelle looks for to set its icon
   local command="$HOME/.local/bin/astrelle"
-  local profile="${XDG_CONFIG_HOME:-$HOME/.config}/astrelle"
+  local profile="$HOME/.astrelle"
 
   say() { printf '%s\n' "$*"; }
   fail() { printf 'Stopped: %s\n' "$*" >&2; exit 1; }

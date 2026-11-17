@@ -30,6 +30,8 @@ finish-args:
   # choose), read-only.
   - --filesystem=xdg-pictures:ro
   - --env=MOZ_APP_LAUNCHER=astrelle
+  # The profile folder, ~/.astrelle, kept from run to run (Firefox's keeps ~/.mozilla).
+  - --persist=.astrelle
 modules:
   - name: astrelle
     buildsystem: simple
