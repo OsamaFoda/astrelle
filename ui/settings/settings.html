@@ -22,7 +22,7 @@
 
     <nav class="jump">
       <a href="#layout" data-l10n-id="settings-layout">Layout</a><a href="#look" data-l10n-id="settings-look">Look</a>
-      <a href="#protection" data-l10n-id="settings-protection">Protection</a><a href="#sip" data-l10n-id="settings-data-saver">Data saver</a><a href="#language" data-l10n-id="settings-language-link">Language</a><a href="#shortcuts" data-l10n-id="settings-shortcuts">Shortcuts</a>
+      <a href="#protection" data-l10n-id="settings-protection">Veil</a><a href="#sip" data-l10n-id="settings-data-saver">Data saver</a><a href="#language" data-l10n-id="settings-language-link">Language</a><a href="#shortcuts" data-l10n-id="settings-shortcuts">Shortcuts</a>
     </nav>
 
     <section class="card" id="layout">
@@ -145,13 +145,16 @@
 
 
     <section class="card" id="protection">
-      <h2 data-l10n-id="settings-protection-2">Protection</h2>
+      <h2 data-l10n-id="settings-protection-2">Veil</h2>
       <label class="switch">
         <input type="checkbox" id="protection-on">
         <span class="switch-text"><b data-l10n-id="settings-block-ads-and-trackers">Block ads and trackers</b><small data-l10n-id="settings-with-ublock-origin-the-add">With uBlock Origin, the add-on most people trust for this. Turning it on the first time downloads it (about 4 MB).</small></span>
         <span class="toggle" aria-hidden="true"></span>
       </label>
       <p class="status" id="protection-status" hidden></p>
+      <div class="sip-actions">
+        <button class="secondary" id="veil-dashboard" data-l10n-id="settings-veil-dashboard">uBlock Origin's settings</button>
+      </div>
     </section>
 
     <section class="card" id="sip">

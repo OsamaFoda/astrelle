@@ -8,14 +8,16 @@ const { ExtensionPermissions } = ChromeUtils.importESModule("resource://gre/modu
 const { CustomizableUI } = ChromeUtils.importESModule("moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs");
 const { setTimeout, clearTimeout } = ChromeUtils.importESModule("resource://gre/modules/Timer.sys.mjs");
 import { DEFAULT_PALETTE } from "./palette.mjs";
+import { addVeilLists } from "./veil.mjs";
 import { allowPrivate, followSip, followSipMedia, migrateSip, showSipButton, SIP_DEFAULTS, SIP_ID, SIP_WIDGET, sipGet, sipSet, sipStarted, YOUTUBE_CHOICES } from "./sip.mjs";
 
 export { showSipButton };
 
 const DARK = "ui.systemUsesDarkTheme";
 const UBLOCK = "uBlock0@raymondhill.net";
-// Where protection comes from; a pref so tests can point it at a local file.
-const UBLOCK_URL = Services.prefs.getStringPref("aether.welcome.protectionURL",
+// Where uBlock comes from: Mozilla's add-on site (asked each time, so a test can point it at a
+// stand-in).
+const ublockURL = () => Services.prefs.getStringPref("aether.welcome.protectionURL",
   "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi");
 
 // The choices shown as a row of buttons: value <-> preference.
@@ -77,7 +79,7 @@ export async function setProtection(on) {
     if (!existing.isActive) await existing.enable();
     return;
   }
-  const install = await AddonManager.getInstallForURL(UBLOCK_URL, { telemetryInfo: { source: "aether-welcome" } });
+  const install = await AddonManager.getInstallForURL(ublockURL(), { telemetryInfo: { source: "aether-welcome" } });
   const addon = await new Promise((resolve, reject) => {
     install.addListener({
       onInstallEnded: (_, installed) => resolve(installed),
@@ -90,6 +92,8 @@ export async function setProtection(on) {
   });
   // Protect private windows too.
   await ExtensionPermissions.add(addon.id, { permissions: ["internal:privateBrowsingAllowed"], origins: [] });
+  // Veil's stronger lists (scripts/veil.mjs), once uBlock has made its own first choice.
+  addVeilLists({ patience: 60000 }).catch(e => console.error("Astrelle: Veil", e));
 }
 
 // Turning Sip on also lets it count private windows (as one total, with no site names), marks it

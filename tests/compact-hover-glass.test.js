@@ -51,16 +51,26 @@ move(2, innerHeight / 2); await wait(400); move(100, innerHeight / 2); await wai
 const sidebar = document.getElementById("sidebar-container");
 const middle = sidebar.getBoundingClientRect().top + sidebar.offsetHeight / 2;
 out.scrolled = [colourAt(100, middle), colourAt(200, middle)].join(" ");
-// Sliding away: still green and blue there, while the sidebar still covers them.
+// Sliding away: still green and blue there, while the sidebar still covers them. The slide is
+// frozen 40% of the way (it runs on the graphics card, where scripts only see where it is now and
+// then), its glass's counter-slide with it.
 move(innerWidth / 2, innerHeight / 2);
-const sliding = new Set();
-for (let i = 0; i < 80 && sidebar.getBoundingClientRect().right > 206; i++) {
-  await wait(5);
-  const before = sidebar.getBoundingClientRect().right;
-  const seen = [colourAt(100, middle), colourAt(200, middle)].join(" ");
-  // (Moving, and still over both points: a busy computer may skip frames, so the window is wide.)
-  if (before < 249 && sidebar.getBoundingClientRect().right > 206) sliding.add(seen);
+let slides = [];
+for (let i = 0; i < 40 && !slides.length; i++) {
+  await wait(25);
+  slides = sidebar.getAnimations({ subtree: true }).filter(a => a.transitionProperty === "transform");
 }
+for (const a of slides) {
+  const { delay, duration } = a.effect.getComputedTiming();
+  a.pause();
+  a.currentTime = delay + duration * 0.4;
+}
+await wait(50);
+const sliding = new Set();
+const right = sidebar.getBoundingClientRect().right;
+if (slides.length && right > 206 && right < 249) sliding.add([colourAt(100, middle), colourAt(200, middle)].join(" "));
+out.slideFrozenAt = Math.round(right);
+for (const a of slides) a.finish();
 out.sliding = [...sliding];
 gBrowser.removeTab(scrolled);
 // Gone: wiped (the canvas emptied) within a moment.

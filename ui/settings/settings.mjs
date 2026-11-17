@@ -4,6 +4,7 @@
 
 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
 const { FileUtils } = ChromeUtils.importESModule("resource://gre/modules/FileUtils.sys.mjs");
+import { UBLOCK } from "../scripts/veil.mjs";
 import { follow } from "../scripts/palette.mjs";
 import { iconURL } from "../scripts/app-icon.mjs";
 import { ASTRELLE_WALLPAPER, CALM_WALLPAPER, desktopWallpaper } from "../scripts/wallpaper.mjs";
@@ -145,6 +146,7 @@ async function refreshAddons() {
   // on or off elsewhere it no longer holds.
   const status = $("protection-status");
   if (!$("protection-on").disabled && status.dataset.on !== String(protection)) status.hidden = true;
+  $("veil-dashboard").disabled = !protection;
   const sip = await sipState();
   $("sip-on").checked = sip === "on";
   $("sip-on").disabled = sip === "missing";
@@ -210,6 +212,11 @@ for (const id of ["budget-gb", "reset-day"]) {
 
 $("youtube-quality").addEventListener("change", () => saveSipYoutube($("youtube-quality").value));
 $("sip-open").addEventListener("click", () => openSip(window.browsingContext.topChromeWindow));
+// Veil's lists, and everything else, in uBlock Origin's own settings (scripts/veil.mjs).
+$("veil-dashboard").addEventListener("click", () => {
+  const url = WebExtensionPolicy.getByID(UBLOCK)?.getURL("dashboard.html");
+  if (url) window.browsingContext.topChromeWindow.openTrustedLinkIn(url, "tab");
+});
 $("sip-show").addEventListener("click", () => showSipButton());
 $("used-set").addEventListener("click", async event => {
   event.preventDefault();
