@@ -4,8 +4,9 @@
 // way for a Compact mode switch; "Move sidebar to the right" goes, as Astrelle's layout is built
 // with the sidebar on the left; and "Manage Astrelle settings" opens Astrelle Settings.
 //
-// The gear at the bottom of the sidebar opens Astrelle Settings rather than this panel, which is
-// reached from there ("Sidebar tools", through window.aetherCustomizeSidebar).
+// The gear at the bottom of the sidebar opens Settings, Firefox's own, at the top of which is
+// Astrelle's (a gear there means settings, all of them), rather than this panel, which is reached
+// from Astrelle Settings ("Sidebar tools", through window.aetherCustomizeSidebar).
 
 import { openSettings } from "./about-aether.mjs";
 import { tr } from "./l10n.mjs";
@@ -20,7 +21,7 @@ export function init(win) {
     const firefox = sidebar[name];
     sidebar[name] = function (commandID, ...rest) {
       if (commandID === "viewCustomizeSidebar" && !win.aetherCustomizingSidebar) {
-        openSettings(win);
+        win.openPreferences();
         return Promise.resolve();
       }
       return firefox.call(this, commandID, ...rest);

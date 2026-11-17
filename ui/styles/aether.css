@@ -307,12 +307,13 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
 /* ---- Address bar in the sidebar ----
  * While tabs are vertical and the sidebar is expanded (scripts/sidebar-urlbar.mjs sets the
  * attribute), the toolbar floats over the sidebar, as tall as it is: at the top, back, forward,
- * reload and home with the window buttons, then the address bar; at the bottom, workspaces and the
- * tools (the add-on buttons, Split View, Compact Mode and the menu), like Zen's and Arc's. It's
- * laid out in rows as it always was (each row as wide as the sidebar, wrapping), and the bottom
- * ones are moved down to the sidebar's foot (scripts/sidebar-urlbar.mjs measures how far,
- * --aether-tools-drop). It's clipped to its top and its foot, so between them the tabs underneath
- * take the clicks. The page gets the full height of the window. A long address ends in "…". The
+ * reload and home with the window buttons, then the address bar; at the bottom, workspaces above
+ * the line over the sidebar's own tools, and under them all, the tools (the add-on buttons, Split
+ * View, Compact Mode and the menu), like Zen's and Arc's. It's laid out in rows as it always was
+ * (each row as wide as the sidebar, wrapping), and those two rows are moved down to their places
+ * (scripts/sidebar-urlbar.mjs measures how far: --aether-tools-drop, --aether-ws-drop). It's
+ * clipped to its top, the workspaces' row and its foot, so elsewhere the tabs underneath take the
+ * clicks. The page gets the full height of the window. A long address ends in "…". The
  * buttons stay on Firefox's toolbar either way, so with top tabs (one row) nothing has moved. */
 
 :root[aether-urlbar-in-sidebar]:not([inFullscreen], [inDOMFullscreen]) {
@@ -324,6 +325,7 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
     z-index: 10;
     /* Its top rows and its bottom one, joined by a line no wider than nothing. */
     clip-path: polygon(0 0, 100% 0, 100% var(--aether-toolbox-height, 80px), 0 var(--aether-toolbox-height, 80px),
+                       0 var(--aether-ws-top, 0px), 100% var(--aether-ws-top, 0px), 100% var(--aether-ws-bottom, 0px), 0 var(--aether-ws-bottom, 0px),
                        0 calc(100% - var(--aether-toolbox-bottom, 0px)), 100% calc(100% - var(--aether-toolbox-bottom, 0px)), 100% 100%, 0 100%);
   }
 
@@ -382,6 +384,11 @@ toolbarbutton:hover:active .toolbarbutton-badge-stack {
   #sidebar-container {
     padding-top: var(--aether-toolbox-height, 80px) !important;
     padding-bottom: var(--aether-toolbox-bottom, 0px) !important;
+  }
+
+  /* The tabs end above the workspaces' row. */
+  #vertical-tabs {
+    padding-bottom: var(--aether-ws-height, 0px) !important;
   }
 
   #tabbrowser-tabbox {
@@ -1084,34 +1091,26 @@ notification-message::before {
   white-space: nowrap;
 }
 
-/* In the sidebar it starts the bottom row, with the tools after it; with workspaces to switch
- * between, they get a row of their own under the tools, wrapping onto more lines rather than
- * scrolling out of sight. The two rows are moved to the sidebar's foot (above). */
+/* In the sidebar they have a row of their own, wrapping onto more lines rather than scrolling out
+ * of sight, moved down to just above the line over the sidebar's own tools; the toolbar's tools
+ * have the row under the address bar, moved down to the sidebar's foot (above). */
 :root[aether-urlbar-in-sidebar] {
   #aether-workspaces {
-    order: 3;
-    flex: 1 1 24px; /* room for "+", and not a pixel more before wrapping the buttons after it */
-    min-width: 0;
-  }
-
-  #aether-workspaces[several] {
     order: 5;
     flex-basis: 100%;
     flex-wrap: wrap;
     overflow: visible;
+    min-width: 0;
+    translate: 0 var(--aether-ws-drop, 0px);
   }
 
-  #aether-workspaces[several] > .aether-ws:not(.aether-ws-add) {
+  #aether-workspaces > .aether-ws:not(.aether-ws-add) {
     max-width: 100%;
   }
 
   :is(#unified-extensions-button, #nav-bar-customization-target > [id$="-browser-action"],
       #aether-split-view, #aether-compact-mode, #reset-pbm-toolbar-button, #PanelUI-button) {
     order: 4;
-  }
-
-  :is(#aether-workspaces, #unified-extensions-button, #nav-bar-customization-target > [id$="-browser-action"],
-      #aether-split-view, #aether-compact-mode, #reset-pbm-toolbar-button, #PanelUI-button) {
     translate: 0 var(--aether-tools-drop, 0px);
   }
 }

@@ -1,7 +1,8 @@
 // timeout: 60
 // With tabs in the sidebar, its top has the navigation buttons and the address bar (full width),
-// and its bottom workspaces and the tools: the add-on buttons, Split View, Compact Mode and the
-// menu. Nothing reaches past the sidebar's edge, even with more buttons than fit in a row (they
+// then the tabs; then workspaces ("+" and any to switch between), just above the line over the
+// sidebar's own tools (settings, history, bookmarks); under it all, the toolbar's tools: the
+// add-on buttons, Split View, Compact Mode and the menu. Workspaces take clicks there. Nothing reaches past the sidebar's edge, even with more buttons than fit in a row (they
 // wrap, each row on its own).
 // Between them the tabs take the clicks, not the toolbar over them. With tabs on top, the same
 // buttons are one row, as before. In compact mode the tools slide away and back with the sidebar.
@@ -20,11 +21,15 @@ const inside = [...document.querySelectorAll("#nav-bar > *, #nav-bar-customizati
 const out = {
   topFirst: rect("back-button").top < urlbar.top && urlbar.bottom <= tabs.top + 1,
   urlbarFull: urlbar.width > sidebar.width - 24 && urlbar.right <= sidebar.right,
-  toolsAtBottom: [...TOOLS, "aether-workspaces"].every(id => rect(id).bottom > sidebar.bottom - 50 && rect(id).top >= tabs.bottom),
+  toolsAtBottom: TOOLS.every(id => rect(id).bottom > sidebar.bottom - 50 && rect(id).top >= tabs.bottom),
   toolsInARow: new Set(TOOLS.map(id => Math.round(rect(id).top))).size === 1,
   nothingPastTheEdge: inside.filter(([, r]) => r.right > sidebar.right + 1 || r.left < sidebar.left - 1).map(([id]) => id),
 };
 out.allInside = out.nothingPastTheEdge.length === 0;
+const line = document.querySelector("sidebar-main").shadowRoot.querySelector("#sidebar-tools-and-extensions-splitter").getBoundingClientRect();
+const ws = rect("aether-workspaces");
+out.workspacesAboveTheLine = ws.top >= tabs.bottom - 1 && ws.bottom <= line.top && line.top - ws.bottom < 12 && TOOLS.every(id => rect(id).top > line.bottom);
+out.workspacesClickable = !!document.elementFromPoint(ws.left + 10, ws.top + ws.height / 2)?.closest("#aether-workspaces");
 const middle = document.elementFromPoint(sidebar.left + sidebar.width / 2, (tabs.top + tabs.bottom) / 2);
 out.middleIsTabs = !middle.closest("#navigator-toolbox") && !!middle.closest("#sidebar-container");
 // Compact mode: away with the sidebar, and back with it.

@@ -1,5 +1,6 @@
-// Opening Astrelle Settings again (the right-click item, the sidebar's gear, the ≡ menu) goes back
-// to the Settings tab already open, even after a jump link added a #section to its address.
+// Opening Astrelle Settings again (the right-click item, the ≡ menu) goes back to the Settings tab
+// already open, even after a jump link added a #section to its address. The sidebar's gear opens
+// Firefox's own Settings (Astrelle's are at its top), once however often it's pressed.
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const settingsTabs = () => gBrowser.tabs.filter(t => t.linkedBrowser.currentURI.spec.startsWith("about:astrelle")).length;
 const fire = item => item.dispatchEvent(new CustomEvent("command", { bubbles: true }));
@@ -16,9 +17,14 @@ fire(item);
 await wait(1500);
 counts.menuItem = settingsTabs();
 gBrowser.selectedTab = gBrowser.tabs[0];
+const firefoxSettings = () => gBrowser.tabs.filter(t => t.linkedBrowser.currentURI.spec.startsWith("about:preferences")).length;
 await SidebarController.show("viewCustomizeSidebar");
 await wait(1500);
-counts.gear = settingsTabs();
+gBrowser.selectedTab = gBrowser.tabs[0];
+await SidebarController.show("viewCustomizeSidebar");
+await wait(1500);
+counts.gearFirefoxSettings = firefoxSettings();
+counts.gearLeavesAstrelle = settingsTabs();
 await PanelUI.show();
 await wait(800);
 gBrowser.selectedTab = gBrowser.tabs[0];
