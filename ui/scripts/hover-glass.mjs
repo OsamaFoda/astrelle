@@ -5,6 +5,11 @@
 // the wallpaper's frosted copy is. Taken as the sidebar starts to come in, then four times a
 // second while it's out, so a page that scrolls or plays shows through. (Sliding beside the
 // page, the wallpaper is behind it and the glass blurs that itself.) Styles: aether.css.
+//
+// The picture is only ever in memory, in this window, and wiped the moment the bar is gone. Not in
+// private windows at all: there the bar hovering over the page is solid.
+
+const { PrivateBrowsingUtils } = ChromeUtils.importESModule("resource://gre/modules/PrivateBrowsingUtils.sys.mjs");
 
 const ID = "aether-hover-backdrop";
 const SCALE = 0.1;
@@ -15,7 +20,7 @@ export function init(win) {
   const root = doc.documentElement;
   const sidebar = doc.getElementById("sidebar-container");
   const toolbox = doc.getElementById("navigator-toolbox");
-  if (!sidebar || !toolbox || !doc.mozSetImageElement) return;
+  if (!sidebar || !toolbox || !doc.mozSetImageElement || PrivateBrowsingUtils.isWindowPrivate(win)) return;
   // The bar that hovers: the sidebar, or with tabs on top the toolbar.
   const bar = () => (root.hasAttribute("aether-vertical") ? sidebar : toolbox);
 
@@ -30,6 +35,14 @@ export function init(win) {
     const r = bar().getBoundingClientRect();
     return root.hasAttribute("aether-vertical") ? r.right > 0 : r.bottom > 8; // (hidden, the toolbar rests 8 px down)
   };
+
+  // Wiped: the canvas emptied (a 1-pixel one), and any picture still being taken thrown away.
+  let wipes = 0;
+  function wipe() {
+    wipes++;
+    canvas.width = canvas.height = 1;
+    root.removeAttribute("aether-hover-backdrop");
+  }
 
   let busy = false;
   async function snapshot() {
@@ -49,8 +62,10 @@ export function init(win) {
     el.style.setProperty("--aether-hover-at", `${x1 - el.offsetLeft}px ${y1 - el.offsetTop}px`);
     el.style.setProperty("--aether-hover-size", `${x2 - x1}px ${y2 - y1}px`);
     busy = true;
+    const asked = wipes;
     try {
       const picture = await global.drawSnapshot(rect, SCALE, "white");
+      if (asked !== wipes) return picture.close(); // the bar went while it was being taken
       if (canvas.width !== picture.width || canvas.height !== picture.height) {
         canvas.width = picture.width;
         canvas.height = picture.height;
@@ -66,12 +81,14 @@ export function init(win) {
     }
   }
 
-  // As it starts to come in (its slide begins), then while it's out, and no longer.
+  // As it starts to come in (its slide begins), then while it's out, and no longer: once it's gone,
+  // the picture goes too.
   let timer = 0;
   const keepUp = () => {
     if (wanted() && out()) return snapshot();
     win.clearInterval(timer);
     timer = 0;
+    wipe();
   };
   for (const el of [sidebar, toolbox]) {
     el.addEventListener("transitionrun", event => {
