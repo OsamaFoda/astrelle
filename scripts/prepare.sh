@@ -64,7 +64,10 @@ echo "ac_add_options --with-app-name=$APP_NAME" >> src/mozconfig
 echo "ac_add_options --with-branding=browser/branding/$APP_NAME" >> src/mozconfig
 # A profile folder of its own, ~/.config/astrelle (and ~/.cache/astrelle), not Firefox's
 # ~/.config/mozilla/firefox, as LibreWolf and Zen have theirs. tools/install-build.sh moves the
-# profile there for the first build that has it. Only the browser's confvars.sh may set it (a
-# mozconfig is refused: "can not be set by mozconfig").
-echo "MOZ_APP_PROFILE=${DISPLAY_NAME,,}" >> src/browser/confvars.sh
-grep -qx "MOZ_APP_PROFILE=${DISPLAY_NAME,,}" src/browser/confvars.sh || { echo "Profile folder not set in confvars.sh" >&2; exit 1; }
+# profile there for the first build that has it. Configure takes it only as implied by the
+# browser's moz.configure (a mozconfig and confvars.sh are both refused), so it goes beside
+# Firefox's own vendor there.
+VENDOR_LINE='imply_option("MOZ_APP_VENDOR", "Mozilla")'
+grep -qxF "$VENDOR_LINE" src/browser/moz.configure || { echo "browser/moz.configure has no vendor line to set the profile folder by" >&2; exit 1; }
+sed -i "/^imply_option(\"MOZ_APP_VENDOR\", \"Mozilla\")\$/a imply_option(\"MOZ_APP_PROFILE\", \"${DISPLAY_NAME,,}\")" src/browser/moz.configure
+grep -qxF "imply_option(\"MOZ_APP_PROFILE\", \"${DISPLAY_NAME,,}\")" src/browser/moz.configure || { echo "Profile folder not set in browser/moz.configure" >&2; exit 1; }
