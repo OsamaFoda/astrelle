@@ -235,13 +235,17 @@ async function showWallpaper() {
   else root.style.removeProperty("--aether-wallpaper");
   startPlacing();
 }
-// Where the window is, relative to this page, checked each frame while the page shows the
-// wallpaper (the page slides in compact mode, which nothing reports). Otherwise no frames are
-// asked for, as each one keeps the whole browser window busy.
+// Where the window is, relative to this page, checked each frame while something may be moving
+// it: from when the page or the window is resized or anything in the window starts sliding (the
+// page slides in compact mode, which nothing else reports), until it has kept still for a moment.
+// Otherwise no frames are asked for: each one keeps the whole browser window busy, and frames
+// asked for all the time would compete with every animation.
+const STILL = 45; // frames (about ¾ s) unmoved before it stops checking
 let placed = "";
 let placing = false;
+let still = 0;
 function placeWallpaper() {
-  placing = document.documentElement.hasAttribute("aether-wallpaper") && !document.hidden;
+  placing = document.documentElement.hasAttribute("aether-wallpaper") && !document.hidden && still < STILL;
   if (!placing) return;
   const top = chromeWindow();
   // The window's pixels in this page's, which are bigger when the page is zoomed.
@@ -250,11 +254,17 @@ function placeWallpaper() {
     top.innerWidth * k, top.innerHeight * k].map(n => `${Math.round(n)}px`);
   if (at.join() !== placed) {
     placed = at.join();
+    still = 0;
     ["--wall-x", "--wall-y", "--wall-w", "--wall-h"].forEach((name, i) => document.documentElement.style.setProperty(name, at[i]));
+  } else {
+    still++;
   }
   requestAnimationFrame(placeWallpaper);
 }
-const startPlacing = () => { if (!placing) placeWallpaper(); };
+const startPlacing = () => {
+  still = 0;
+  if (!placing) placeWallpaper();
+};
 // A page in a tab behind asks when it's next shown, not on every return to the window (with the
 // desktop's wallpaper, each ask runs gsettings).
 const refreshWallpaper = () => {
@@ -282,9 +292,14 @@ window.addEventListener("unload", () => {
   windowAround.removeEventListener("activate", refreshWallpaper);
   windowDark.removeEventListener("change", refreshWallpaper);
   toneWatcher.disconnect();
+  windowAround.removeEventListener("resize", startPlacing);
+  windowAround.removeEventListener("transitionrun", startPlacing, true);
   [PINNED, HIDDEN].forEach(pref => Services.prefs.removeObserver(pref, renderShortcuts));
 }, { once: true });
 document.addEventListener("visibilitychange", startPlacing);
+window.addEventListener("resize", startPlacing);
+windowAround.addEventListener("resize", startPlacing);
+windowAround.addEventListener("transitionrun", startPlacing, true);
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
   if (wallpaperStale) showWallpaper();

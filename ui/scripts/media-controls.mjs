@@ -9,6 +9,7 @@
 
 import { tr } from "./l10n.mjs";
 import { SPRING } from "./tab-lens.mjs";
+import { SPRING_TIME } from "./motion.mjs";
 
 const VERTICAL_TABS = "sidebar.verticalTabs";
 const CONTROLLER_EVENTS = ["activated", "deactivated", "metadatachange", "playbackstatechange", "positionstatechange", "supportedkeyschange"];
@@ -120,7 +121,7 @@ export function init(win) {
     if (on === !card.hidden && !moving?.leaving) return;
     moving?.cancel();
     // The tab highlight's soft spring (scripts/tab-lens.mjs): a glide in with a slight settle.
-    const duration = win.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 560;
+    const duration = win.matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : SPRING_TIME;
     card.hidden = false;
     const resting = win.getComputedStyle(card);
     const full = { height: `${card.getBoundingClientRect().height}px`, marginTop: resting.marginTop, marginBottom: resting.marginBottom,

@@ -3,15 +3,17 @@
 // history, passwords, the customize page) get transparent backgrounds and the theme's colours
 // (styles/sidebar-pages.css); web pages in it, like an add-on's or a chatbot's, keep their own.
 //
-// Opening a panel grows it out from the sidebar like a drawer, the page making room as it does;
-// closing one makes the page glide back over its place instead of jumping. In compact mode,
-// closing one sends the sidebar off at once, on the same curve, so the two move together.
+// Opening a panel shows it in place, fading in, while the page glides aside off it like a drawer
+// opening; closing one makes the page glide back over its place instead of jumping. Only things
+// moving and fading, which the graphics card does (sizes changing would have the page laid out
+// again on every frame of it). In compact mode, closing one sends the sidebar off at once, on the
+// same curve, so the two move together.
 
 import { follow } from "./palette.mjs";
 
 const { PrivateBrowsingUtils } = ChromeUtils.importESModule("resource://gre/modules/PrivateBrowsingUtils.sys.mjs");
 
-const GLIDE = "cubic-bezier(0.22, 1, 0.36, 1)"; // styles/aether.css, --aether-glide
+import { GLIDE, MOVE } from "./motion.mjs";
 const SHEETS = ["chrome://aether/content/styles/palettes.css", "chrome://aether/content/styles/sidebar-pages.css"];
 
 export function init(win) {
@@ -74,13 +76,14 @@ export function init(win) {
     const start = from ?? win.windowUtils.getBoundsWithoutFlushing(page).left;
     from = null;
     if (reducedMotion.matches) return;
-    if (!box.hidden) {
-      const width = `${box.getBoundingClientRect().width}px`;
-      box.animate({ minWidth: ["0px", width], maxWidth: ["0px", width] }, { duration: 360, easing: GLIDE });
-      return;
-    }
     const dx = start - page.getBoundingClientRect().left;
-    if (Math.abs(dx) >= 1) page.animate([{ translate: `${dx}px 0`, offset: 0 }], { duration: 360, easing: GLIDE });
+    if (!box.hidden) {
+      // From a little way back towards the sidebar (the start of the line: left, or right in
+      // Arabic, Hebrew, Persian and Urdu), under the page sliding off it.
+      const back = win.getComputedStyle(box).direction === "rtl" ? 16 : -16;
+      box.animate([{ opacity: 0, translate: `${back}px 0` }, { opacity: 1, translate: "0 0" }], { duration: MOVE, easing: GLIDE });
+    }
+    if (Math.abs(dx) >= 1) page.animate([{ translate: `${dx}px 0`, offset: 0 }], { duration: MOVE, easing: GLIDE });
   }).observe(box, { attributes: true, attributeFilter: ["hidden"] });
 
   // The sidebar's pages load in this process, so their events reach the window.
