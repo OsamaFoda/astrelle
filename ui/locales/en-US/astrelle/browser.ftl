@@ -85,3 +85,12 @@ astrelle-media-close = Hide until it plays again
 astrelle-media-go-to-tab = Go to the tab playing { $title }
 astrelle-media-restart = Back to the start
 astrelle-media-skip-to-end = Skip to the end (on to the next, where the site plays one)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = A new version of Astrelle is out, with the latest fixes.
+astrelle-update-now = Update
+astrelle-update-download = Download
+astrelle-update-updating = Updating Astrelle… You can keep browsing.
+astrelle-update-restart-to = Astrelle is updated. Restart it to finish.
+astrelle-update-failed = Couldn't update Astrelle. Check your connection; it will offer again tomorrow.

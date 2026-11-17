@@ -84,3 +84,12 @@ astrelle-media-close = 次に再生されるまで隠す
 astrelle-media-go-to-tab = { $title } を再生中のタブへ移動
 astrelle-media-restart = 最初に戻る
 astrelle-media-skip-to-end = 最後へ (サイトが次を再生する場合は次へ)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = Astrelle の新しいバージョンが公開されました。最新の修正が含まれています。
+astrelle-update-now = 更新
+astrelle-update-download = ダウンロード
+astrelle-update-updating = Astrelle を更新しています… そのまま閲覧を続けられます。
+astrelle-update-restart-to = Astrelle が更新されました。再起動すると完了します。
+astrelle-update-failed = Astrelle を更新できませんでした。接続を確認してください。明日もう一度お知らせします。

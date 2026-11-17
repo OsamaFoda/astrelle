@@ -87,3 +87,12 @@ astrelle-media-close = Скрыть до следующего воспроизв
 astrelle-media-go-to-tab = Перейти к вкладке, где играет { $title }
 astrelle-media-restart = В начало
 astrelle-media-skip-to-end = В конец (и к следующему, если сайт его включает)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = Вышла новая версия Astrelle с последними исправлениями.
+astrelle-update-now = Обновить
+astrelle-update-download = Скачать
+astrelle-update-updating = Astrelle обновляется… Можно продолжать работу.
+astrelle-update-restart-to = Astrelle обновлён. Перезапустите его, чтобы завершить.
+astrelle-update-failed = Не удалось обновить Astrelle. Проверьте подключение; завтра обновление будет предложено снова.

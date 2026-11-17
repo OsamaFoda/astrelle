@@ -11,6 +11,9 @@
 # the folder a browser runs from. You get a launcher in your app list, and the `astrelle` command if
 # ~/.local/bin is on your PATH. Run it again any time to update: it downloads only when there's a
 # newer release (about 90 MB), and changes nothing while Astrelle is open.
+#
+# Astrelle runs its own copy (in its folder) with --while-open when you choose Update: the new build
+# is swapped in while it's open, as a distribution's updates are, and takes over when it restarts.
 set -euo pipefail
 
 main() {
@@ -24,6 +27,11 @@ main() {
 
   say() { printf '%s\n' "$*"; }
   fail() { printf 'Stopped: %s\n' "$*" >&2; exit 1; }
+  # The release installed: builds name theirs; older ones were named by this.
+  installed() { cat "$app/astrelle-release" 2>/dev/null || cat "$home/release" 2>/dev/null || true; }
+
+  local while_open=false
+  if [ "${1:-}" = --while-open ]; then while_open=true; shift; fi
 
   # Any program running from the install folder: the browser and each of its processes.
   running() {
@@ -56,7 +64,7 @@ main() {
   local tool
   for tool in tar xz; do command -v "$tool" >/dev/null || fail "this needs $tool; install it from your distribution first."; done
   ours || fail "$launcher starts an Astrelle installed somewhere else; this leaves it alone. Remove that one, or its launcher, first."
-  running && fail "Astrelle is open. Close it, then run this again."
+  if ! $while_open && running; then fail "Astrelle is open. Close it, then run this again."; fi
 
   local work
   work="$(mktemp -d)"
@@ -76,7 +84,7 @@ main() {
     release="$(printf '%s' "$info" | grep -o '"tag_name": *"[^"]*"' | head -n1 | sed 's/.*"\([^"]*\)"$/\1/')"
     url="$(printf '%s' "$info" | grep -o '"browser_download_url": *"[^"]*-linux-x86_64\.tar\.xz"' | head -n1 | sed 's/.*"\([^"]*\)"$/\1/')"
     [ -n "$release" ] && [ -n "$url" ] || fail "the newest release has no Linux download."
-    if [ -d "$app" ] && [ "$(cat "$home/release" 2>/dev/null)" = "$release" ]; then
+    if [ -d "$app" ] && [ "$(installed)" = "$release" ]; then
       say "Astrelle is up to date ($release)."
       exit 0
     fi
@@ -94,6 +102,7 @@ main() {
   mkdir -p "$home"
   tar -xJf "$tarball" -C "$work" || fail "$tarball isn't a complete Astrelle download."
   [ -x "$work/aether/aether" ] && [ -f "$work/aether/application.ini" ] || fail "$tarball doesn't look like an Astrelle build."
+  [ -f "$work/aether/astrelle-release" ] && release="$(cat "$work/aether/astrelle-release")"
   # Swapped in whole, in the same folder; the build it replaces goes once the new one is in place.
   rm -rf "$home/app.new" "$home/app.old"
   mv "$work/aether" "$home/app.new"

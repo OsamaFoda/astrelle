@@ -140,6 +140,9 @@ jobs:
           mkdir pkg
           tar -xf "$FILE" -C pkg
           scripts/install_ui.sh "pkg/$APP_NAME"
+          # Which release it is, for its update check, and the installer it updates itself with.
+          echo "${{ needs.check.outputs.tag }}" > "pkg/$APP_NAME/astrelle-release"
+          cp install.sh "pkg/$APP_NAME/install.sh"
           TAR="$APP_NAME-${{ needs.check.outputs.version }}-linux-x86_64.tar.xz"
           XZ_OPT=-T0 tar -cJf "$TAR" -C pkg "$APP_NAME"
           # Its checksum beside it, which install.sh checks the download against.

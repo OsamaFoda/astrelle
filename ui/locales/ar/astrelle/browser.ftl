@@ -86,3 +86,12 @@ astrelle-media-close = إخفاء حتى يُشغَّل من جديد
 astrelle-media-go-to-tab = انتقل إلى اللسان الذي يعرض { $title }
 astrelle-media-restart = العودة إلى البداية
 astrelle-media-skip-to-end = تخطَّ إلى النهاية (إلى التالي حيث يشغّله الموقع)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = صدر إصدار جديد من Astrelle، مع أحدث الإصلاحات.
+astrelle-update-now = تحديث
+astrelle-update-download = تنزيل
+astrelle-update-updating = يجري تحديث Astrelle… يمكنك متابعة التصفح.
+astrelle-update-restart-to = تم تحديث Astrelle. أعد تشغيله لإتمام التحديث.
+astrelle-update-failed = تعذّر تحديث Astrelle. تحقق من اتصالك؛ سيُعرض التحديث مجددًا غدًا.

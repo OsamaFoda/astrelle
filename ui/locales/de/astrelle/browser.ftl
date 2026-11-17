@@ -85,3 +85,12 @@ astrelle-media-close = Ausblenden, bis wieder etwas spielt
 astrelle-media-go-to-tab = Zum Tab, der { $title } abspielt
 astrelle-media-restart = Zum Anfang
 astrelle-media-skip-to-end = Zum Ende springen (weiter zum nächsten, wo die Seite eines abspielt)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = Eine neue Version von Astrelle ist da, mit den neuesten Korrekturen.
+astrelle-update-now = Aktualisieren
+astrelle-update-download = Herunterladen
+astrelle-update-updating = Astrelle wird aktualisiert … Sie können weitersurfen.
+astrelle-update-restart-to = Astrelle ist aktualisiert. Starten Sie es neu, um abzuschließen.
+astrelle-update-failed = Astrelle konnte nicht aktualisiert werden. Prüfen Sie Ihre Verbindung; morgen wird es erneut angeboten.

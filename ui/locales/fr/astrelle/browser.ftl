@@ -88,3 +88,12 @@ astrelle-media-close = Masquer jusqu’à la prochaine lecture
 astrelle-media-go-to-tab = Aller à l’onglet qui lit { $title }
 astrelle-media-restart = Revenir au début
 astrelle-media-skip-to-end = Aller à la fin (puis au suivant, si le site en lit un)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = Une nouvelle version d’Astrelle est disponible, avec les derniers correctifs.
+astrelle-update-now = Mettre à jour
+astrelle-update-download = Télécharger
+astrelle-update-updating = Mise à jour d’Astrelle… Vous pouvez continuer à naviguer.
+astrelle-update-restart-to = Astrelle est à jour. Redémarrez-le pour terminer.
+astrelle-update-failed = Impossible de mettre à jour Astrelle. Vérifiez votre connexion ; la mise à jour sera proposée à nouveau demain.

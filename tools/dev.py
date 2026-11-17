@@ -116,6 +116,8 @@ def start(width=1280, height=800, dark=None, show=False):
     port = free_port()
     with open(os.path.join(profile, "user.js"), "w") as f:
         f.write(f'user_pref("marionette.port", {port});\n')
+        # No asking GitHub for a newer Astrelle (scripts/updates.mjs): tests reach no real sites.
+        f.write('user_pref("aether.updates.check", false);\n')
         if dark is not None:
             f.write(f'user_pref("ui.systemUsesDarkTheme", {1 if dark else 0});\n')
         # Extra prefs for a run, e.g. ASTRELLE_DEV_PREFS='{"intl.locale.requested": "ar"}'.

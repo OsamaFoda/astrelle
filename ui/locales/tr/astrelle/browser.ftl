@@ -84,3 +84,12 @@ astrelle-media-close = Yeniden çalana kadar gizle
 astrelle-media-go-to-tab = { $title } çalan sekmeye git
 astrelle-media-restart = Başa dön
 astrelle-media-skip-to-end = Sona atla (site bir sonrakini çalıyorsa ona geçer)
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = Astrelle’ın yeni bir sürümü çıktı, en son düzeltmelerle birlikte.
+astrelle-update-now = Güncelle
+astrelle-update-download = İndir
+astrelle-update-updating = Astrelle güncelleniyor… Gezinmeye devam edebilirsiniz.
+astrelle-update-restart-to = Astrelle güncellendi. Tamamlamak için yeniden başlatın.
+astrelle-update-failed = Astrelle güncellenemedi. Bağlantınızı kontrol edin; yarın yeniden önerilecek.

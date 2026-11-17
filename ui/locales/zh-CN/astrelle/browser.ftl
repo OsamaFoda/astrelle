@@ -84,3 +84,12 @@ astrelle-media-close = 隐藏，直到再次播放
 astrelle-media-go-to-tab = 转到正在播放 { $title } 的标签页
 astrelle-media-restart = 回到开头
 astrelle-media-skip-to-end = 跳到结尾（如果网站会播放下一个，就到下一个）
+
+## Updates (scripts/updates.mjs)
+
+astrelle-update-ready = Astrelle 有新版本了，包含最新的修复。
+astrelle-update-now = 更新
+astrelle-update-download = 下载
+astrelle-update-updating = 正在更新 Astrelle…你可以继续浏览。
+astrelle-update-restart-to = Astrelle 已更新，重新启动即可完成。
+astrelle-update-failed = 无法更新 Astrelle。请检查网络连接；明天会再次提示。
