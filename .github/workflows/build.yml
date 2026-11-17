@@ -124,6 +124,9 @@ jobs:
           fi
           # Memory use once a minute, shown if the build fails.
           ( while true; do echo "$(date -u +%T) $(free -m | awk '/Mem/ {print "mem used " $3 " MB"} /Swap/ {print "swap used " $3 " MB"}' | paste -sd' ')"; sleep 60; done ) > ../memory.log 2>&1 &
+          ./mach --no-interactive configure
+          # Astrelle's own profile folder (prepare.sh): checked here, minutes in, not after hours.
+          grep -q "MOZ_APP_PROFILE.*astrelle" obj/config.status || { echo "MOZ_APP_PROFILE isn't astrelle" >&2; exit 1; }
           ./mach --no-interactive build
           ./mach package
 
