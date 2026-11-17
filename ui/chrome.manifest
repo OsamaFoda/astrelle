@@ -1,17 +1,17 @@
 content aether ./
 
 # Firefox's own pages show the brand icon (in the address bar, the About window). Builds carry
-# Aurora; these make an installed build that predates it show Aurora too.
-override chrome://branding/content/icon16.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/icon32.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/icon48.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/icon64.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/icon128.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/about-logo.svg chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/about-logo.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/about-logo@2x.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/about-logo-private.png chrome://aether/content/icons/aurora.svg
-override chrome://branding/content/about-logo-private@2x.png chrome://aether/content/icons/aurora.svg
+# Eclipse; these make an installed build that predates it show Eclipse too.
+override chrome://branding/content/icon16.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/icon32.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/icon48.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/icon64.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/icon128.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/about-logo.svg chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/about-logo.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/about-logo@2x.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/about-logo-private.png chrome://aether/content/icons/eclipse.svg
+override chrome://branding/content/about-logo-private@2x.png chrome://aether/content/icons/eclipse.svg
 
 # Firefox's own words name the browser by the build's brand; these make a build that predates the
 # name Astrelle say Astrelle too (window titles, the private window's title, the address bar's
