@@ -1,4 +1,5 @@
-// Astrelle's app icon: Eclipse (the default), Aurora, Comet or Galaxy (the drawings are in ui/icons/), chosen in
+// Astrelle's app icon: Eclipse (the default), Nightfall or Sunrise (the same eclipse in other
+// colours), Aurora, Comet or Galaxy (the drawings are in ui/icons/), chosen in
 // the welcome or in Customize Astrelle and kept in the aether.appIcon pref. The desktop takes the
 // icon from Astrelle's launcher (aether.desktop in ~/.local/share/applications), so this keeps a copy
 // of the chosen icon beside it and points the launcher at the copy; the dock follows in a moment.
@@ -6,7 +7,7 @@
 
 const { AppConstants } = ChromeUtils.importESModule("resource://gre/modules/AppConstants.sys.mjs");
 
-export const ICONS = ["eclipse", "aurora", "comet", "galaxy"];
+export const ICONS = ["eclipse", "nightfall", "sunrise", "aurora", "comet", "galaxy"];
 const PREF = "aether.appIcon";
 
 export function chosen() {

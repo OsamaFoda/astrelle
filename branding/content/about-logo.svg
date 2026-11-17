@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Astrelle's icon: Eclipse, an eclipse whose corona runs teal, violet and pink from the star round. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#101221"/>
@@ -30,6 +31,24 @@
       <stop offset=".6" stop-color="#a5b4fc" stop-opacity=".5"/>
       <stop offset="1" stop-color="#a5b4fc" stop-opacity=".15"/>
     </linearGradient>
+    <linearGradient id="hue" x1="430" y1="80" x2="80" y2="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset=".5" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f472b6"/>
+    </linearGradient>
+    <radialGradient id="glowshape" cx="256" cy="256" r="214" gradientUnits="userSpaceOnUse">
+      <stop offset=".58" stop-color="#fff"/>
+      <stop offset=".66" stop-color="#fff" stop-opacity=".95"/>
+      <stop offset=".78" stop-color="#fff" stop-opacity=".55"/>
+      <stop offset=".9" stop-color="#fff" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="ring"><circle cx="256" cy="256" r="214" fill="url(#glowshape)"/></mask>
+    <radialGradient id="hot" cx="256" cy="256" r="214" gradientUnits="userSpaceOnUse">
+      <stop offset=".58" stop-color="#fff"/>
+      <stop offset=".64" stop-color="#fff" stop-opacity=".55"/>
+      <stop offset=".72" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
   </defs>
   <g clip-path="url(#tile)">
     <rect x="32" y="32" width="448" height="448" fill="url(#bg)"/>
@@ -43,7 +62,8 @@
     <circle cx="100" cy="441" r="3" fill="#fff" opacity="0.54"/>
     <circle cx="379" cy="441" r="3" fill="#fff" opacity="0.77"/>
     <circle cx="62" cy="430" r="3" fill="#fff" opacity="0.89"/>
-    <circle cx="256" cy="256" r="214" fill="url(#corona)"/>
+    <rect x="32" y="32" width="448" height="448" fill="url(#hue)" mask="url(#ring)"/>
+    <circle cx="256" cy="256" r="214" fill="url(#hot)"/>
     <circle cx="256" cy="256" r="126" fill="#020205"/>
     <circle cx="256" cy="256" r="126" fill="none" stroke="url(#limb)" stroke-width="4"/>
     <circle cx="341.6" cy="160.9" r="46" fill="#e0f2fe" opacity=".85" filter="url(#b22)"/>
