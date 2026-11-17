@@ -1,0 +1,55 @@
+# Astrelle on Flathub: the released build (the tarball .github/workflows/build.yml publishes,
+# Astrelle's interface included) on Mozilla's Firefox base app, as Zen's Flathub package does with
+# its own release. A new Astrelle release is a new url and sha256 below; Flathub then updates
+# everyone. .github/workflows/flatpak.yml builds and starts it from the newest release to check.
+id: io.github.osamafoda.Astrelle
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+base: org.mozilla.firefox.BaseApp
+base-version: '25.08'
+command: astrelle
+finish-args:
+  # As Firefox's own Flathub package.
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pcsc
+  - --socket=cups
+  - --device=all
+  - --filesystem=xdg-download
+  - --talk-name=org.freedesktop.FileManager1
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.a11y.Bus
+  - --system-talk-name=org.freedesktop.NetworkManager
+  - --own-name=org.mozilla.aether.*
+  - --own-name=org.mozilla.aether_default.*
+  # Astrelle's own: pictures for its wallpaper (Settings: your Wallpapers folder, or one you
+  # choose), read-only.
+  - --filesystem=xdg-pictures:ro
+  - --env=MOZ_APP_LAUNCHER=astrelle
+modules:
+  - name: astrelle
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib && cp -a astrelle /app/lib/astrelle
+      - install -Dm755 astrelle.sh /app/bin/astrelle
+      - install -Dm644 io.github.osamafoda.Astrelle.desktop /app/share/applications/io.github.osamafoda.Astrelle.desktop
+      - install -Dm644 io.github.osamafoda.Astrelle.metainfo.xml /app/share/metainfo/io.github.osamafoda.Astrelle.metainfo.xml
+      - for size in 16 22 24 32 48 64 128 256; do install -Dm644 icons/default${size}.png /app/share/icons/hicolor/${size}x${size}/apps/io.github.osamafoda.Astrelle.png; done
+    sources:
+      - type: archive
+        url: https://github.com/OsamaFoda/astrelle/releases/download/RELEASE_TAG/aether-RELEASE_VERSION-linux-x86_64.tar.xz
+        sha256: RELEASE_SHA256
+        dest: astrelle
+      - type: file
+        path: astrelle.sh
+      - type: file
+        path: io.github.osamafoda.Astrelle.desktop
+      - type: file
+        path: io.github.osamafoda.Astrelle.metainfo.xml
+      - type: dir
+        path: ../branding
+        dest: icons

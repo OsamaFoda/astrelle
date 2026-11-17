@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Name=Astrelle
+GenericName=Web Browser
+Comment=A calm, fast browser that's light on your data
+Exec=astrelle %u
+Icon=io.github.osamafoda.Astrelle
+Terminal=false
+Categories=Network;WebBrowser;
+Keywords=web;browser;internet;
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+StartupWMClass=io.github.osamafoda.Astrelle
+Actions=new-window;new-private-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=astrelle --new-window %u
+
+[Desktop Action new-private-window]
+Name=New Private Window
+Exec=astrelle --private-window %u

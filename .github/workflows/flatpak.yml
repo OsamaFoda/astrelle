@@ -1,0 +1,67 @@
+name: Flatpak
+
+# Builds Astrelle's Flatpak (flatpak/io.github.osamafoda.Astrelle.yml) from the newest release,
+# drafts included, and starts it once: the check before the manifest goes to Flathub. Started by
+# hand (`gh workflow run flatpak.yml`); the Flatpak runtimes it needs download here, not on the
+# computer it's started from. The bundle it makes is kept as the run's artifact.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  flatpak:
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get the newest Astrelle release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          api() { curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$@"; }
+          # From the API, which lists drafts too (new releases start as drafts, with no tag yet).
+          api "https://api.github.com/repos/$GITHUB_REPOSITORY/releases?per_page=10" > releases.json
+          read -r ASSET TAG < <(python3 -c '
+          import json
+          for r in json.load(open("releases.json")):
+              for a in r["assets"]:
+                  if a["name"].endswith("-linux-x86_64.tar.xz"):
+                      print(a["url"], r["tag_name"]); raise SystemExit')
+          test -n "$ASSET" || { echo "No Astrelle release to package" >&2; exit 1; }
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/octet-stream" "$ASSET" -o flatpak/astrelle.tar.xz
+          VERSION="${TAG#v}"; VERSION="${VERSION%-*}"
+          # The manifest names the published download; here it's the file just fetched.
+          python3 - "$VERSION" <<'PY'
+          import re, sys, datetime
+          path = "flatpak/io.github.osamafoda.Astrelle.yml"
+          s = open(path).read()
+          s = re.sub(r"        url: .*\n        sha256: .*\n", "        path: astrelle.tar.xz\n", s)
+          open(path, "w").write(s)
+          meta = "flatpak/io.github.osamafoda.Astrelle.metainfo.xml"
+          m = open(meta).read().replace("RELEASE_VERSION", sys.argv[1]).replace("RELEASE_DATE", datetime.date.today().isoformat())
+          open(meta, "w").write(m)
+          PY
+          echo "Packaging $TAG"
+
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: astrelle.flatpak
+          manifest-path: flatpak/io.github.osamafoda.Astrelle.yml
+          cache: false
+          upload-artifact: true
+
+      - name: Start it once
+        shell: bash
+        run: |
+          flatpak install --user -y --noninteractive astrelle.flatpak
+          mkdir -p "$HOME/Downloads"
+          # Headless, it draws a page to a file and quits: the Flatpak starts and works.
+          timeout 120 flatpak run io.github.osamafoda.Astrelle --headless --screenshot "$HOME/Downloads/started.png" about:robots
+          test -s "$HOME/Downloads/started.png" && echo "Astrelle started in its Flatpak and drew a page."
+          flatpak run --command=sh io.github.osamafoda.Astrelle -c 'echo "Profile folder: $XDG_CONFIG_HOME"; ls /app/lib/astrelle | head'
