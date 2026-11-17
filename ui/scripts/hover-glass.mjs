@@ -1,10 +1,10 @@
 // Frosted Glass for compact mode's sidebar (or top toolbar) when it hovers over the page (aether.compactReveal
 // "over"): what's behind it then is the website, not the wallpaper, and Firefox's glass can't blur
-// a web page. So the strip of the page under the sidebar is snapshotted, small (a tenth of its
-// size), and drawn stretched back out behind the sidebar's frost: blurred by the stretching, as
-// the wallpaper's frosted copy is. Taken as the sidebar starts to come in, then four times a
-// second while it's out, so a page that scrolls or plays shows through. (Sliding beside the
-// page, the wallpaper is behind it and the glass blurs that itself.) Styles: aether.css.
+// a web page. So the page as it's showing is snapshotted, at a quarter of its size, and the strip
+// under the bar is cut out of it, blurred, and drawn behind the bar's frost, staying where that
+// strip is on the screen while the bar slides over it, as glass over the page would. Taken as the bar starts to come in, then four times a second while it's
+// out, so a page that scrolls or plays shows through. (Sliding beside the page, the wallpaper is
+// behind it and the glass blurs that itself.) Styles: aether.css.
 //
 // The picture is only ever in memory, in this window, and wiped the moment the bar is gone. Not in
 // private windows at all: there the bar hovering over the page is solid.
@@ -12,8 +12,10 @@
 const { PrivateBrowsingUtils } = ChromeUtils.importESModule("resource://gre/modules/PrivateBrowsingUtils.sys.mjs");
 
 const ID = "aether-hover-backdrop";
-const SCALE = 0.1;
+const SCALE = 0.25;
+const BLUR = 4; // px of the small picture: about 16 of the page's
 const EVERY = 250; // ms, while it's out
+const PATIENCE = 1000; // ms: a picture not taken by then is given up on, so the next can be
 
 export function init(win) {
   const doc = win.document;
@@ -52,31 +54,38 @@ export function init(win) {
     const global = browser?.browsingContext?.currentWindowGlobal;
     if (!page?.width || !global) return;
     // The part of the page under the bar when it's out (its slide aside: both are fixed, so their
-    // offsets are where they rest), in the page's own coordinates, and where that part is on the
-    // bar, for its background.
+    // offsets are where they rest), on the screen, and in the page's showing part.
     const el = bar();
     const x1 = Math.max(el.offsetLeft, page.left), y1 = Math.max(el.offsetTop, page.top);
     const x2 = Math.min(el.offsetLeft + el.offsetWidth, page.right), y2 = Math.min(el.offsetTop + el.offsetHeight, page.bottom);
     if (x2 <= x1 || y2 <= y1) return;
-    const rect = new win.DOMRect(x1 - page.left, y1 - page.top, x2 - x1, y2 - y1);
     el.style.setProperty("--aether-hover-at", `${x1 - el.offsetLeft}px ${y1 - el.offsetTop}px`);
     el.style.setProperty("--aether-hover-size", `${x2 - x1}px ${y2 - y1}px`);
     busy = true;
     const asked = wipes;
+    const giveUp = win.setTimeout(() => (busy = false), PATIENCE);
     try {
-      const picture = await global.drawSnapshot(rect, SCALE, "white");
+      // The whole of what's showing (a region would be measured from the page's top, not from
+      // where it's scrolled to), then the strip cut out of it, blurred: a little past its edges,
+      // so the blur has the page to draw on there too.
+      const picture = await global.drawSnapshot(null, SCALE, "white");
       if (asked !== wipes) return picture.close(); // the bar went while it was being taken
-      if (canvas.width !== picture.width || canvas.height !== picture.height) {
-        canvas.width = picture.width;
-        canvas.height = picture.height;
+      const w = Math.max(1, Math.round((x2 - x1) * SCALE)), h = Math.max(1, Math.round((y2 - y1) * SCALE));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
       }
-      context.drawImage(picture, 0, 0);
+      const pad = BLUR * 3;
+      const sx = (x1 - page.left) * SCALE - pad, sy = (y1 - page.top) * SCALE - pad;
+      context.filter = `blur(${BLUR}px)`;
+      context.drawImage(picture, sx, sy, w + 2 * pad, h + 2 * pad, -pad, -pad, w + 2 * pad, h + 2 * pad);
       picture.close();
       root.setAttribute("aether-hover-backdrop", "");
     } catch {
       // A page that can't be drawn (still loading, or gone): the frost alone, solid.
       root.removeAttribute("aether-hover-backdrop");
     } finally {
+      win.clearTimeout(giveUp);
       busy = false;
     }
   }

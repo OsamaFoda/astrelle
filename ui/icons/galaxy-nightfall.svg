@@ -30,11 +30,11 @@
       <stop offset=".3" stop-color="#fef3c7" stop-opacity=".9"/>
       <stop offset="1" stop-color="#a5b4fc" stop-opacity="0"/>
     </radialGradient>
-    <filter id="tint" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB"><feColorMatrix type="hueRotate" values="-28.0"/><feColorMatrix type="saturate" values="1.0"/></filter>
+    <filter id="mono" filterUnits="userSpaceOnUse" x="0" y="0" width="512" height="512" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="gamma" amplitude="1.08" exponent="0.85"/><feFuncG type="gamma" amplitude="1.08" exponent="0.85"/><feFuncB type="gamma" amplitude="1.08" exponent="0.85"/></feComponentTransfer></filter>
   </defs>
+  <g filter="url(#mono)">
   <g clip-path="url(#tile)">
     <rect x="32" y="32" width="448" height="448" fill="url(#bg)"/>
-    <g filter="url(#tint)">
     <circle cx="372" cy="429" r="3" fill="#fff" opacity="0.73"/>
     <circle cx="80" cy="121" r="2.2" fill="#fff" opacity="0.63"/>
     <circle cx="285" cy="65" r="1.6" fill="#fff" opacity="0.60"/>
@@ -54,7 +54,7 @@
     <circle cx="256" cy="256" r="74" fill="url(#core)"/>
     <circle cx="256" cy="256" r="16" fill="#fff"/>
     <rect x="32" y="32" width="448" height="448" fill="url(#sheen)"/>
-    </g>
   </g>
   <rect x="33.5" y="33.5" width="445" height="445" rx="106.5" fill="none" stroke="url(#edge)" stroke-width="3"/>
+  </g>
 </svg>

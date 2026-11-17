@@ -1,7 +1,8 @@
 // timeout: 60
 // Frosted Glass, compact mode set to Hover: the sidebar (or the top toolbar) hovering over the page
-// shows the page frosted behind it (a small snapshot of the part under it, stretched back out;
-// scripts/hover-glass.mjs), placed where that part is. Set to Slide, the wallpaper is behind it and
+// shows the page frosted behind it (a snapshot of the part under it, blurred;
+// scripts/hover-glass.mjs), placed where that part is: the part showing, on a page scrolled down,
+// and staying put while the bar slides away over it. Set to Slide, the wallpaper is behind it and
 // its own glass blurs that: no snapshot. Once the bar is gone, the picture is wiped from memory;
 // in a private window none is taken (the hovering bar is solid).
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -23,10 +24,44 @@ for (const [vertical, reveal] of [[true, "over"], [false, "over"], [true, "push"
   await wait(900);
   const bar = document.getElementById(vertical ? "sidebar-container" : "navigator-toolbox");
   out[`${vertical ? "sidebar" : "top"} ${reveal}`] = {
-    frosted: /-moz-element/.test(getComputedStyle(bar).backgroundImage),
+    frosted: /-moz-element/.test(getComputedStyle(bar, "::after").backgroundImage),
     at: bar.style.getPropertyValue("--aether-hover-at"),
   };
 }
+// The colour of the window at a point: the bar's, where it's over it.
+const colourAt = (x, y) => {
+  const c = document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+  c.width = c.height = 2;
+  const context = c.getContext("2d");
+  context.drawWindow(window, x, y, 2, 2, "white");
+  const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+  return g > 200 && b < 120 ? "green" : b > 200 && g < 120 ? "blue" : r > 200 && g < 120 ? "red" : `${r},${g},${b}`;
+};
+// Scrolled down a page that's red at the top and, further down, green on the left and blue: the
+// sidebar shows green and blue, as the page does where it is now.
+Services.prefs.setBoolPref("sidebar.verticalTabs", true);
+Services.prefs.setStringPref("aether.compactReveal", "over");
+const page = '<body style="margin:0"><div style="height:3000px;background:red"></div>'
+  + '<div id="b" style="height:3000px;background:linear-gradient(90deg,lime 150px,blue 150px)"></div>';
+const scrolled = gBrowser.addTrustedTab("data:text/html," + encodeURIComponent(page) + "#b");
+gBrowser.selectedTab = scrolled;
+move(innerWidth / 2, innerHeight / 2);
+await wait(2000);
+move(2, innerHeight / 2); await wait(400); move(100, innerHeight / 2); await wait(900);
+const sidebar = document.getElementById("sidebar-container");
+const middle = sidebar.getBoundingClientRect().top + sidebar.offsetHeight / 2;
+out.scrolled = [colourAt(100, middle), colourAt(200, middle)].join(" ");
+// Sliding away: still green and blue there, while the sidebar still covers them.
+move(innerWidth / 2, innerHeight / 2);
+const sliding = new Set();
+for (let i = 0; i < 40 && sidebar.getBoundingClientRect().right > 210; i++) {
+  await wait(10);
+  const before = sidebar.getBoundingClientRect().right;
+  const seen = [colourAt(100, middle), colourAt(200, middle)].join(" ");
+  if (before < 245 && sidebar.getBoundingClientRect().right > 215) sliding.add(seen);
+}
+out.sliding = [...sliding];
+gBrowser.removeTab(scrolled);
 // Gone: wiped (the canvas emptied) within a moment.
 Services.prefs.setBoolPref("sidebar.verticalTabs", true);
 Services.prefs.setStringPref("aether.compactReveal", "over");
@@ -44,11 +79,12 @@ await wait(2500);
 const pmove = (x, y) => priv.synthesizeMouseEvent("mousemove", x, y, {}, { isDOMEventSynthesized: true });
 pmove(priv.innerWidth / 2, priv.innerHeight / 2); await wait(800);
 pmove(2, priv.innerHeight / 2); await wait(400); pmove(100, priv.innerHeight / 2); await wait(900);
-out.privateFrosted = /-moz-element/.test(priv.getComputedStyle(priv.document.getElementById("sidebar-container")).backgroundImage)
+out.privateFrosted = /-moz-element/.test(priv.getComputedStyle(priv.document.getElementById("sidebar-container"), "::after").backgroundImage)
   || priv.document.documentElement.hasAttribute("aether-hover-backdrop");
 priv.close();
 move(innerWidth / 2, innerHeight / 2);
 for (const p of ["aether.liquidGlass", "aether.compactMode", "sidebar.verticalTabs", "aether.compactReveal"]) Services.prefs.clearUserPref(p);
 const ok = out["sidebar over"].frosted && out["top over"].frosted && out["top over"].at === "8px 8px" && !out["sidebar push"].frosted
+  && out.scrolled === "green blue" && out.sliding.length > 0 && out.sliding.every(s => s === "green blue")
   && out.wipedOnceGone && out.privateFrosted === false;
 return { ok, ...out };

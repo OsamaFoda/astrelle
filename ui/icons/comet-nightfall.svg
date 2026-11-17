@@ -29,11 +29,11 @@
       <stop offset=".6" stop-color="#c084fc" stop-opacity=".45"/>
       <stop offset="1" stop-color="#ffffff" stop-opacity=".8"/>
     </linearGradient>
-    <filter id="tint" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB"><feColorMatrix type="hueRotate" values="22.0"/><feColorMatrix type="saturate" values="1.0"/></filter>
+    <filter id="mono" filterUnits="userSpaceOnUse" x="0" y="0" width="512" height="512" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="gamma" amplitude="1.08" exponent="0.85"/><feFuncG type="gamma" amplitude="1.08" exponent="0.85"/><feFuncB type="gamma" amplitude="1.08" exponent="0.85"/></feComponentTransfer></filter>
   </defs>
+  <g filter="url(#mono)">
   <g clip-path="url(#tile)">
     <rect x="32" y="32" width="448" height="448" fill="url(#bg)"/>
-    <g filter="url(#tint)">
     <circle cx="187" cy="119" r="3" fill="#fff" opacity="0.42"/>
     <circle cx="288" cy="417" r="1.6" fill="#fff" opacity="0.42"/>
     <circle cx="230" cy="87" r="1.6" fill="#fff" opacity="0.68"/>
@@ -55,7 +55,7 @@
     <ellipse cx="346" cy="166" rx="62" ry="5" fill="#fff" filter="url(#b4)"/><ellipse cx="346" cy="166" rx="5" ry="46" fill="#fff" filter="url(#b4)"/>
     <circle cx="346" cy="166" r="22" fill="#fff"/>
     <rect x="32" y="32" width="448" height="448" fill="url(#sheen)"/>
-    </g>
   </g>
   <rect x="33.5" y="33.5" width="445" height="445" rx="106.5" fill="none" stroke="url(#edge)" stroke-width="3"/>
+  </g>
 </svg>

@@ -1420,17 +1420,40 @@ split-view-footer[aether-own-page] {
     z-index: 4;
   }
 
-  /* In Frosted Glass, what's behind it is the website: the strip of it under the sidebar, small and
-   * stretched back out, so blurred (scripts/hover-glass.mjs), under the frost. Solid until the
-   * first picture comes. */
+  /* In Frosted Glass, what's behind it is the website: the strip of it under the sidebar, blurred
+   * (scripts/hover-glass.mjs), under the frost. Solid until the first picture comes. */
   &[aether-liquid] #sidebar-container {
     backdrop-filter: none;
   }
 
   &[aether-liquid][aether-hover-backdrop] #sidebar-container {
-    background: linear-gradient(var(--aether-frost), var(--aether-frost)),
-                -moz-element(#aether-hover-backdrop) var(--aether-hover-at, 0 0) / var(--aether-hover-size, 100% 100%) no-repeat,
-                var(--aether-panel) !important;
+    overflow: clip;
+
+    /* The picture slides the other way as the sidebar slides, the same distance at the same
+     * pace, so it stays where that strip of the page is: the sidebar moves over it, like glass.
+     * (A fixed background can't: on something sliding, it slides along.) Under the edge ring
+     * and the tabs. */
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(var(--aether-frost), var(--aether-frost)),
+                  -moz-element(#aether-hover-backdrop) var(--aether-hover-at, 0 0) / var(--aether-hover-size, 100% 100%) no-repeat;
+      transform: translateX(calc(var(--aether-dir) * (100% + var(--aether-compact-inset) + 8px)));
+      transition: var(--aether-conceal);
+      pointer-events: none;
+    }
+  }
+
+  &[aether-liquid][aether-hover-backdrop]:not([aether-dismissed]):not(:has(#sidebar-box:not([hidden]))):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #sidebar-container:hover, #navigator-toolbox:hover, #urlbar[focused]:is([usertyping], [open], [aether-just-focused]),
+        #navigator-toolbox [open="true"], :is(#notification-popup, #identity-popup, #permission-popup, #protections-popup, #appMenu-popup, #downloadsPanel,
+        #unified-extensions-panel, #widget-overflow, #customizationui-widget-panel, #editBookmarkPanel)[panelopen])),
+  &[aether-liquid][aether-hover-backdrop]:has(#sidebar-box:not([hidden])) {
+    #sidebar-container::after {
+      transform: none;
+      transition: var(--aether-reveal);
+    }
   }
 }
 
@@ -1440,10 +1463,31 @@ split-view-footer[aether-own-page] {
   box-shadow: var(--aether-shadow);
 }
 
-:root[aether-compact][aether-over][aether-liquid][aether-hover-backdrop]:not([aether-vertical], [inFullscreen], [inDOMFullscreen]) #navigator-toolbox {
-  background: linear-gradient(var(--aether-frost), var(--aether-frost)),
-              -moz-element(#aether-hover-backdrop) var(--aether-hover-at, 0 0) / var(--aether-hover-size, 100% 100%) no-repeat,
-              var(--aether-panel) !important;
+:root[aether-compact][aether-over][aether-liquid][aether-hover-backdrop]:not([aether-vertical], [inFullscreen], [inDOMFullscreen]) {
+  #navigator-toolbox {
+    background: var(--aether-panel) !important;
+    overflow: clip;
+  }
+
+  /* Sliding the other way, as the sidebar's does. */
+  #navigator-toolbox::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(var(--aether-frost), var(--aether-frost)),
+                -moz-element(#aether-hover-backdrop) var(--aether-hover-at, 0 0) / var(--aether-hover-size, 100% 100%) no-repeat;
+    transform: translateY(calc(100% - 8px));
+    transition: var(--aether-conceal);
+    pointer-events: none;
+  }
+
+  &:not([aether-dismissed]):is([aether-hold], [aether-kept], :has(#aether-edge:hover, #navigator-toolbox:hover, #urlbar[focused]:is([usertyping], [open], [aether-just-focused]),
+        #navigator-toolbox [open="true"], :is(#notification-popup, #identity-popup, #permission-popup, #protections-popup, #appMenu-popup, #downloadsPanel,
+        #unified-extensions-panel, #widget-overflow, #customizationui-widget-panel, #editBookmarkPanel)[panelopen])) #navigator-toolbox::after {
+    transform: none;
+    transition: var(--aether-reveal);
+  }
 }
 
 /* ---- Media controls in the sidebar (scripts/media-controls.mjs) ---- */

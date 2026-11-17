@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <!-- Astrelle's icon: Eclipse in Nightfall's colours, an eclipse whose corona runs cyan, indigo and violet from the star round. -->
+  <!-- Astrelle's icon: Eclipse in Nightfall, black, grey and white: the original through a greyscale filter. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#101221"/>
@@ -32,9 +32,9 @@
       <stop offset="1" stop-color="#a5b4fc" stop-opacity=".15"/>
     </linearGradient>
     <linearGradient id="hue" x1="430" y1="80" x2="80" y2="430" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#67e8f9"/>
-      <stop offset=".5" stop-color="#818cf8"/>
-      <stop offset="1" stop-color="#a855f7"/>
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset=".5" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f472b6"/>
     </linearGradient>
     <radialGradient id="glowshape" cx="256" cy="256" r="214" gradientUnits="userSpaceOnUse">
       <stop offset=".58" stop-color="#fff"/>
@@ -49,7 +49,9 @@
       <stop offset=".64" stop-color="#fff" stop-opacity=".55"/>
       <stop offset=".72" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
+    <filter id="mono" filterUnits="userSpaceOnUse" x="0" y="0" width="512" height="512" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="gamma" amplitude="1.08" exponent="0.85"/><feFuncG type="gamma" amplitude="1.08" exponent="0.85"/><feFuncB type="gamma" amplitude="1.08" exponent="0.85"/></feComponentTransfer></filter>
   </defs>
+  <g filter="url(#mono)">
   <g clip-path="url(#tile)">
     <rect x="32" y="32" width="448" height="448" fill="url(#bg)"/>
     <circle cx="65" cy="388" r="2.2" fill="#fff" opacity="0.68"/>
@@ -72,4 +74,5 @@
     <rect x="32" y="32" width="448" height="448" fill="url(#sheen)"/>
   </g>
   <rect x="33.5" y="33.5" width="445" height="445" rx="106.5" fill="none" stroke="url(#edge)" stroke-width="3"/>
+  </g>
 </svg>
