@@ -263,6 +263,16 @@ const refreshWallpaper = () => {
 };
 const windowAround = chromeWindow();
 const windowDark = windowAround.matchMedia("(prefers-color-scheme: dark)");
+// Whether the window's picture is dark or light overall (scripts/wallpaper.mjs works it out), for
+// the page's text on it (newtab.css, [aether-wallpaper-tone]).
+const followTone = () => {
+  const tone = windowAround.document.documentElement.getAttribute("aether-wallpaper-tone");
+  if (tone) document.documentElement.setAttribute("aether-wallpaper-tone", tone);
+  else document.documentElement.removeAttribute("aether-wallpaper-tone");
+};
+const toneWatcher = new windowAround.MutationObserver(followTone);
+toneWatcher.observe(windowAround.document.documentElement, { attributes: true, attributeFilter: ["aether-wallpaper-tone"] });
+followTone();
 WALLPAPER_PREFS.forEach(pref => Services.prefs.addObserver(pref, showWallpaper));
 windowAround.addEventListener("activate", refreshWallpaper);
 windowDark.addEventListener("change", refreshWallpaper);
@@ -271,6 +281,7 @@ window.addEventListener("unload", () => {
   WALLPAPER_PREFS.forEach(pref => Services.prefs.removeObserver(pref, showWallpaper));
   windowAround.removeEventListener("activate", refreshWallpaper);
   windowDark.removeEventListener("change", refreshWallpaper);
+  toneWatcher.disconnect();
   [PINNED, HIDDEN].forEach(pref => Services.prefs.removeObserver(pref, renderShortcuts));
 }, { once: true });
 document.addEventListener("visibilitychange", startPlacing);

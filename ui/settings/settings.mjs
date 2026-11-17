@@ -7,7 +7,7 @@ const { FileUtils } = ChromeUtils.importESModule("resource://gre/modules/FileUti
 import { follow } from "../scripts/palette.mjs";
 import { setUpIconPicker } from "../scripts/icon-picker.mjs";
 import { iconURL, inFlatpak } from "../scripts/app-icon.mjs";
-import { desktopWallpaper } from "../scripts/wallpaper.mjs";
+import { ASTRELLE_WALLPAPER, desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
 import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings, readSipSummary, readSipYoutube, saveSipYoutube, saveSipUsedSoFar, openSip, showSipButton } from "../scripts/choices.mjs";
 import { tr } from "../scripts/l10n.mjs";
@@ -41,7 +41,7 @@ function refresh() {
   $("wallpapers").hidden = CHOICES.background.get() !== "wallpaper";
   let wallpaper = Services.prefs.getStringPref(WALLPAPER, "");
   // With no desktop picture to show (no tile for it), "desktop" shows the theme's.
-  if (wallpaper === "desktop" && !$("wallpapers").querySelector('[data-url="desktop"]')) wallpaper = "";
+  if (wallpaper === "desktop" && !$("wallpapers").querySelector('[data-url="desktop"]')) wallpaper = "theme";
   for (const tile of $("wallpapers").querySelectorAll("[data-url]")) {
     tile.setAttribute("aria-pressed", tile.dataset.url === wallpaper);
   }
@@ -76,11 +76,11 @@ for (const pref of WATCHED) Services.prefs.addObserver(pref, refresh);
 
 // ---- Wallpapers ----
 
-const WALLPAPER = "aether.wallpaper"; // "" for the theme's, "desktop", or a file: URL
+const WALLPAPER = "aether.wallpaper"; // "" for Astrelle's, "theme" for the theme's, "desktop", or a file: URL
 
 function wallpaperTile(url, image, label) {
   const tile = document.createElement("button");
-  tile.className = url ? "wallpaper" : "wallpaper theme";
+  tile.className = url === "theme" ? "wallpaper theme" : "wallpaper";
   tile.dataset.url = url;
   tile.title = label || decodeURIComponent(url.split("/").pop());
   if (image) {
@@ -116,11 +116,11 @@ function wallpaperChanged() {
 }
 Services.prefs.addObserver(WALLPAPER, wallpaperChanged);
 
-// The theme's own wallpaper, the desktop's (if it's a picture a page can show: not GNOME's .jxl
+// Astrelle's own wallpaper, the theme's, the desktop's (if it's a picture a page can show: not GNOME's .jxl
 // ones or a slideshow), the pictures in ~/Pictures/Wallpapers, one chosen from elsewhere, then
 // "Choose a picture…".
 async function buildWallpapers() {
-  const tiles = [wallpaperTile("", null, tr("astrelle-wallpaper-theme"))];
+  const tiles = [wallpaperTile("", ASTRELLE_WALLPAPER, tr("astrelle-wallpaper-astrelle")), wallpaperTile("theme", null, tr("astrelle-wallpaper-theme"))];
   const desktop = await desktopWallpaper(matchMedia("(prefers-color-scheme: dark)").matches);
   if (desktop) tiles.push(wallpaperTile("desktop", desktop, tr("astrelle-wallpaper-desktop")));
   const urls = await wallpaperFiles();

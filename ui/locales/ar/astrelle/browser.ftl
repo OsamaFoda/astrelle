@@ -59,6 +59,7 @@ astrelle-welcome-done-protection = الحماية تعمل. يمكنك تغيي�
 astrelle-welcome-done-sip = سِب يعمل. يمكنك تغيير ذلك في أي وقت من إعدادات Astrelle.
 astrelle-welcome-done-none = يمكنك تشغيل الحماية أو سِب في أي وقت من إعدادات Astrelle.
 astrelle-choose-wallpaper = اختر خلفية
+astrelle-wallpaper-astrelle = Astrelle
 astrelle-wallpaper-theme = سمتك
 astrelle-wallpaper-desktop = سطح مكتبك
 astrelle-choose-picture = اختر صورة…

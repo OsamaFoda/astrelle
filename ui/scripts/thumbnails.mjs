@@ -57,6 +57,10 @@ function makeCopy(win, path, copy, frosted, patience) {
 // The copy's file: URL (making it first if needed), or null if the picture can't be read.
 export function thumbnail(url, win, { frosted = false, patience = PATIENCE } = {}) {
   const job = queue.then(async () => {
+    // Astrelle's own wallpaper is a file in its folder too.
+    if (url?.startsWith("chrome:")) {
+      url = Cc["@mozilla.org/chrome/chrome-registry;1"].getService(Ci.nsIChromeRegistry).convertChromeURL(Services.io.newURI(url)).spec;
+    }
     if (!url?.startsWith("file:")) return url;
     try {
       const path = Services.io.newURI(url).QueryInterface(Ci.nsIFileURL).file.path;

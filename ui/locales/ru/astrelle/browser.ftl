@@ -59,6 +59,7 @@ astrelle-welcome-done-protection = Защита включена. Это мож�
 astrelle-welcome-done-sip = Sip включён. Это можно изменить в любой момент в настройках Astrelle.
 astrelle-welcome-done-none = Включить защиту или Sip можно в любой момент в настройках Astrelle.
 astrelle-choose-wallpaper = Выбрать обои
+astrelle-wallpaper-astrelle = Astrelle
 astrelle-wallpaper-theme = Ваша тема
 astrelle-wallpaper-desktop = Ваш рабочий стол
 astrelle-choose-picture = Выбрать изображение…

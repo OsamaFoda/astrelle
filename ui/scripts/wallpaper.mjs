@@ -2,10 +2,11 @@
 // setting), or a wallpaper drawn inside Astrelle ("wallpaper", the default). Firefox can blur only
 // what shares the browser area with the glass, never what's behind the window, so over the
 // wallpaper the sidebar is real frosted glass, on any computer. The wallpaper is one made from
-// the colour theme (styles/palettes.css, --p-wallpaper), the desktop's own (asked of GNOME, and
-// again when the window comes forward), or a picture chosen in Astrelle Settings. Prefs:
-// aether.background, and aether.wallpaper ("" for the theme's, "desktop", or a file: URL). The
-// look is in aether.css (:root[aether-wallpaper]).
+// Astrelle's own (its icons as one night sky, the default: wallpapers/astrelle.jpg, drawn by
+// branding-src/wallpaper.py), one made from the colour theme (styles/palettes.css, --p-wallpaper),
+// the desktop's own (asked of GNOME, and again when the window comes forward), or a picture chosen
+// in Astrelle Settings. Prefs: aether.background, and aether.wallpaper ("" for Astrelle's, "theme"
+// for the theme's, "desktop", or a file: URL). The look is in aether.css (:root[aether-wallpaper]).
 
 const { Subprocess } = ChromeUtils.importESModule("resource://gre/modules/Subprocess.sys.mjs");
 import { thumbnail, wallpaperFiles } from "./thumbnails.mjs";
@@ -13,6 +14,7 @@ import { thumbnail, wallpaperFiles } from "./thumbnails.mjs";
 const BACKGROUND = "aether.background";
 const WALLPAPER = "aether.wallpaper";
 const PREFS = [BACKGROUND, WALLPAPER, "aether.liquidGlass"];
+export const ASTRELLE_WALLPAPER = "chrome://aether/content/wallpapers/astrelle.jpg";
 
 // GNOME's wallpaper for the light or dark look, as a file: URL, asked of GNOME's own `gsettings`
 // (this Firefox has no reader of its own); null if there isn't one, or it's a slideshow (an .xml
@@ -33,11 +35,11 @@ export async function desktopWallpaper(dark) {
   }
 }
 
-// "theme", or a picture's file: URL. The desktop's, when there's none a page can show, is the theme's.
+// "theme", or a picture's URL. The desktop's, when there's none a page can show, is the theme's.
 export async function wallpaperURL(win) {
   const chosen = Services.prefs.getStringPref(WALLPAPER, "");
   if (chosen === "desktop") return (await desktopWallpaper(win.matchMedia("(prefers-color-scheme: dark)").matches)) || "theme";
-  return chosen || "theme";
+  return chosen || ASTRELLE_WALLPAPER;
 }
 
 // A little after Astrelle starts, while nothing else is going on, make the wallpaper thumbnails

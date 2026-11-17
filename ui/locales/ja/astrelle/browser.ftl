@@ -56,6 +56,7 @@ astrelle-welcome-done-protection = 保護がオンです。Astrelle の設定で
 astrelle-welcome-done-sip = Sip がオンです。Astrelle の設定でいつでも変更できます。
 astrelle-welcome-done-none = 保護や Sip は Astrelle の設定でいつでもオンにできます。
 astrelle-choose-wallpaper = 壁紙を選ぶ
+astrelle-wallpaper-astrelle = Astrelle
 astrelle-wallpaper-theme = テーマ
 astrelle-wallpaper-desktop = デスクトップ
 astrelle-choose-picture = 画像を選ぶ…

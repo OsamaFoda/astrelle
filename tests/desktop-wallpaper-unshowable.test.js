@@ -17,5 +17,5 @@ const desktopTile = Boolean(doc.querySelector('#wallpapers [data-url="desktop"]'
 const pressed = doc.querySelector('#wallpapers [aria-pressed="true"]')?.dataset.url;
 const ok = desktop
   ? windowLook === "picture" && desktopTile && pressed === "desktop"
-  : windowLook === "theme" && !desktopTile && pressed === "";
+  : windowLook === "theme" && !desktopTile && pressed === "theme";
 return { ok, desktop, windowLook, desktopTile, pressed };
