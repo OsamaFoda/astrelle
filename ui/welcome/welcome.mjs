@@ -7,13 +7,15 @@
 
 import { follow } from "../scripts/palette.mjs";
 import { setUpIconPicker } from "../scripts/icon-picker.mjs";
-import { iconURL } from "../scripts/app-icon.mjs";
+import { iconURL, inFlatpak } from "../scripts/app-icon.mjs";
 import { CHOICES, setProtection, setSip, saveSipBudget, saveSipUsedSoFar, saveSipYoutube } from "../scripts/choices.mjs";
 import { tr } from "../scripts/l10n.mjs";
 
 const NEW_TAB = "chrome://aether/content/newtab/newtab.html";
 
 const $ = id => document.getElementById(id);
+// No icon to pick in the Flatpak (scripts/app-icon.mjs).
+if (inFlatpak()) document.querySelector('.step[data-step="icon"]').remove();
 const flow = [...document.querySelectorAll(".step")].map(step => step.dataset.step);
 const chosen = { protection: false, sip: false };
 

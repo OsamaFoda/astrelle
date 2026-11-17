@@ -140,9 +140,12 @@ jobs:
           mkdir pkg
           tar -xf "$FILE" -C pkg
           scripts/install_ui.sh "pkg/$APP_NAME"
-          XZ_OPT=-T0 tar -cJf "$APP_NAME-${{ needs.check.outputs.version }}-linux-x86_64.tar.xz" -C pkg "$APP_NAME"
+          TAR="$APP_NAME-${{ needs.check.outputs.version }}-linux-x86_64.tar.xz"
+          XZ_OPT=-T0 tar -cJf "$TAR" -C pkg "$APP_NAME"
+          # Its checksum beside it, which install.sh checks the download against.
+          sha256sum "$TAR" > "$TAR.sha256"
           # A draft: only the repo's owner sees it until it's published by hand.
-          gh release create "${{ needs.check.outputs.tag }}" "$APP_NAME"-*-linux-x86_64.tar.xz --draft \
+          gh release create "${{ needs.check.outputs.tag }}" "$TAR" "$TAR.sha256" --draft \
             --title "${{ needs.check.outputs.tag }}" \
             --notes "Built on Firefox ${{ needs.check.outputs.version }}."
 

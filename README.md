@@ -2,6 +2,21 @@
 
 A browser built on Firefox ESR, with our own interface on top.
 
+## Install
+
+On Linux (64-bit Intel or AMD), for you alone, with no administrator password:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/OsamaFoda/astrelle/main/install.sh | bash
+```
+
+It puts Astrelle in `~/.local/share/astrelle/app`, adds it to your app list, and gives you the
+`astrelle` command. Run it again to update: it downloads only when there's a newer release. Already
+downloaded a release from the Releases page? `bash install.sh aether-…-linux-x86_64.tar.xz` installs
+that one. `bash install.sh --uninstall` removes Astrelle, keeping your bookmarks and settings.
+
+## How it's built
+
 Builds happen on GitHub's servers, not on a home connection: Mozilla's source is about 800 MB
 per version. Every day a GitHub Action checks for a new Firefox ESR security release and, when
 there is one, builds it with our changes and publishes it under Releases. To build our own

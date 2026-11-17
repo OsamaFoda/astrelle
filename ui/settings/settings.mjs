@@ -6,7 +6,7 @@ const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/Addo
 const { FileUtils } = ChromeUtils.importESModule("resource://gre/modules/FileUtils.sys.mjs");
 import { follow } from "../scripts/palette.mjs";
 import { setUpIconPicker } from "../scripts/icon-picker.mjs";
-import { iconURL } from "../scripts/app-icon.mjs";
+import { iconURL, inFlatpak } from "../scripts/app-icon.mjs";
 import { desktopWallpaper } from "../scripts/wallpaper.mjs";
 import { thumbnail, wallpaperFiles, wallpaperFolder } from "../scripts/thumbnails.mjs";
 import { CHOICES, protectionState, setProtection, sipState, setSip, readSipBudget, saveSipBudget, followSipSettings, readSipSummary, readSipYoutube, saveSipYoutube, saveSipUsedSoFar, openSip, showSipButton } from "../scripts/choices.mjs";
@@ -362,5 +362,11 @@ document.addEventListener("pointerdown", event => {
 $("language-restart").addEventListener("click", restart);
 buildLanguages();
 
-// The app icon cards and their colours (scripts/icon-picker.mjs).
-setUpIconPicker(document, window);
+// The app icon cards and their colours (scripts/icon-picker.mjs); none in the Flatpak, whose icon
+// is its package's.
+if (inFlatpak()) {
+  $("icon")?.remove();
+  document.querySelector('a[href="#icon"]')?.remove();
+} else {
+  setUpIconPicker(document, window);
+}
